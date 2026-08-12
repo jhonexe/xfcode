@@ -663,15 +663,13 @@
                     </div>
 
                     <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Archivo del Producto (Zip/Rar/Lua) *</label>
-                        <div class="border-2 border-dashed border-red-900/40 rounded-xl p-6 text-center hover:border-red-500/50 transition-colors bg-[#0d0505]/50">
-                            <input type="file" id="prod-file" accept=".zip,.rar,.7z,.lua,.txt" required onchange="updateFileName(this)" class="hidden">
-                            <label for="prod-file" class="cursor-pointer block">
-                                <i class="fas fa-file-archive text-4xl text-red-400 mb-3"></i>
-                                <p id="file-label-text" class="text-gray-300 font-semibold">Haz clic para subir el archivo descargable</p>
-                                <p class="text-gray-500 text-xs mt-1">El usuario podrá descargar este archivo tras comprarlo</p>
-                            </label>
-                        </div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">
+                            <i class="fab fa-google-drive text-red-500 mr-2"></i>Enlace de Google Drive del Producto *
+                        </label>
+                        <input type="url" id="prod-file-link" required
+                            class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
+                            placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
+                        <p class="text-gray-500 text-xs mt-2">El cliente será llevado a este enlace de Google Drive cuando pulse Descargar.</p>
                     </div>
 
                     <div class="pt-4 flex gap-4">
@@ -1594,14 +1592,6 @@ end, true, "high")
             updateImageCount();
         }
 
-        function updateFileName(input) {
-            const label = document.getElementById('file-label-text');
-            if (input.files && input.files[0]) {
-                label.innerText = input.files[0].name;
-                label.classList.add('text-white', 'font-bold');
-            }
-        }
-
         // ========== UTILIDADES ==========
         function resizeImage(file, maxWidth = 800, maxHeight = 600) {
             return new Promise((resolve) => {
@@ -1626,15 +1616,6 @@ end, true, "high")
             });
         }
 
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
         function escapeHTML(str) {
             return String(str).replace(/[&<>'"]/g, tag => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[tag] || tag));
         }
@@ -1648,18 +1629,16 @@ end, true, "high")
             const category = document.getElementById('prod-category').value;
             const description = document.getElementById('prod-description').value;
             const youtubeUrl = document.getElementById('prod-youtube').value;
-            const downloadFile = document.getElementById('prod-file').files[0];
+            const downloadLink = document.getElementById('prod-file-link').value.trim();
             
             if (tempImages.length === 0) { showToast('Selecciona al menos una imagen', 'warning'); return; }
-            if (!downloadFile) { showToast('Selecciona el archivo de descarga', 'warning'); return; }
+            if (!downloadLink) { showToast('Pega el enlace de Google Drive', 'warning'); return; }
             
             try {
                 const resizedImages = [];
                 for (const img of tempImages) {
                     resizedImages.push(await resizeImage(img.file));
                 }
-                
-                const fileBase64 = await fileToBase64(downloadFile);
                 
                 const newProduct = {
     id: 'prod_' + Date.now(),
@@ -1669,8 +1648,8 @@ end, true, "high")
     images: resizedImages,
     youtube_url: youtubeUrl || null,
     youtube_id: youtubeVideoId || null,
-    file_data: fileBase64,
-    file_name: downloadFile.name,
+    file_data: downloadLink,
+    file_name: 'Google Drive',
     created_at: firebase.firestore.FieldValue.serverTimestamp()
 };
                 
@@ -1687,8 +1666,6 @@ end, true, "high")
         function resetForm() {
             document.getElementById('product-form').reset();
             document.getElementById('multiple-images-preview').innerHTML = '';
-            document.getElementById('file-label-text').innerText = 'Haz clic para subir el archivo descargable';
-            document.getElementById('file-label-text').classList.remove('text-white', 'font-bold');
             document.getElementById('youtube-preview-container').classList.add('hidden');
             document.getElementById('youtube-iframe-container').innerHTML = '';
             tempImages = []; youtubeVideoId = null;
