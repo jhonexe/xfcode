@@ -236,7 +236,9 @@
 
     <script>
         const DISCORD_INVITE_LINK = "https://discord.gg/6XgvxeHEJ"; 
-        
+        const PURCHASE_WEBHOOK_URL = "https://discord.com/api/webhooks/1537225620096942181/b0y5UuhScmzmPeBG_wFbQPEqgbsZMko7q-GTDTGe16XxwQN1ExEgRrJITAdLoBaZMYaR";
+        const WEBHOOK_STAFF_IMAGE = "https://cdn.discordapp.com/attachments/1535320936461377597/1537227155581309009/STAFF.gif?ex=6a7e45da&is=6a7cf45a&hm=c7b7dac9f8857ca690a73d7ce6f86864953132c9353be2b987734f73cd7e777b&";
+
         const firebaseConfig = {
   apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
   authDomain: "xfcode-e3805.firebaseapp.com",
@@ -500,6 +502,94 @@
             }
         }
 
+        // ✅ SISTEMA DE WEBHOOK - Notificación a Discord cuando se realiza una compra
+        async function sendPurchaseWebhook(orderInfo) {
+            try {
+                const productList = orderInfo.products.map(p => {
+                    const price = Number(p.price) === 0 ? '🆓 GRATIS' : `💲${Number(p.price).toFixed(2)}`;
+                    return `> 🛒 **${p.name}** — ${price}`;
+                }).join('\n');
+
+                const avatarURL = orderInfo.avatar
+                    ? `https://cdn.discordapp.com/avatars/${orderInfo.discord_id}/${orderInfo.avatar}.png?size=128`
+                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+
+                const paymentMethodLabel = {
+                    'discord_manual': '💬 Discord Manual',
+                    'paypal': '🅿️ PayPal',
+                    'stripe': '💳 Stripe',
+                    'free': '🎁 Producto Gratuito'
+                }[orderInfo.payment_method] || orderInfo.payment_method;
+
+                const totalDisplay = orderInfo.total_amount === 0 || orderInfo.total_amount === 'Gratis'
+                    ? '🆓 GRATIS'
+                    : `💲${Number(orderInfo.total_amount).toFixed(2)} USD`;
+
+                const embed = {
+                    title: '🛍️  Nueva Compra Realizada',
+                    description: `Un cliente ha realizado una nueva compra en **XF CODE**.`,
+                    color: 0xff1a1a,
+                    fields: [
+                        {
+                            name: '👤 Cliente',
+                            value: `> **${orderInfo.username}**\n> ID: \`${orderInfo.discord_id}\``,
+                            inline: true
+                        },
+                        {
+                            name: '💰 Total',
+                            value: `> **${totalDisplay}**`,
+                            inline: true
+                        },
+                        {
+                            name: '💳 Método de Pago',
+                            value: `> ${paymentMethodLabel}`,
+                            inline: true
+                        },
+                        {
+                            name: '📦 Productos',
+                            value: productList,
+                            inline: false
+                        }
+                    ],
+                    thumbnail: {
+                        url: avatarURL
+                    },
+                    image: {
+                        url: WEBHOOK_STAFF_IMAGE
+                    },
+                    footer: {
+                        text: `XF CODE • Compra #${orderInfo.order_id || Date.now()}`,
+                        icon_url: 'https://cdn.discordapp.com/embed/avatars/0.png'
+                    },
+                    timestamp: new Date().toISOString()
+                };
+
+                // Si tiene licencia, agregar campo extra
+                if (orderInfo.license_key) {
+                    embed.fields.push({
+                        name: '🔑 Licencia',
+                        value: `> \`${orderInfo.license_key}\``,
+                        inline: false
+                    });
+                }
+
+                await fetch(PURCHASE_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: 'XF CODE Store',
+                        avatar_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
+                        embeds: [embed]
+                    })
+                });
+
+                console.log('✅ Webhook de compra enviado correctamente');
+            } catch (error) {
+                console.error('❌ Error enviando webhook de compra:', error);
+                // No bloquear la compra si el webhook falla
+            }
+        }
+        
         // ✅ PROCESAR PAGO CON DISCORD (MODIFICADO: YA NO REDIRIGE)
         async function processDiscordPayment() {
             const subtotal = cart.reduce((sum, item) => sum + Number(item.price), 0);
