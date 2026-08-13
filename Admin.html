@@ -8,9 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
-    <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
@@ -539,12 +536,7 @@
                     <span>Licencias Usuario</span>
                 </a>
 
-                <div class="text-xs text-gray-500 uppercase font-semibold mt-8 mb-4 px-3 tracking-wider">Herramientas Lua</div>
-
-                <a onclick="showSection('encryptor', this)" class="nav-item flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:text-white">
-                    <i class="fas fa-lock w-5 text-center"></i>
-                    <span>Encriptador Lua</span>
-                </a>
+                <div class="text-xs text-gray-500 uppercase font-semibold mt-8 mb-4 px-3 tracking-wider">Gestión de Usuarios</div>
 
                 <a onclick="showSection('migrate', this)" class="nav-item flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:text-white">
                     <i class="fas fa-exchange-alt w-5 text-center"></i>
@@ -871,45 +863,6 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 4: ENCRIPTADOR LUA -->
-        <section id="section-encryptor" class="section-content fade-in">
-            
-            <div class="card rounded-xl p-6 mb-6 border-l-4 border-l-red-600">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white text-2xl shadow-lg shadow-red-900/50">
-                        <i class="fas fa-shield-halved"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-white">PL <span class="text-gray-400 font-normal">COMPILADOR MTA</span></h2>
-                        <p class="text-sm text-gray-400">Compilación segura y ofuscación oficial para tus recursos</p>
-                    </div>
-                </div>
-                <div id="root-compiler"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card rounded-xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-server text-red-500"></i> Características</h3>
-                    <ul class="space-y-3 text-gray-300 text-sm">
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Compilación real via luac.mtasa.com</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Soporte para Carpetas completas o ZIP</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Selección flexible de archivos</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Actualización automática de meta.xml</li>
-                    </ul>
-                </div>
-                <div class="card rounded-xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-circle-question text-red-500"></i> Cómo usar</h3>
-                    <ol class="space-y-2 text-gray-300 text-sm list-decimal list-inside">
-                        <li>Sube un .zip o selecciona una carpeta.</li>
-                        <li>El sistema detectará automáticamente los archivos .lua.</li>
-                        <li>Marca los archivos que deseas compilar/ofuscar.</li>
-                        <li>Haz clic en "COMPILAR Y DESCARGAR".</li>
-                        <li>Sube el ZIP resultante a tu servidor MTA.</li>
-                    </ol>
-                </div>
-            </div>
-        </section>
-
         <!-- SECCIÓN 5: PASAR A USUARIOS (ASIGNAR PRODUCTOS) -->
         <section id="section-migrate" class="section-content fade-in">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1164,147 +1117,199 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 7: SERVER.LUA -->
+        <!-- SECCIÓN 7: SERVER.LUA (MAINS.LUA) -->
         <section id="section-serverlua" class="section-content fade-in">
     <div class="card rounded-xl overflow-hidden">
-        <div class="p-4 border-b border-red-900/30 bg-red-900/10 flex justify-between items-center">
+        <div class="p-4 border-b border-red-900/30 bg-red-900/10 flex justify-between items-center gap-4 flex-wrap">
             <div class="flex items-center gap-3">
                 <i class="fas fa-file-code text-red-500 text-xl"></i>
                 <div>
-                    <h3 class="text-white font-bold">Server.lua</h3>
-                    <p class="text-xs text-gray-400">Codigo de validación de licencia</p>
+                    <h3 class="text-white font-bold">Server.lua (MainS.lua)</h3>
+                    <p class="text-xs text-gray-400">Codigo de validación de licencia por producto</p>
                 </div>
             </div>
-            <button onclick="copyServerLua()" class="btn-primary px-4 py-2 rounded-lg text-white text-sm font-bold flex items-center gap-2">
-                <i class="fas fa-copy"></i> Copiar Codigo
-            </button>
+            <div class="flex items-center gap-3">
+                <div>
+                    <label class="block text-[10px] text-gray-500 uppercase font-semibold mb-1 tracking-wider">Producto a proteger</label>
+                    <select id="serverlua-product-select" onchange="applyServerLuaProduct(this.value)"
+                        class="input-field w-72 px-3 py-2 rounded-lg text-sm text-white focus:outline-none">
+                        <option value="">Cargando productos...</option>
+                    </select>
+                </div>
+                <button onclick="copyServerLua()" class="btn-primary px-4 py-2 rounded-lg text-white text-sm font-bold flex items-center gap-2 self-end">
+                    <i class="fas fa-copy"></i> Copiar Codigo
+                </button>
+            </div>
         </div>
         <div class="p-0">
             <textarea id="server-lua-code" class="w-full h-[600px] bg-[#050507] text-white font-mono text-sm p-6 focus:outline-none resize-none" spellcheck="false">
+
+--═══════════════════════════════════════════════════════════════--
+--              © XF CODE - ALL RIGHTS RESERVED
+-- VALIDACION POR KEY + IP + PRODUCTO
+--═══════════════════════════════════════════════════════════════--
+
+local FIREBASE_URL = "https://firestore.googleapis.com/v1/projects/xfcode-e3805/databases/(default)/documents/Licencias"
+
+-- ═══════════════════════════════════════════════════════════════
+--  ID DEL PRODUCTO (fijo, no se toca desde config.lua)
+--  Solo se activara si el cliente tiene comprado ESTE producto.
+-- ═══════════════════════════════════════════════════════════════
+local PRODUCT_ID = "prod_0000000000000"
+
+local CONFIG = {
+    check_interval = 60000
+}
 
 local function clean(s)
     if not s then return "" end
     return tostring(s):gsub("%s+", ""):upper()
 end
 
-local function tienePermisoACL()
-    local resourceName = getResourceName(getThisResource())
-    local resObj = "resource." .. resourceName
+local validating = false
+local verifiedOnce = false
 
-    if not isObjectInACLGroup(resObj, aclGetGroup("Admin")) then
-        outputDebugString("[XF]  El resource '"..resourceName.."' NO tiene permiso en ACL 'Admin'", 1)
-        return false
+-- =========================
+-- OBTENER IP PUBLICA
+-- =========================
+local function getPublicIP(cb)
+    fetchRemote("https://api.ipify.org?format=json",
+        { connectionAttempts = 2, connectTimeout = 8000 },
+        function(data, info)
+            if not info or info.statusCode ~= 200 then
+                cb(false, "No se pudo obtener la IP publica")
+                return
+            end
+
+            local j = fromJSON(data)
+            local ip = j and j.ip or nil
+            if not ip or ip == "" then
+                cb(false, "IP publica invalida")
+                return
+            end
+
+            cb(true, tostring(ip))
+        end
+    )
+end
+
+-- =========================
+-- ESTADO DE LA LICENCIA
+-- =========================
+local function isActive(f)
+    if f and f.active and f.active.booleanValue ~= nil then
+        return f.active.booleanValue
     end
-    return true
+    local status = (f and f.status and f.status.stringValue) or ""
+    return status:upper() == "ACTIVE"
 end
 
-local function cargarScriptPrincipal()
-    if _G["ScriptYaCargado"] then return end
-    _G["ScriptYaCargado"] = true
-    outputDebugString("[XF] Script principal cargado correctamente", 3)
-    -- Aquí inicia tu script real
-    -- iniciarSistema()
-end
+-- =========================
+-- VALIDACION
+-- =========================
+function validateOnce()
+    if validating or verifiedOnce then return end
+    validating = true
 
-local function validarLicencia()
+    if not isObjectInACLGroup("resource." .. getResourceName(getThisResource()), aclGetGroup("Admin")) then
+        validating = false
+        outputDebugString("[LICENSE] El resource no tiene permiso en ACL 'Admin'", 1)
+        stopResource(getThisResource())
+        return
+    end
+
+    if not hasObjectPermissionTo(getThisResource(), "function.fetchRemote", true) then
+        validating = false
+        outputDebugString("[LICENSE] ACL sin permisos para fetchRemote", 1)
+        stopResource(getThisResource())
+        return
+    end
 
     if not license or not license.key then
-        outputDebugString("[XF] Definiste tu key en config.lua?", 1)
+        validating = false
+        outputDebugString("[LICENSE] license.key no definido en config.lua", 1)
         stopResource(getThisResource())
         return
     end
 
     local keyLocal = clean(license.key)
+    local productLocal = clean(PRODUCT_ID)
 
-    fetchRemote("https://api.ipify.org?format=json", function(ipData, ipErr)
-        local ipActual = ""
+    if productLocal == "" then
+        validating = false
+        outputDebugString("[LICENSE] Define PRODUCT_ID con el ID del producto (ej: prod_...) en MainS.lua", 1)
+        stopResource(getThisResource())
+        return
+    end
 
-        if ipErr == 0 and ipData then
-            local ipTable = fromJSON(ipData)
-            if ipTable and ipTable.ip then
-                ipActual = clean(ipTable.ip)
-            end
-        end
-
-        if ipActual == "" or ipActual == "0.0.0.0" then
-            local configIP = getServerConfigSetting("serverip") or ""
-            if configIP ~= "" and configIP ~= "auto" then
-                ipActual = clean(configIP)
-            end
-        end
-
-        validarConFirebase(ipActual, keyLocal)
-    end)
-end
-
-function validarConFirebase(ipActual, keyLocal)
-    local urlBase = "https://firestore.googleapis.com/v1/projects/xfcode-e3805/databases/(default)/documents/Licencias"
-
-    fetchRemote(urlBase, function(data, err)
-        if err ~= 0 or not data then
-            outputDebugString("[XF] LICENCIA DENEGADA", 1)
+    getPublicIP(function(okIP, publicIP)
+        if not okIP then
+            validating = false
+            outputDebugString("[LICENSE] " .. tostring(publicIP), 1)
             stopResource(getThisResource())
             return
         end
 
-        local db = fromJSON(data)
-        local autorizado = false
+        local serverIP = clean(publicIP)
+        local url = FIREBASE_URL .. "?t=" .. getTickCount()
 
-        if db and db.documents then
-            for _, doc in ipairs(db.documents) do
-                local f = doc.fields
-                if f then
-                    local fireKey = clean(f.key and f.key.stringValue or "")
+        fetchRemote(url,
+            { connectionAttempts = 2, connectTimeout = 8000 },
+            function(data, info)
+                if not info or info.statusCode ~= 200 then
+                    validating = false
+                    outputDebugString("[LICENSE] Firebase no responde", 1)
+                    stopResource(getThisResource())
+                    return
+                end
 
-                    local fireStatus = ""
-                    if f.status and f.status.stringValue then
-                        fireStatus = clean(f.status.stringValue)
-                    elseif f.active and f.active.booleanValue ~= nil then
-                        fireStatus = f.active.booleanValue and "ACTIVE" or "INACTIVE"
-                    end
+                local j = fromJSON(data)
+                if not j or not j.documents then
+                    validating = false
+                    outputDebugString("[LICENSE] Respuesta invalida de Firebase", 1)
+                    stopResource(getThisResource())
+                    return
+                end
 
-                    local fireIp = clean(f.ip and f.ip.stringValue or "")
+                local autorizado = false
+                for _, doc in ipairs(j.documents) do
+                    local f = doc.fields
+                    if f then
+                        local fireKey     = clean(f.key and f.key.stringValue or "")
+                        local fireProduct = clean(f.product_id and f.product_id.stringValue or "")
 
-                    if fireKey == keyLocal then
-                        if fireStatus ~= "ACTIVE" then
+                        if fireKey == keyLocal and fireProduct == productLocal then
+                            if not isActive(f) then break end
+                            local fireIp = clean(f.ip and f.ip.stringValue or "")
+                            if fireIp == "" or fireIp ~= serverIP then break end
+                            autorizado = true
                             break
                         end
-
-                        if fireIp ~= "" and fireIp ~= ipActual then
-                            break
-                        end
-
-                        autorizado = true
-                        break
                     end
                 end
-            end
-        end
 
-        if autorizado then
-            if not _G["ScriptYaCargado"] then
-                outputDebugString("[XF] LICENCIA VERIFICADA CORRECTAMENTE", 3)
-                cargarScriptPrincipal()
+                validating = false
+                if autorizado then
+                    verifiedOnce = true
+                    outputDebugString("[LICENSE] Licencia verificada correctamente", 3)
+
+                    setTimer(function()
+                        verifiedOnce = false
+                        validateOnce()
+                    end, CONFIG.check_interval, 0)
+                else
+                    outputDebugString("[LICENSE] LICENCIA DENEGADA. Revisa tu Key, IP y Producto en la web.", 1)
+                    stopResource(getThisResource())
+                end
             end
-        else
-            outputDebugString("[XF] LICENCIA DENEGADA. Revisa tu Key e IP en la web.", 1)
-            stopResource(getThisResource())
-        end
+        )
     end)
 end
 
-addEventHandler("onResourceStart", resourceRoot, function()
-    if not tienePermisoACL() then
-        cancelEvent(true, "[XF] Resource sin permiso en ACL 'Admin'")
-        setTimer(function() stopResource(getThisResource()) end, 50, 1)
-        return
-    end
-
-    outputDebugString("[XF] INICIANDO VERIFICACION DE LICENCIA...", 3)
-    validarLicencia()
-    
-    setTimer(validarLicencia, 21600000, 0)
-end, true, "high")
+-- =========================
+-- INICIO
+-- =========================
+setTimer(validateOnce, 2000, 1)
 
                     </textarea>
                 </div>
@@ -1690,6 +1695,12 @@ end, true, "high")
                 <img src="${p.image_url}" class="w-16 h-16 rounded-lg object-cover">
                 <div class="flex-grow">
                     <p class="text-white font-semibold">${escapeHTML(p.name)}</p>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <code class="text-[10px] text-gray-500 font-mono bg-black/30 px-1.5 py-0.5 rounded">${escapeHTML(p.id)}</code>
+                        <button type="button" onclick="copyProductId('${p.id}')" class="text-gray-500 hover:text-red-400 text-[11px]" title="Copiar ID del producto">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
                     <div class="flex items-center gap-3 mt-1">
                         ${priceHtml}
                         ${discountHtml}
@@ -1712,6 +1723,14 @@ end, true, "high")
         container.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error al cargar</p>';
     }
 }
+
+        function copyProductId(id) {
+            navigator.clipboard.writeText(id).then(() => {
+                showToast('ID copiado: ' + id, 'success');
+            }).catch(() => {
+                showToast('No se pudo copiar el ID', 'error');
+            });
+        }
 
         async function updateProductPrice(id) {
     const inputElement = document.getElementById(`price-input-${id}`);
@@ -2845,6 +2864,40 @@ async function generateLicenseForUser(discordId, username) {
             });
         }
 
+        // ========== SERVER.LUA: SELECCIONAR PRODUCTO ==========
+        function applyServerLuaProduct(productId) {
+            if (!productId) return;
+            const textarea = document.getElementById('server-lua-code');
+            if (!textarea) return;
+            const newContent = textarea.value.replace(/(local PRODUCT_ID\s*=\s*")[^"]*(")/, `$1${productId}$2`);
+            textarea.value = newContent;
+            showToast('PRODUCT_ID actualizado a ' + productId, 'success');
+        }
+
+        async function loadServerLuaProducts() {
+            const select = document.getElementById('serverlua-product-select');
+            if (!select) return;
+            try {
+                const snapshot = await db.collection("Productos").get();
+                const products = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    products.push({ id: data.id || doc.id, name: data.name || data.id || doc.id });
+                });
+                if (products.length === 0) {
+                    select.innerHTML = '<option value="">No hay productos aún</option>';
+                    return;
+                }
+                select.innerHTML = products.map(p =>
+                    `<option value="${p.id}">${escapeHTML(p.name)} — ${escapeHTML(p.id)}</option>`
+                ).join('');
+                applyServerLuaProduct(products[0].id);
+            } catch (error) {
+                console.error("Error cargando productos:", error);
+                select.innerHTML = '<option value="">Error cargando productos</option>';
+            }
+        }
+
         // ========== NAVEGACIÓN ENTRE SECCIONES ==========
         function showSection(sectionName, element) {
             document.querySelectorAll('.section-content').forEach(section => {
@@ -2862,13 +2915,14 @@ async function generateLicenseForUser(discordId, username) {
                 'upload': 'Subir <span class="gradient-text">Producto</span>',
                 'users': 'Usuarios',
                 'licenses': 'Licencias Usuario',
-                'encryptor': 'Encriptador Lua',
                 'migrate': 'Pasar a Usuarios',
                 'roles': 'Gestión de Roles',
                 'serverlua': 'Server.lua'
             };
             
             document.getElementById('page-title').innerHTML = titles[sectionName];
+            
+            if (sectionName === 'serverlua') loadServerLuaProducts();
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -2880,7 +2934,7 @@ async function generateLicenseForUser(discordId, username) {
         });
     </script>
 
-    <!-- SCRIPT DEL COMPILADOR/ENCRIPTADOR -->
+    <!-- SCRIPT ADICIONAL -->
     <script>
         window.openPapeletaModal = function(title, message){
           const modal = document.getElementById('papeletaModal');
@@ -2900,421 +2954,6 @@ async function generateLicenseForUser(discordId, username) {
           }
         }, true);
 
-        const MTA_API_URL = "https://proxy-api.trickle-app.host/?url=https://luac.mtasa.com/";
-
-        async function compileLuaFile(content, obfuscateLevel = 3) {
-          const formData = new FormData();
-          const blob = new Blob([content], { type: "text/plain" });
-          formData.append("luasource", blob, "script.lua");
-          formData.append("compile", "1");
-          formData.append("debug", "0");
-          formData.append("obfuscate", obfuscateLevel.toString());
-
-          const response = await fetch(MTA_API_URL, { method: "POST", body: formData });
-          if (!response.ok) throw new Error("Error al compilar archivo");
-
-          const result = await response.arrayBuffer();
-          const text = new TextDecoder().decode(result);
-          if (text.startsWith("ERROR")) throw new Error(text);
-          return new Uint8Array(result);
-        }
-
-        const e = React.createElement;
-
-        function classifyFile(fileName) {
-          const name = fileName.toLowerCase();
-          if (name.includes('client') || name.includes('c_')) return 'client';
-          if (name.includes('server') || name.includes('s_')) return 'server';
-          if (name.includes('config') || name.includes('settings')) return 'config';
-          if (name.includes('shared') || name.includes('util') || name.includes('helper')) return 'shared';
-          return 'other';
-        }
-
-        function getFileTagClass(fileName) {
-          const type = classifyFile(fileName);
-          if (type === 'client') return 'tag-client';
-          if (type === 'server') return 'tag-server';
-          if (type === 'config') return 'tag-config';
-          if (type === 'shared') return 'tag-shared';
-          return '';
-        }
-
-        function ResourceSummary({ resourceName, files, selectedCount, sourceType }) {
-          const totalFiles = files.length;
-          
-          return e("div", { className: "resource-summary" },
-            e("div", { className: "resource-summary-header" },
-              e("div", { className: "resource-summary-info" },
-                e("div", { className: "resource-summary-icon" },
-                  e("i", { className: sourceType === "folder" ? "fa-solid fa-folder-tree" : "fa-solid fa-file-zipper" })
-                ),
-                e("div", { className: "resource-summary-text" },
-                  e("span", { className: "resource-summary-label" }, "Recurso detectado"),
-                  e("span", { className: "resource-summary-name" }, resourceName),
-                  e("span", { className: "resource-summary-type" },
-                    e("i", { className: "fa-solid fa-circle-info" }),
-                    sourceType === "folder" ? "CARGADO DESDE CARPETA" : "CARGADO DESDE ZIP"
-                  )
-                )
-              ),
-              e("div", { className: "resource-summary-stats" },
-                e("div", { className: "stat-chip" },
-                  e("i", { className: "fa-solid fa-file-code" }),
-                  e("span", { className: "stat-chip-label" }, "Scripts"),
-                  e("span", { className: "stat-num" }, totalFiles)
-                ),
-                e("div", { className: "stat-chip" },
-                  e("i", { className: "fa-solid fa-circle-check" }),
-                  e("span", { className: "stat-chip-label" }, "A compilar"),
-                  e("span", { className: "stat-num" }, selectedCount)
-                )
-              )
-            ),
-            
-            e("div", { className: "detected-files-section" },
-              e("div", { className: "detected-files-title" },
-                e("i", { className: "fa-solid fa-list" }),
-                "Archivos .lua detectados"
-              ),
-              e("div", { className: "detected-files-grid" },
-                files.map((file, idx) => 
-                  e("div", { 
-                    key: idx, 
-                    className: `file-chip ${getFileTagClass(file.name)}`
-                  },
-                    e("i", { className: "fa-solid fa-file-code" }),
-                    e("span", { className: "file-chip-name", title: file.path }, file.name)
-                  )
-                )
-              )
-            )
-          );
-        }
-
-        function FileUploader({ onFilesLoaded }) {
-          const [isDragging, setIsDragging] = React.useState(false);
-          const zipInputRef = React.useRef(null);
-          const folderInputRef = React.useRef(null);
-
-          const processZip = async (file) => {
-            const zip = await JSZip.loadAsync(file);
-            const fileList = [];
-            zip.forEach((relativePath, zipEntry) => {
-              if (!zipEntry.dir && relativePath.endsWith(".lua")) {
-                const fileName = relativePath.split("/").pop();
-                fileList.push({ path: relativePath, name: fileName, selected: true });
-              }
-            });
-            const originalName = file.name.replace(".zip", "");
-            onFilesLoaded(fileList, zip, originalName, "zip");
-          };
-
-          const processFolder = async (fileListRaw) => {
-            if (!fileListRaw || fileListRaw.length === 0) return;
-            
-            const firstPath = fileListRaw[0].webkitRelativePath || "";
-            const folderName = firstPath.split("/")[0] || "carpeta_seleccionada";
-            
-            const virtualZip = new JSZip();
-            const luaFiles = [];
-            
-            for (const file of fileListRaw) {
-              const relativePath = file.webkitRelativePath;
-              virtualZip.file(relativePath, file);
-              
-              if (file.name.toLowerCase().endsWith(".lua")) {
-                luaFiles.push({
-                  path: relativePath,
-                  name: file.name,
-                  selected: true
-                });
-              }
-            }
-            
-            if (luaFiles.length === 0) {
-              alert("⚠️ No se encontraron archivos .lua en la carpeta seleccionada.");
-              return;
-            }
-            
-            onFilesLoaded(luaFiles, virtualZip, folderName, "folder");
-          };
-
-          const handleDrop = (ev) => {
-            ev.preventDefault();
-            setIsDragging(false);
-            const file = ev.dataTransfer.files[0];
-            if (file && file.name.endsWith(".zip")) {
-              processZip(file);
-            } else {
-              alert("Para arrastrar, usa un archivo .zip. Para carpetas, usa el botón 'Seleccionar Carpeta'.");
-            }
-          };
-
-          const handleZipSelect = (ev) => {
-            const file = ev.target.files[0];
-            if (file) processZip(file);
-            ev.target.value = "";
-          };
-
-          const handleFolderSelect = (ev) => {
-            const files = ev.target.files;
-            if (files && files.length > 0) processFolder(files);
-            ev.target.value = "";
-          };
-
-          return e("div", { className: "card slide-up", id: "compiler-section" },
-            e("div", {
-              className: `upload-zone ${isDragging ? "dragover" : ""}`,
-              onDragOver: (ev) => { ev.preventDefault(); setIsDragging(true); },
-              onDragLeave: () => setIsDragging(false),
-              onDrop: handleDrop,
-              onClick: () => zipInputRef.current?.click()
-            },
-              e("i", { className: "fa-solid fa-cloud-arrow-up" }),
-              e("h3", null, "Arrastra tu archivo ZIP aquí"),
-              e("p", null, "o haz clic para seleccionar un .zip")
-            ),
-            
-            e("div", { className: "mode-selector" },
-              e("button", {
-                className: "mode-btn",
-                onClick: () => zipInputRef.current?.click()
-              },
-                e("i", { className: "fa-solid fa-file-zipper" }),
-                e("div", null,
-                  e("div", null, "Subir ZIP"),
-                  e("small", null, "Archivo comprimido")
-                )
-              ),
-              e("button", {
-                className: "mode-btn",
-                onClick: () => folderInputRef.current?.click()
-              },
-                e("i", { className: "fa-solid fa-folder-open" }),
-                e("div", null,
-                  e("div", null, "Seleccionar Carpeta"),
-                  e("small", null, "Carpeta completa")
-                )
-              )
-            ),
-            
-            e("input", {
-              ref: zipInputRef, type: "file", accept: ".zip",
-              onChange: handleZipSelect, style: { display: "none" }
-            }),
-            e("input", {
-              ref: folderInputRef, type: "file",
-              webkitdirectory: "true",
-              directory: "true",
-              multiple: true,
-              onChange: handleFolderSelect, style: { display: "none" }
-            })
-          );
-        }
-
-        function FileItem({ file, onToggle }) {
-          return e("div", { className: "file-row" },
-            e("input", { type: "checkbox", checked: file.selected, onChange: onToggle }),
-            e("i", { className: "fa-solid fa-file-code fi" }),
-            e("div", { style: { flex: 1, minWidth: 0 } },
-              e("div", { className: "fn" }, file.name),
-              e("div", { className: "fp" }, file.path)
-            )
-          );
-        }
-
-        function FileList({ files, onToggle, onSelectAll, onDeselectAll, zipFile, zipFileName, isCompiling, setIsCompiling, sourceType }) {
-          const [progress, setProgress] = React.useState({ current: 0, total: 0, file: "", status: "" });
-          const [errors, setErrors] = React.useState([]);
-          const selectedCount = files.filter(f => f.selected).length;
-
-          const handleCompile = async () => {
-            setIsCompiling(true);
-            setErrors([]);
-            setProgress({ current: 0, total: selectedCount, file: "", status: "Iniciando..." });
-
-            try {
-              const onProgress = (current, total, fileName, success, error) => {
-                setProgress({ current, total, file: fileName, status: success ? "Compilado" : "Error" });
-                if (!success && error) setErrors(prev => [...prev, { file: fileName, error }]);
-              };
-
-              const compiledZip = await compileScripts(zipFile, files, onProgress);
-              const blob = await compiledZip.generateAsync({ type: "blob" });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = `${zipFileName}_compiled.zip`;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              URL.revokeObjectURL(url);
-            } catch (err) {
-              console.error("Compilation error:", err);
-              alert("Error durante la compilación: " + err.message);
-            }
-            setIsCompiling(false);
-          };
-
-          return e("div", { className: "card slide-up" },
-
-            e(ResourceSummary, {
-              resourceName: zipFileName,
-              files: files,
-              selectedCount: selectedCount,
-              sourceType: sourceType
-            }),
-
-            e("div", { className: "section-header" },
-              e("h2", null, e("i", { className: "fa-solid fa-box-archive" }), " Archivos a procesar"),
-              e("div", { style: { display: "flex", gap: "8px" } },
-                e("button", { onClick: onSelectAll, className: "btn-secondary" },
-                  e("i", { className: "fa-solid fa-check-double" }), " Marcar todos"),
-                e("button", { onClick: onDeselectAll, className: "btn-secondary" },
-                  e("i", { className: "fa-solid fa-xmark" }), " Desmarcar")
-              )
-            ),
-
-            e("div", { className: "file-list" },
-              files.length === 0
-                ? e("div", { className: "empty-state" },
-                    e("i", { className: "fa-regular fa-folder-open" }),
-                    e("p", { style: { margin: 0 } }, "No se encontraron archivos .lua")
-                  )
-                : files.map((file, index) =>
-                    e(FileItem, { key: file.path, file, onToggle: () => onToggle(index) })
-                  )
-            ),
-
-            isCompiling && e("div", { className: "status-box" },
-              e("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "14px" } },
-                e("span", { style: { color: "var(--enc-accent)" } },
-                  e("i", { className: "fa-solid fa-spinner fa-spin" }), " Compilando: ", e("strong", null, progress.file)),
-                e("span", { style: { color: "var(--enc-muted)" } }, progress.current, " / ", progress.total)
-              ),
-              e("div", { className: "progress-container" },
-                e("div", {
-                  className: "progress-bar",
-                  style: { width: progress.total ? `${(progress.current / progress.total) * 100}%` : "0%" }
-                })
-              )
-            ),
-
-            errors.length > 0 && e("div", { className: "status-box error" },
-              e("strong", null, e("i", { className: "fa-solid fa-triangle-exclamation" }), " Errores de compilación:"),
-              errors.map((err, i) => e("p", { key: i }, e("strong", null, err.file, ": "), err.error))
-            ),
-
-            e("div", {
-              style: {
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                paddingTop: "16px", marginTop: "16px",
-                borderTop: "1px solid rgba(255,255,255,0.05)",
-                flexWrap: "wrap", gap: "10px"
-              }
-            },
-              e("span", { style: { color: "var(--enc-muted)", fontSize: "14px" } },
-                e("i", { className: "fa-solid fa-circle-check", style: { color: "var(--enc-accent)" } }),
-                " ", selectedCount, " de ", files.length, " archivos seleccionados"),
-              e("button", {
-                onClick: handleCompile,
-                disabled: selectedCount === 0 || isCompiling,
-                className: "btn-compile"
-              },
-                isCompiling
-                  ? e(React.Fragment, null, e("i", { className: "fa-solid fa-spinner fa-spin" }), " Compilando...")
-                  : e(React.Fragment, null, e("i", { className: "fa-solid fa-shield-halved" }), " COMPILAR Y DESCARGAR")
-              )
-            )
-          );
-        }
-
-        async function compileScripts(originalZip, files, onProgress) {
-          const newZip = new JSZip();
-          let compiled = 0;
-          const toCompile = files.filter(f => f.selected).length;
-
-          for (const file of files) {
-            const content = await originalZip.file(file.path).async("string");
-            if (file.selected) {
-              try {
-                const compiledContent = await compileLuaFile(content);
-                newZip.file(file.path, compiledContent);
-                compiled++;
-                if (onProgress) onProgress(compiled, toCompile, file.name, true);
-              } catch (err) {
-                newZip.file(file.path, content);
-                if (onProgress) onProgress(compiled, toCompile, file.name, false, err.message);
-              }
-            } else {
-              newZip.file(file.path, content);
-            }
-          }
-
-          const allFiles = [];
-          originalZip.forEach((path, entry) => {
-            if (!entry.dir && !path.endsWith(".lua")) allFiles.push({ path, entry });
-          });
-
-          for (const { path, entry } of allFiles) {
-            if (path.endsWith("meta.xml")) {
-              let metaContent = await entry.async("string");
-              newZip.file(path, metaContent);
-            } else {
-              const content = await entry.async("uint8array");
-              newZip.file(path, content);
-            }
-          }
-          return newZip;
-        }
-
-        function App() {
-          const [files, setFiles] = React.useState([]);
-          const [isCompiling, setIsCompiling] = React.useState(false);
-          const [zipFile, setZipFile] = React.useState(null);
-          const [zipFileName, setZipFileName] = React.useState("");
-          const [sourceType, setSourceType] = React.useState("");
-
-          const handleFilesLoaded = (loadedFiles, originalZip, fileName, type) => {
-            setFiles(loadedFiles);
-            setZipFile(originalZip);
-            setZipFileName(fileName);
-            setSourceType(type);
-          };
-
-          const toggleFile = (index) => {
-            setFiles(prev => prev.map((f, i) => i === index ? { ...f, selected: !f.selected } : f));
-          };
-
-          const selectAll = () => setFiles(prev => prev.map(f => ({ ...f, selected: true })));
-          const deselectAll = () => setFiles(prev => prev.map(f => ({ ...f, selected: false })));
-
-          return e("main", null,
-            e(FileUploader, { onFilesLoaded: handleFilesLoaded }),
-            files.length > 0 && e(FileList, {
-              files, onToggle: toggleFile,
-              onSelectAll: selectAll, onDeselectAll: deselectAll,
-              zipFile, zipFileName, isCompiling, setIsCompiling, sourceType
-            })
-          );
-        }
-
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.target.id === 'section-encryptor' && mutation.target.classList.contains('active')) {
-                    if (!window.compilerRendered) {
-                        const root = ReactDOM.createRoot(document.getElementById("root-compiler"));
-                        root.render(e(App));
-                        window.compilerRendered = true;
-                    }
-                }
-            });
-        });
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const section = document.getElementById('section-encryptor');
-            if (section) observer.observe(section, { attributes: true, attributeFilter: ['class'] });
-        });
 
         // --- MANEJO DEL CREADOR DE CÓDIGOS ---
 document.getElementById('btn-create-discount').addEventListener('click', function() {
