@@ -185,6 +185,15 @@
             const url = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
             window.location.href = url;
         }
+
+        (function handleDiscordCallback() {
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const accessToken = fragment.get('access_token');
+            if (accessToken) {
+                localStorage.setItem('dc_access_token', accessToken);
+                window.location.href = 'index.html';
+            }
+        })();
     </script>
 </body>
 </html>
