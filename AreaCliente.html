@@ -970,35 +970,6 @@
                     visible_to: 'admin'
                 });
 
-                try {
-                    const avatarURL = currentUser.avatar
-                        ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=128`
-                        : 'https://cdn.discordapp.com/embed/avatars/0.png';
-                    await fetch("https://discord.com/api/webhooks/1536836698174914572/CYdYTpXznLxjO9GL0M8nK2xg06ByjjaCseI4ZwZMa3jnLNstiCO9DMwq1zUQR-gTAUZg", {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            username: 'XF CODE Reseñas',
-                            avatar_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
-                            embeds: [{
-                                title: '⭐ Nueva Reseña',
-                                description: `Un cliente dejó una reseña en **${productName}**`,
-                                color: 0xfbbf24,
-                                fields: [
-                                    { name: '👤 Cliente', value: `> **${currentUser.username}**\n> ID: \`${currentUser.id}\``, inline: true },
-                                    { name: '⭐ Calificación', value: `> ${'⭐'.repeat(selectedRating)} ${selectedRating}/5`, inline: true },
-                                    { name: '📝 Reseña', value: `> ${reviewText.substring(0, 1000)}`, inline: false }
-                                ],
-                                thumbnail: { url: avatarURL },
-                                footer: { text: `XF CODE • Producto: ${productName.substring(0, 100)}` },
-                                timestamp: new Date().toISOString()
-                            }]
-                        })
-                    });
-                } catch (error) {
-                    console.error('Error enviando webhook de reseña:', error);
-                }
-
                 const reviewBtn = document.querySelector(`button[onclick*="openReviewModal"][onclick*="'${currentReviewProduct}'"]`);
                 if (reviewBtn) {
                     reviewBtn.outerHTML = `<button disabled class="px-4 py-2 rounded-lg bg-green-900/30 border border-green-600/30 text-green-400 text-sm cursor-not-allowed"><i class="fas fa-check mr-1"></i> Reseñado</button>`;
