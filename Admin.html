@@ -1260,6 +1260,7 @@ function validateOnce()
         end
 
         local serverIP = clean(publicIP)
+        local serverIpPort = clean(publicIP .. ":" .. tostring(getServerPort()))
         local url = FIREBASE_URL .. "?t=" .. getTickCount()
 
         fetchRemote(url,
@@ -1290,7 +1291,10 @@ function validateOnce()
                         if fireKey == keyLocal and fireProduct == productLocal then
                             if not isActive(f) then break end
                             local fireIp = clean(f.ip and f.ip.stringValue or "")
-                            if fireIp == "" or fireIp ~= serverIP then break end
+                            if fireIp == "" or (fireIp ~= serverIpPort and fireIp ~= serverIP) then
+                                outputDebugString("[LICENSE] IP no coincide. Servidor: " .. serverIpPort .. " | Licencia: " .. (f.ip and f.ip.stringValue or "(sin IP)"), 3)
+                                break
+                            end
                             autorizado = true
                             break
                         end
