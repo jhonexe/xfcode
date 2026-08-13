@@ -785,14 +785,9 @@
                     });
                 }
 
-                const link = document.createElement('a');
-                link.href = product.file_data;
-                link.download = product.file_name || 'resource.zip';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                window.open(product.file_data, '_blank', 'noopener');
                 
-                showToast('Descarga iniciada. Licencia vinculada.', 'success', '¡Listo!');
+                showToast('Redirigiendo a Google Drive. Licencia vinculada.', 'success', '¡Listo!');
                 
             } catch (error) {
                 console.error("Error al vincular licencia:", error);

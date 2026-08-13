@@ -235,10 +235,10 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script>
-        const DISCORD_INVITE_LINK = "https://discord.gg/6XgvxeHEJ"; 
+        const DISCORD_INVITE_LINK = "https://discord.gg/6XgvxeHEJ";
         const PURCHASE_WEBHOOK_URL = "https://discord.com/api/webhooks/1537225620096942181/b0y5UuhScmzmPeBG_wFbQPEqgbsZMko7q-GTDTGe16XxwQN1ExEgRrJITAdLoBaZMYaR";
         const WEBHOOK_STAFF_IMAGE = "https://cdn.discordapp.com/attachments/1535320936461377597/1537227155581309009/STAFF.gif?ex=6a7e45da&is=6a7cf45a&hm=c7b7dac9f8857ca690a73d7ce6f86864953132c9353be2b987734f73cd7e777b&";
-
+        
         const firebaseConfig = {
   apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
   authDomain: "xfcode-e3805.firebaseapp.com",
@@ -589,7 +589,7 @@
                 // No bloquear la compra si el webhook falla
             }
         }
-        
+
         // ✅ PROCESAR PAGO CON DISCORD (MODIFICADO: YA NO REDIRIGE)
         async function processDiscordPayment() {
             const subtotal = cart.reduce((sum, item) => sum + Number(item.price), 0);
@@ -610,6 +610,10 @@
             };
             try {
                 await db.collection("Compra").add(orderData);
+
+                // ✅ Enviar notificación al webhook de Discord
+                await sendPurchaseWebhook(orderData);
+
                 // ✅ CAMBIO: Ya no redirige automáticamente. Se queda en la página y espera la aprobación.
                 showToast('✅ Solicitud enviada correctamente. Por favor, espera a que el staff la apruebe. No cierres esta pestaña.', 'success');
                 
@@ -640,6 +644,18 @@
                         status: "Reclamado Exitosamente", license_key: license.key, license_user: license.user_code
                     });
                 }
+
+                // ✅ Enviar notificación al webhook de Discord para productos gratuitos
+                await sendPurchaseWebhook({
+                    discord_id: currentUser.id,
+                    username: currentUser.username,
+                    avatar: currentUser.avatar,
+                    products: cart,
+                    total_amount: 'Gratis',
+                    payment_method: 'free',
+                    order_id: Date.now().toString(),
+                    license_key: license.key
+                });
 
                 cart = [];
                 localStorage.removeItem('papeleta_cart');
