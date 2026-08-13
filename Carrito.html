@@ -749,6 +749,18 @@
                     });
                 }
 
+                await sendPurchaseWebhook({
+                    discord_id: currentUser.id,
+                    username: currentUser.username,
+                    discriminator: currentUser.discriminator || '0000',
+                    avatar: currentUser.avatar,
+                    products: cart,
+                    total_amount: 'Gratis',
+                    payment_method: 'free',
+                    order_id: Date.now().toString(),
+                    license_key: license.key
+                });
+
                 cart = [];
                 localStorage.removeItem('papeleta_cart');
                 showToast('🎉 ¡Producto reclamado exitosamente!', 'success');
