@@ -471,6 +471,19 @@
             return ipRegex.test(ip);
         }
 
+        async function resolvePublicIP() {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 8000);
+                const res = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+                clearTimeout(timer);
+                const data = await res.json();
+                return data.ip || '';
+            } catch (e) {
+                return '';
+            }
+        }
+
         function redirectToDiscord() {
             window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
         }
@@ -646,17 +659,23 @@
                 return;
             }
 
-            const ip = ipInput.value.trim();
+            const typedIp = ipInput.value.trim();
             const key = keyInput.value.trim();
             
-            if (!ip || ip === '0.0.0.0') {
-                showToast('Por favor ingresa la IP pública de tu servidor MTA', 'warning');
+            if (!typedIp || typedIp === '0.0.0.0') {
+                showToast('Por favor ingresa la IP de tu servidor MTA', 'warning');
                 return;
             }
             
-            if (!validateIP(ip)) {
+            if (!validateIP(typedIp)) {
                 showToast('Formato de IP inválido. Ej: 192.168.1.1', 'error');
                 return;
+            }
+
+            const publicIP = await resolvePublicIP();
+            const ip = publicIP || typedIp;
+            if (publicIP) {
+                ipInput.value = publicIP;
             }
 
             if (!key) {
@@ -725,18 +744,24 @@
         }
 
         async function downloadProduct(productId) {
-            const ip = document.getElementById('server-ip').value.trim();
+            const typedIp = document.getElementById('server-ip').value.trim();
             const key = document.getElementById('server-key').value.trim();
             
-            if (!ip || ip === '0.0.0.0') {
+            if (!typedIp || typedIp === '0.0.0.0') {
                 showToast('Debes configurar tu IP antes de descargar.', 'warning', 'Configuración Requerida');
                 document.getElementById('server-ip').focus();
                 return;
             }
 
-            if (!validateIP(ip)) {
+            if (!validateIP(typedIp)) {
                 showToast('Formato de IP inválido.', 'error', 'Error de Formato');
                 return;
+            }
+
+            const publicIP = await resolvePublicIP();
+            const ip = publicIP || typedIp;
+            if (publicIP) {
+                document.getElementById('server-ip').value = publicIP;
             }
 
             if (!key) {
@@ -969,35 +994,6 @@
                     created_at: firebase.firestore.FieldValue.serverTimestamp(),
                     visible_to: 'admin'
                 });
-
-                try {
-                    const avatarURL = currentUser.avatar
-                        ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=128`
-                        : 'https://cdn.discordapp.com/embed/avatars/0.png';
-                    await fetch("https://discord.com/api/webhooks/1536836698174914572/CYdYTpXznLxjO9GL0M8nK2xg06ByjjaCseI4ZwZMa3jnLNstiCO9DMwq1zUQR-gTAUZg", {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            username: 'XF CODE Reseñas',
-                            avatar_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
-                            embeds: [{
-                                title: '⭐ Nueva Reseña',
-                                description: `Un cliente dejó una reseña en **${productName}**`,
-                                color: 0xfbbf24,
-                                fields: [
-                                    { name: '👤 Cliente', value: `> **${currentUser.username}**\n> ID: \`${currentUser.id}\``, inline: true },
-                                    { name: '⭐ Calificación', value: `> ${'⭐'.repeat(selectedRating)} ${selectedRating}/5`, inline: true },
-                                    { name: '📝 Reseña', value: `> ${reviewText.substring(0, 1000)}`, inline: false }
-                                ],
-                                thumbnail: { url: avatarURL },
-                                footer: { text: `XF CODE • Producto: ${productName.substring(0, 100)}` },
-                                timestamp: new Date().toISOString()
-                            }]
-                        })
-                    });
-                } catch (error) {
-                    console.error('Error enviando webhook de reseña:', error);
-                }
 
                 const reviewBtn = document.querySelector(`button[onclick*="openReviewModal"][onclick*="'${currentReviewProduct}'"]`);
                 if (reviewBtn) {
