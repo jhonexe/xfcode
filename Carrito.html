@@ -675,8 +675,10 @@
                     return `> 🛒 **${p.name}** — ${price}`;
                 }).join('\n');
 
+                const discordId = orderInfo.discord_id || (currentUser && currentUser.id);
+
                 const avatarURL = orderInfo.avatar
-                    ? `https://cdn.discordapp.com/avatars/${orderInfo.discord_id}/${orderInfo.avatar}.png?size=128`
+                    ? `https://cdn.discordapp.com/avatars/${discordId}/${orderInfo.avatar}.png?size=128`
                     : 'https://cdn.discordapp.com/embed/avatars/0.png';
 
                 const paymentMethodLabel = {
@@ -690,12 +692,25 @@
                     ? '🆓 GRATIS'
                     : `💲${Number(orderInfo.total_amount).toFixed(2)} USD`;
 
+                let licenseKey = orderInfo.license_key;
+                if (!licenseKey && discordId) {
+                    try {
+                        const licSnap = await db.collection("Licencias")
+                            .where("discord_id", "==", discordId)
+                            .limit(1)
+                            .get();
+                        if (!licSnap.empty) licenseKey = licSnap.docs[0].data().key || '';
+                    } catch (e) {
+                        console.error('Error buscando licencia para webhook:', e);
+                    }
+                }
+
                 const embed = {
                     title: '🛍️ Nueva Compra Realizada',
                     description: `Un cliente ha realizado una nueva compra en **XF CODE**.`,
                     color: 0xff1a1a,
                     fields: [
-                        { name: '👤 Cliente', value: `> **${orderInfo.username}**\n> ID: \`${orderInfo.discord_id}\``, inline: true },
+                        { name: '👤 Cliente', value: `> **${orderInfo.username || 'Usuario'}**\n> ID: \`${discordId || 'Sin ID'}\``, inline: true },
                         { name: '💰 Total', value: `> **${totalDisplay}**`, inline: true },
                         { name: '💳 Método de Pago', value: `> ${paymentMethodLabel}`, inline: true },
                         { name: '📦 Productos', value: productList.substring(0, 1000), inline: false }
@@ -705,10 +720,10 @@
                     timestamp: new Date().toISOString()
                 };
 
-                if (orderInfo.license_key) {
+                if (licenseKey) {
                     embed.fields.push({
                         name: '🔑 Licencia',
-                        value: `> \`${orderInfo.license_key}\``,
+                        value: `> \`${licenseKey}\``,
                         inline: false
                     });
                 }
