@@ -670,7 +670,7 @@
         const DISCORD_INVITE = 'https://discord.gg/uhypzHGKVM';
         const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1530402751375216720/CM6vWGEYqf3aWPiCmIBf_ycp29k686sO6Fc9HB4wisAZTAGe3OiRt5OKZoxbsINHvjgq";
         const STORE_LOGO_URL = "https://cdn.discordapp.com/embed/avatars/0.png"; 
-        const ADMIN_DISCORD_IDS = ['890526767608127489', '1525732580790636696']; 
+        const ADMIN_DISCORD_IDS = ['890526767608127489']; 
         const ADMIN_DISCORD_USERNAMES = ['jkingv2']; 
 
         function isAdmin(user) {
@@ -1518,6 +1518,12 @@ function clearFilters() {
 
         function escapeHTML(str) { return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
 
+        function generateUniqueKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            const block = () => { let s = ''; for (let i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length)); return s; };
+            return `XF(${block()}-${block()}-${block()})`;
+        }
+
         async function getOrCreateLicense(userId, productId, productName) {
             try {
                 const querySnapshot = await db.collection("Licencias").where("discord_id", "==", userId).where("product_id", "==", productId).where("status", "==", "active").limit(1).get();
@@ -1525,11 +1531,10 @@ function clearFilters() {
                     console.log(`✅ Licencia ya existente para ${userId} en ${productId}. No se crea duplicado.`);
                     return querySnapshot.docs[0].data();
                 }
-                const newUser = "USER_" + Math.random().toString(36).substring(2, 8).toUpperCase();
-                const newKey = Array.from({length: 24}, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)]).join('');
+                const newKey = generateUniqueKey();
                 const licenseData = { 
                     discord_id: userId, username: currentUser ? currentUser.username : 'Unknown', product_id: productId, 
-                    product_name: productName, user_code: newUser, key: newKey,
+                    product_name: productName, key: newKey,
                     created_at: firebase.firestore.FieldValue.serverTimestamp(), status: 'active' 
                 };
                 const docRef = await db.collection("Licencias").add(licenseData);
