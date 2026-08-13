@@ -408,7 +408,7 @@
 
         const CLIENT_ID = '1535346943482531892'; 
         const REDIRECT_URI = window.location.href.split('#')[0]; 
-        const ADMIN_DISCORD_IDS = ['890526767608127489', '1525732580790636696']; 
+        const ADMIN_DISCORD_IDS = ['890526767608127489']; 
 
         // Función para obtener el link de Discord (personalizado o por defecto)
         function getDiscordLink() {
@@ -672,25 +672,24 @@
             const typed = ipInput.value.trim();
             const key = keyInput.value.trim();
             
-            if (!typed || typed === '0.0.0.0') {
-                showToast('Por favor ingresa la IP de tu servidor MTA (ej: 37.148.216.26:22003)', 'warning');
-                return;
-            }
-            
-            if (!validateIP(typed)) {
-                showToast('Formato inválido. Ej: 37.148.216.26:22003', 'error');
-                return;
-            }
-
-            const resolved = await resolveFinalIp(typed);
-            const ip = resolved.ip;
-            if (resolved.publicIP) {
-                ipInput.value = resolved.ip;
-            }
-
             if (!key) {
                 showToast('Ingresa tu Key de licencia (ej: XF(ABCD-EFGH-IJKL))', 'warning');
                 return;
+            }
+
+            let ip = '';
+            if (typed && typed !== '0.0.0.0') {
+                if (!validateIP(typed)) {
+                    showToast('Formato inválido. Ej: 37.148.216.26:22003', 'error');
+                    return;
+                }
+                const resolved = await resolveFinalIp(typed);
+                ip = resolved.ip;
+                if (resolved.publicIP) {
+                    ipInput.value = resolved.ip;
+                }
+            } else {
+                ipInput.value = '0.0.0.0';
             }
 
             if (!currentUser || !currentUser.id) {
@@ -1004,35 +1003,6 @@
                     created_at: firebase.firestore.FieldValue.serverTimestamp(),
                     visible_to: 'admin'
                 });
-
-                try {
-                    const avatarURL = currentUser.avatar
-                        ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=128`
-                        : 'https://cdn.discordapp.com/embed/avatars/0.png';
-                    await fetch("https://discord.com/api/webhooks/1536836698174914572/CYdYTpXznLxjO9GL0M8nK2xg06ByjjaCseI4ZwZMa3jnLNstiCO9DMwq1zUQR-gTAUZg", {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            username: 'XF CODE Reseñas',
-                            avatar_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
-                            embeds: [{
-                                title: '⭐ Nueva Reseña',
-                                description: `Un cliente dejó una reseña en **${productName}**`,
-                                color: 0xfbbf24,
-                                fields: [
-                                    { name: '👤 Cliente', value: `> **${currentUser.username}**\n> ID: \`${currentUser.id}\``, inline: true },
-                                    { name: '⭐ Calificación', value: `> ${'⭐'.repeat(selectedRating)} ${selectedRating}/5`, inline: true },
-                                    { name: '📝 Reseña', value: `> ${reviewText.substring(0, 1000)}`, inline: false }
-                                ],
-                                thumbnail: { url: avatarURL },
-                                footer: { text: `XF CODE • Producto: ${productName.substring(0, 100)}` },
-                                timestamp: new Date().toISOString()
-                            }]
-                        })
-                    });
-                } catch (error) {
-                    console.error('Error enviando webhook de reseña:', error);
-                }
 
                 const reviewBtn = document.querySelector(`button[onclick*="openReviewModal"][onclick*="'${currentReviewProduct}'"]`);
                 if (reviewBtn) {
