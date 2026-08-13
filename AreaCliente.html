@@ -264,7 +264,7 @@
                             <h2 class="text-lg font-bold text-white">Configuración MTA</h2>
                         </div>
                         <div class="space-y-4 mb-6">
-                            <div><label class="block text-gray-400 text-xs uppercase font-semibold mb-2 tracking-wider">Server IP</label><input type="text" id="server-ip" value="0.0.0.0" onfocus="if(this.value==='0.0.0.0')this.value=''" onblur="if(this.value==='')this.value='0.0.0.0'" class="input-field w-full px-4 py-3 rounded-lg text-white focus:outline-none font-mono text-sm"></div>
+                            <div><label class="block text-gray-400 text-xs uppercase font-semibold mb-2 tracking-wider">Server IP</label><input type="text" id="server-ip" value="0.0.0.0" placeholder="37.148.216.26:22003" onfocus="if(this.value==='0.0.0.0')this.value=''" onblur="if(this.value==='')this.value='0.0.0.0'" class="input-field w-full px-4 py-3 rounded-lg text-white focus:outline-none font-mono text-sm"></div>
                             <div><label class="block text-gray-400 text-xs uppercase font-semibold mb-2 tracking-wider">Key de Licencia</label><input type="text" id="server-key" placeholder="XF(XXXX-XXXX-XXXX)" class="input-field w-full px-4 py-3 rounded-lg text-white focus:outline-none font-mono text-sm"></div>
                         </div>
                         <div class="mb-6">
@@ -467,7 +467,7 @@
         function isSupportStaff() { return isAdmin(); }
 
         function validateIP(ip) {
-            const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+            const ipRegex = /^(\d{1,3}\.){3}\d{1,3}(:\d{1,5})?$/;
             return ipRegex.test(ip);
         }
 
@@ -482,6 +482,16 @@
             } catch (e) {
                 return '';
             }
+        }
+
+        async function resolveFinalIp(value) {
+            let typedIp = value.trim();
+            let port = '';
+            const pm = typedIp.match(/^(.+):(\d+)$/);
+            if (pm) { typedIp = pm[1]; port = pm[2]; }
+            const publicIP = await resolvePublicIP();
+            const ip = (publicIP || typedIp) + (port ? ':' + port : '');
+            return { ip, publicIP };
         }
 
         function redirectToDiscord() {
@@ -659,23 +669,23 @@
                 return;
             }
 
-            const typedIp = ipInput.value.trim();
+            const typed = ipInput.value.trim();
             const key = keyInput.value.trim();
             
-            if (!typedIp || typedIp === '0.0.0.0') {
-                showToast('Por favor ingresa la IP de tu servidor MTA', 'warning');
+            if (!typed || typed === '0.0.0.0') {
+                showToast('Por favor ingresa la IP de tu servidor MTA (ej: 37.148.216.26:22003)', 'warning');
                 return;
             }
             
-            if (!validateIP(typedIp)) {
-                showToast('Formato de IP inválido. Ej: 192.168.1.1', 'error');
+            if (!validateIP(typed)) {
+                showToast('Formato inválido. Ej: 37.148.216.26:22003', 'error');
                 return;
             }
 
-            const publicIP = await resolvePublicIP();
-            const ip = publicIP || typedIp;
-            if (publicIP) {
-                ipInput.value = publicIP;
+            const resolved = await resolveFinalIp(typed);
+            const ip = resolved.ip;
+            if (resolved.publicIP) {
+                ipInput.value = resolved.ip;
             }
 
             if (!key) {
@@ -744,24 +754,24 @@
         }
 
         async function downloadProduct(productId) {
-            const typedIp = document.getElementById('server-ip').value.trim();
+            const typed = document.getElementById('server-ip').value.trim();
             const key = document.getElementById('server-key').value.trim();
             
-            if (!typedIp || typedIp === '0.0.0.0') {
+            if (!typed || typed === '0.0.0.0') {
                 showToast('Debes configurar tu IP antes de descargar.', 'warning', 'Configuración Requerida');
                 document.getElementById('server-ip').focus();
                 return;
             }
 
-            if (!validateIP(typedIp)) {
-                showToast('Formato de IP inválido.', 'error', 'Error de Formato');
+            if (!validateIP(typed)) {
+                showToast('Formato inválido. Ej: 37.148.216.26:22003', 'error', 'Error de Formato');
                 return;
             }
 
-            const publicIP = await resolvePublicIP();
-            const ip = publicIP || typedIp;
-            if (publicIP) {
-                document.getElementById('server-ip').value = publicIP;
+            const resolved = await resolveFinalIp(typed);
+            const ip = resolved.ip;
+            if (resolved.publicIP) {
+                document.getElementById('server-ip').value = resolved.ip;
             }
 
             if (!key) {
