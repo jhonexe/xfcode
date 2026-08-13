@@ -593,11 +593,20 @@
             <div class="card rounded-xl p-6 mb-8">
                 <form id="product-form" onsubmit="handleProductSubmit(event)" class="space-y-6">
                     
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Nombre del Producto *</label>
-                        <input type="text" id="prod-name" required 
-                            class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
-                            placeholder="Ej: Script de Inventario Premium">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">ID del Producto *</label>
+                            <input type="text" id="prod-id" required 
+                                class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
+                                placeholder="Ej: inventario-premium">
+                            <p class="text-gray-500 text-xs mt-2">Este ID es el que usas en MainS.lua (PRODUCT_ID). Solo letras, números y guiones.</p>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Nombre del Producto *</label>
+                            <input type="text" id="prod-name" required 
+                                class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
+                                placeholder="Ej: Script de Inventario Premium">
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1608,6 +1617,7 @@ setTimer(validateOnce, 2000, 1)
         async function handleProductSubmit(e) {
             e.preventDefault();
             
+            const productId = document.getElementById('prod-id').value.trim();
             const name = document.getElementById('prod-name').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const category = document.getElementById('prod-category').value;
@@ -1615,17 +1625,27 @@ setTimer(validateOnce, 2000, 1)
             const youtubeUrl = document.getElementById('prod-youtube').value;
             const downloadLink = document.getElementById('prod-file-link').value.trim();
             
+            if (!/^[a-zA-Z0-9_-]+$/.test(productId)) {
+                showToast('El ID solo puede contener letras, números, guiones (-) y guion bajo (_). Sin espacios.', 'error');
+                return;
+            }
             if (tempImages.length === 0) { showToast('Selecciona al menos una imagen', 'warning'); return; }
             if (!downloadLink) { showToast('Pega el enlace de Google Drive', 'warning'); return; }
             
             try {
+                const existingDoc = await db.collection("Productos").doc(productId).get();
+                if (existingDoc.exists) {
+                    showToast('Ya existe un producto con ese ID: ' + productId, 'error');
+                    return;
+                }
+
                 const resizedImages = [];
                 for (const img of tempImages) {
                     resizedImages.push(await resizeImage(img.file));
                 }
                 
                 const newProduct = {
-    id: 'prod_' + Date.now(),
+    id: productId,
     name, price, category, description,
     original_price: price, // AGREGAR ESTA LÍNEA
     image_url: resizedImages[0],
