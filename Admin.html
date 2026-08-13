@@ -780,6 +780,21 @@
                 </div>
             </div>
 
+            <div class="glass-panel p-6 mb-8 border-red-900/40">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-comment-slash text-red-500 text-2xl"></i>
+                        <div>
+                            <p class="text-white font-bold">Borrar todas las reseñas</p>
+                            <p class="text-gray-500 text-xs">Elimina permanentemente todos los comentarios/reseñas de los clientes</p>
+                        </div>
+                    </div>
+                    <button onclick="deleteAllReviews()" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center gap-2">
+                        <i class="fas fa-trash"></i> Borrar Reseñas
+                    </button>
+                </div>
+            </div>
+
             <div class="glass-panel p-6 mb-8">
                 <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
                     <div class="relative flex-1 w-full">
@@ -1349,7 +1364,7 @@ setTimer(validateOnce, 2000, 1)
     <script>
         const CLIENT_ID = '1535346943482531892';
         const REDIRECT_URI = window.location.href.split('#')[0];
-        const ADMIN_DISCORD_IDS = ['890526767608127489'];
+        const ADMIN_DISCORD_IDS = ['890526767608127489', '1525732580790636696'];
         const ADMIN_DISCORD_USERNAMES = ['Papeleta'];
 
         const firebaseConfig = {
@@ -1438,6 +1453,35 @@ setTimer(validateOnce, 2000, 1)
         document.getElementById('custom-confirm-modal').addEventListener('click', function(e) {
             if (e.target === this) handleConfirmCancel();
         });
+
+        // ========== BORRAR TODAS LAS RESEÑAS ==========
+        async function deleteAllReviews() {
+            showConfirmModal(
+                'BORRAR TODAS LAS RESEÑAS',
+                '¿Seguro? Se eliminarán <b>TODAS</b> las reseñas/comentarios de la base de datos. Esta acción no se puede deshacer.',
+                async () => {
+                    try {
+                        const snapshot = await db.collection("Resenas").get();
+                        if (snapshot.empty) {
+                            showToast('No hay reseñas para borrar', 'warning');
+                            return;
+                        }
+                        const refs = snapshot.docs.map(d => d.ref);
+                        let deleted = 0;
+                        while (refs.length > 0) {
+                            const chunk = refs.splice(0, 400);
+                            const batch = db.batch();
+                            chunk.forEach(r => batch.delete(r));
+                            await batch.commit();
+                            deleted += chunk.length;
+                        }
+                        showToast(`Se borraron ${deleted} reseñas correctamente`, 'success');
+                    } catch (error) {
+                        showToast('Error borrando reseñas: ' + error.message, 'error');
+                    }
+                }
+            );
+        }
 
         // ========== FUNCIÓN VOLVER ATRÁS ==========
         function goBack() {

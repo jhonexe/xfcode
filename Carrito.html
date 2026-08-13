@@ -692,19 +692,6 @@
                     ? '🆓 GRATIS'
                     : `💲${Number(orderInfo.total_amount).toFixed(2)} USD`;
 
-                let licenseKey = orderInfo.license_key;
-                if (!licenseKey && discordId) {
-                    try {
-                        const licSnap = await db.collection("Licencias")
-                            .where("discord_id", "==", discordId)
-                            .limit(1)
-                            .get();
-                        if (!licSnap.empty) licenseKey = licSnap.docs[0].data().key || '';
-                    } catch (e) {
-                        console.error('Error buscando licencia para webhook:', e);
-                    }
-                }
-
                 const embed = {
                     title: '🛍️ Nueva Compra Realizada',
                     description: `Un cliente ha realizado una nueva compra en **XF CODE**.`,
@@ -720,10 +707,10 @@
                     timestamp: new Date().toISOString()
                 };
 
-                if (licenseKey) {
+                if (orderInfo.license_key) {
                     embed.fields.push({
                         name: '🔑 Licencia',
-                        value: `> \`${licenseKey}\``,
+                        value: `> \`XF ######\``,
                         inline: false
                     });
                 }
