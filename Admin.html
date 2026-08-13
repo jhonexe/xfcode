@@ -1351,6 +1351,38 @@ setTimer(validateOnce, 2000, 1)
         const REDIRECT_URI = window.location.href.split('#')[0];
         const ADMIN_DISCORD_IDS = ['890526767608127489'];
         const ADMIN_DISCORD_USERNAMES = ['Papeleta'];
+        const ADMIN_LOG_WEBHOOK_URL = "https://discord.com/api/webhooks/1535352755990822953/5biUrONnLKHKNSZB61Z5oYjobL5mSDRAwJCDHAYD0aZci2qLfwA37uWs6B-wYsRmMG8i";
+
+        async function sendAdminLog(action, details) {
+            try {
+                const admin = currentUser || {};
+                const avatarURL = admin.avatar
+                    ? `https://cdn.discordapp.com/avatars/${admin.id}/${admin.avatar}.png?size=128`
+                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
+                await fetch(ADMIN_LOG_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: 'XF CODE Admin Logs',
+                        avatar_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
+                        embeds: [{
+                            title: '🛡️ Acción de Administrador',
+                            description: details || action,
+                            color: 0xff1a1a,
+                            fields: [
+                                { name: '👤 Administrador', value: `> **${admin.username || 'Desconocido'}**\n> ID: \`${admin.id || 'Sin ID'}\``, inline: true },
+                                { name: '📌 Acción', value: `> ${action}`, inline: true }
+                            ],
+                            thumbnail: { url: avatarURL },
+                            footer: { text: 'XF CODE • Panel Admin' },
+                            timestamp: new Date().toISOString()
+                        }]
+                    })
+                });
+            } catch (e) {
+                console.error('Error enviando log de admin:', e);
+            }
+        }
 
         const firebaseConfig = {
   apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
@@ -1438,6 +1470,36 @@ setTimer(validateOnce, 2000, 1)
         document.getElementById('custom-confirm-modal').addEventListener('click', function(e) {
             if (e.target === this) handleConfirmCancel();
         });
+
+        // ========== BORRAR TODAS LAS RESEÑAS ==========
+        async function deleteAllReviews() {
+            showConfirmModal(
+                'BORRAR TODAS LAS RESEÑAS',
+                '¿Seguro? Se eliminarán <b>TODAS</b> las reseñas/comentarios de la base de datos. Esta acción no se puede deshacer.',
+                async () => {
+                    try {
+                        const snapshot = await db.collection("Resenas").get();
+                        if (snapshot.empty) {
+                            showToast('No hay reseñas para borrar', 'warning');
+                            return;
+                        }
+                        const refs = snapshot.docs.map(d => d.ref);
+                        let deleted = 0;
+                        while (refs.length > 0) {
+                            const chunk = refs.splice(0, 400);
+                            const batch = db.batch();
+                            chunk.forEach(r => batch.delete(r));
+                            await batch.commit();
+                            deleted += chunk.length;
+                        }
+                        showToast(`Se borraron ${deleted} reseñas correctamente`, 'success');
+                        sendAdminLog(`🗑️ Borró **${deleted}** reseñas`, '');
+                    } catch (error) {
+                        showToast('Error borrando reseñas: ' + error.message, 'error');
+                    }
+                }
+            );
+        }
 
         // ========== FUNCIÓN VOLVER ATRÁS ==========
         function goBack() {
@@ -1663,6 +1725,7 @@ setTimer(validateOnce, 2000, 1)
                 
                 await db.collection("Productos").doc(newProduct.id).set(newProduct);
                 showToast('Producto guardado exitosamente', 'success');
+                sendAdminLog(`🆕 Creó el producto **${name}**`, `ID: \`${productId}\` • Precio: $${price.toFixed(2)} • Categoría: ${category}`);
                 resetForm();
                 loadProducts();
             } catch (error) {
@@ -1781,6 +1844,7 @@ setTimer(validateOnce, 2000, 1)
         
         await db.collection("Productos").doc(id).update(updateData);
         showToast('Precio actualizado exitosamente', 'success');
+        sendAdminLog(`💲 Cambió el precio de **${product.name}**`, `De $${Number(product.price).toFixed(2)} a $${Number(newPrice).toFixed(2)}`);
         loadProducts();
     } catch (error) {
         console.error(error);
@@ -1792,6 +1856,7 @@ setTimer(validateOnce, 2000, 1)
             try {
                 await db.collection("Productos").doc(id).delete();
                 showToast('Producto eliminado', 'success');
+                sendAdminLog(`🗑️ Eliminó el producto **${(allProducts.find(p => p.id === id) || {}).name || id}**`, `ID: \`${id}\``);
                 loadProducts();
             } catch (error) {
                 showToast('Error: ' + error.message, 'error');
@@ -2015,6 +2080,7 @@ async function toggleLicenseStatus(discordId, newState) {
                 updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             showToast(`Licencia ${newState ? 'ACTIVADA' : 'DESACTIVADA'} correctamente`, newState ? 'success' : 'warning');
+            sendAdminLog(`🔑 ${newState ? 'Activó' : 'Desactivó'} la licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\``);
             await loadLicenciasData(); // Recargar para reflejar cambios visuales
         } else {
             showToast('No se encontró documento de licencia para actualizar', 'error');
@@ -2043,6 +2109,7 @@ async function updateLicenseKey(discordId) {
                 updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             showToast('Clave de licencia actualizada', 'success');
+            sendAdminLog(`🔑 Actualizó la clave de licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • Clave (oculta): XF ######`);
             await loadLicenciasData();
         } else {
             showToast('Licencia no encontrada en base de datos', 'error');
@@ -2068,6 +2135,7 @@ async function regenerateLicenseKey(discordId) {
                         updated_at: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     showToast('Nueva clave generada exitosamente', 'success');
+                    sendAdminLog(`🔄 Regeneró la licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • Nueva clave (oculta): XF ######`);
                     await loadLicenciasData();
                 }
             } catch (error) {
@@ -2089,6 +2157,7 @@ async function generateLicenseForUser(discordId, username) {
             created_at: firebase.firestore.FieldValue.serverTimestamp()
         });
         showToast('Licencia generada correctamente', 'success');
+        sendAdminLog(`🆕 Generó licencia para **${username}**`, `ID: \`${discordId}\` • Clave (oculta): XF ######`);
         await loadLicenciasData();
     } catch (error) {
         showToast('Error al generar licencia: ' + error.message, 'error');
@@ -2109,6 +2178,7 @@ async function regenerateLicenseKey(discordId) {
                         updated_at: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     showToast('Nueva clave generada exitosamente', 'success');
+                    sendAdminLog(`🔄 Regeneró la licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • Nueva clave (oculta): XF ######`);
                     await loadLicenciasData();
                 }
             } catch (error) {
@@ -2130,6 +2200,7 @@ async function generateLicenseForUser(discordId, username) {
             created_at: firebase.firestore.FieldValue.serverTimestamp()
         });
         showToast('Licencia generada correctamente', 'success');
+        sendAdminLog(`🆕 Generó licencia para **${username}**`, `ID: \`${discordId}\` • Clave (oculta): XF ######`);
         await loadLicenciasData();
     } catch (error) {
         showToast('Error al generar licencia: ' + error.message, 'error');
@@ -2409,6 +2480,7 @@ async function generateLicenseForUser(discordId, username) {
                 renderUsers();
 
                 showToast(`Rol de ${user.username} actualizado a "${newRole}"`, 'success');
+                sendAdminLog(`👑 Asignó rol **${newRole}** a **${user.username}**`, `ID: \`${discordId}\``);
 
             } catch (error) {
                 console.error("Error setting role:", error);
@@ -2658,6 +2730,7 @@ async function generateLicenseForUser(discordId, username) {
                         });
 
                         showToast(`Producto asignado a ${userName}`, 'success');
+                        sendAdminLog(`🎁 Asignó producto **${productName}** a **${userName}**`, `ID usuario: \`${migrateSelectedUser.discord_id}\` • GRATIS`);
 
                         migrateSelectedUser = null;
                         migrateSelectedProduct = null;
@@ -2767,6 +2840,7 @@ async function generateLicenseForUser(discordId, username) {
                 localStorage.setItem('papeleta_custom_roles', JSON.stringify(existingRoles));
 
                 showToast(`Rol "${name}" creado exitosamente`, 'success');
+                sendAdminLog(`🆕 Creó el rol **${name}**`, `Color: ${color}`);
 
                 document.getElementById('create-role-form').reset();
                 updateColorPreview('#ff1a1a');
@@ -2858,10 +2932,12 @@ async function generateLicenseForUser(discordId, username) {
                 return;
             }
 
+            const role = existingRoles.find(r => r.id === roleId);
             existingRoles = existingRoles.filter(r => r.id !== roleId);
             localStorage.setItem('papeleta_custom_roles', JSON.stringify(existingRoles));
             renderRoles();
             showToast('Rol eliminado correctamente', 'success');
+            sendAdminLog(`🗑️ Eliminó el rol **${role ? role.name : roleId}**`, '');
         }
 
         function formatPermName(key) {
