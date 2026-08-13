@@ -1192,7 +1192,7 @@ local function tienePermisoACL()
     local resObj = "resource." .. resourceName
 
     if not isObjectInACLGroup(resObj, aclGetGroup("Admin")) then
-        outputDebugString("[Papeleta]  El resource '"..resourceName.."' NO tiene permiso en ACL 'Admin'", 1)
+        outputDebugString("[XF]  El resource '"..resourceName.."' NO tiene permiso en ACL 'Admin'", 1)
         return false
     end
     return true
@@ -1201,23 +1201,20 @@ end
 local function cargarScriptPrincipal()
     if _G["ScriptYaCargado"] then return end
     _G["ScriptYaCargado"] = true
-    outputDebugString("[Papeleta] Script principal cargado correctamente", 3)
+    outputDebugString("[XF] Script principal cargado correctamente", 3)
     -- Aquí inicia tu script real
     -- iniciarSistema()
 end
 
 local function validarLicencia()
 
-    if not configLicense or not configLicense["User"] or not configLicense["Key"] then
-        outputDebugString("[Papeleta] manito dime te lo va a robar", 1)
+    if not license or not license.key then
+        outputDebugString("[XF] Definiste tu key en config.lua?", 1)
         stopResource(getThisResource())
         return
     end
 
-    local userLocal = clean(configLicense["User"])
-    local keyLocal  = clean(configLicense["Key"])
-    local resourceName = clean(getResourceName(getThisResource()))
-    local portActual = tostring(getServerPort() or 22003)
+    local keyLocal = clean(license.key)
 
     fetchRemote("https://api.ipify.org?format=json", function(ipData, ipErr)
         local ipActual = ""
@@ -1236,17 +1233,16 @@ local function validarLicencia()
             end
         end
 
-        local ipPortCompleto = ipActual .. ":" .. portActual
-        validarConFirebase(ipPortCompleto, userLocal, keyLocal, resourceName)
+        validarConFirebase(ipActual, keyLocal)
     end)
 end
 
-function validarConFirebase(ipPortCompleto, userLocal, keyLocal, resourceName)
-    local urlBase = "https://firestore.googleapis.com/v1/projects/papeletalicencia/databases/(default)/documents/Licencias"
+function validarConFirebase(ipActual, keyLocal)
+    local urlBase = "https://firestore.googleapis.com/v1/projects/xfcode-e3805/databases/(default)/documents/Licencias"
 
     fetchRemote(urlBase, function(data, err)
         if err ~= 0 or not data then
-            outputDebugString("[Papeleta] LICENCIA DENEGADA", 1)
+            outputDebugString("[XF] LICENCIA DENEGADA", 1)
             stopResource(getThisResource())
             return
         end
@@ -1258,10 +1254,6 @@ function validarConFirebase(ipPortCompleto, userLocal, keyLocal, resourceName)
             for _, doc in ipairs(db.documents) do
                 local f = doc.fields
                 if f then
-                    local fireUser = clean(
-                        (f.user_code and f.user_code.stringValue) or
-                        (f.user and f.user.stringValue) or ""
-                    )
                     local fireKey = clean(f.key and f.key.stringValue or "")
 
                     local fireStatus = ""
@@ -1271,27 +1263,14 @@ function validarConFirebase(ipPortCompleto, userLocal, keyLocal, resourceName)
                         fireStatus = f.active.booleanValue and "ACTIVE" or "INACTIVE"
                     end
 
-                    local fireIp     = clean(f.ip and f.ip.stringValue or "")
-                    local firePort   = clean(f.port and f.port.stringValue or "")
-                    local fireResource = clean(f.resource and f.resource.stringValue or "")
+                    local fireIp = clean(f.ip and f.ip.stringValue or "")
 
                     if fireKey == keyLocal then
                         if fireStatus ~= "ACTIVE" then
                             break
                         end
 
-                        if fireUser ~= "" and fireUser ~= userLocal then
-                            break
-                        end
-
-                        if fireIp ~= "" and firePort ~= "" then
-                            local fireIpPort = fireIp .. ":" .. firePort
-                            if fireIpPort ~= ipPortCompleto then
-                                break
-                            end
-                        end
-
-                        if fireResource ~= "" and fireResource ~= resourceName then
+                        if fireIp ~= "" and fireIp ~= ipActual then
                             break
                         end
 
@@ -1304,11 +1283,11 @@ function validarConFirebase(ipPortCompleto, userLocal, keyLocal, resourceName)
 
         if autorizado then
             if not _G["ScriptYaCargado"] then
-                outputDebugString("[Papeleta] LICENCIA VERIFICADA CORRECTAMENTE", 3)
+                outputDebugString("[XF] LICENCIA VERIFICADA CORRECTAMENTE", 3)
                 cargarScriptPrincipal()
             end
         else
-            outputDebugString("[Papeleta] LICENCIA DENEGADA", 1)
+            outputDebugString("[XF] LICENCIA DENEGADA. Revisa tu Key e IP en la web.", 1)
             stopResource(getThisResource())
         end
     end)
@@ -1316,12 +1295,12 @@ end
 
 addEventHandler("onResourceStart", resourceRoot, function()
     if not tienePermisoACL() then
-        cancelEvent(true, "[Papeleta] Resource sin permiso en ACL 'Admin'")
+        cancelEvent(true, "[XF] Resource sin permiso en ACL 'Admin'")
         setTimer(function() stopResource(getThisResource()) end, 50, 1)
         return
     end
 
-    outputDebugString("[Papeleta] INICIANDO VERIFICACION DE LICENCIA...", 3)
+    outputDebugString("[XF] INICIANDO VERIFICACION DE LICENCIA...", 3)
     validarLicencia()
     
     setTimer(validarLicencia, 21600000, 0)
@@ -1352,7 +1331,7 @@ end, true, "high")
     <script>
         const CLIENT_ID = '1535346943482531892';
         const REDIRECT_URI = window.location.href.split('#')[0];
-        const ADMIN_DISCORD_IDS = ['890526767608127489', '1525732580790636696'];
+        const ADMIN_DISCORD_IDS = ['890526767608127489'];
         const ADMIN_DISCORD_USERNAMES = ['Papeleta'];
 
         const firebaseConfig = {
@@ -2681,11 +2660,8 @@ async function generateLicenseForUser(discordId, username) {
 
         function generateUniqueKey() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let key = '';
-            for (let i = 0; i < 20; i++) {
-                key += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return key;
+            const block = () => { let s = ''; for (let i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length)); return s; };
+            return `XF(${block()}-${block()}-${block()})`;
         }
 
         // ========== FUNCIONES PARA CREAR ROLES ==========
