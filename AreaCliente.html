@@ -981,26 +981,23 @@
                     const avatarURL = currentUser.avatar
                         ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=128`
                         : 'https://cdn.discordapp.com/embed/avatars/0.png';
-                    const xfLogo = 'https://xfcode.xyz/files/XF_LOGO.png';
-                    const starsFull = '⭐'.repeat(selectedRating);
-                    const starsEmpty = '☆'.repeat(5 - selectedRating);
-                    const ratingColors = { 1: 0xef4444, 2: 0xf97316, 3: 0xf59e0b, 4: 0x22c55e, 5: 0x16a34a };
-                    const embedColor = ratingColors[selectedRating] || 0xff0000;
-                    const reviewPreview = (reviewText || '').substring(0, 1000);
-
                     await fetch("https://discord.com/api/webhooks/1536836698174914572/CYdYTpXznLxjO9GL0M8nK2xg06ByjjaCseI4ZwZMa3jnLNstiCO9DMwq1zUQR-gTAUZg", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             username: 'XF CODE Reseñas',
-                            avatar_url: xfLogo,
+                            avatar_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
                             embeds: [{
-                                author: { name: 'XF CODE • Nueva Reseña', icon_url: xfLogo },
-                                title: `⭐ Nueva reseña en **${productName}**`,
-                                description: `> **${currentUser.username}** dejó una reseña\n\n**${starsFull}${starsEmpty}**  \`${selectedRating}/5\`\n\n*"${reviewPreview}"*`,
-                                color: embedColor,
+                                title: '⭐ Nueva Reseña',
+                                description: `Un cliente dejó una reseña en **${productName}**`,
+                                color: 0xfbbf24,
+                                fields: [
+                                    { name: '👤 Cliente', value: `> **${currentUser.username}**\n> ID: \`${currentUser.id}\``, inline: true },
+                                    { name: '⭐ Calificación', value: `> ${'⭐'.repeat(selectedRating)} ${selectedRating}/5`, inline: true },
+                                    { name: '📝 Reseña', value: `> ${reviewText.substring(0, 1000)}`, inline: false }
+                                ],
                                 thumbnail: { url: avatarURL },
-                                footer: { text: `XF CODE • ${productName}`, icon_url: xfLogo },
+                                footer: { text: `XF CODE • Producto: ${productName.substring(0, 100)}` },
                                 timestamp: new Date().toISOString()
                             }]
                         })
