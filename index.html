@@ -56,17 +56,17 @@
         .red-glow { text-shadow: 0 0 18px rgba(255, 26, 26, 0.85), 0 0 36px rgba(204, 27, 27, 0.4); }
         .red-border { border-color: rgba(255, 26, 26, 0.25); }
 
-        .xf-title { display: inline-block; cursor: default; }
-        .xf-title .xf-letter {
-            display: inline-block; will-change: transform;
-            background: linear-gradient(90deg, #ffffff 0%, #ff6b6b 20%, #ff1a1a 45%, #ff4d4d 55%, #ff1a1a 80%, #ffffff 100%);
-            background-size: 220% 100%;
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent; color: transparent;
-            animation: xf-shimmer 3.2s linear infinite, xf-letter-pulse 2.8s ease-in-out infinite;
-        }
-        @keyframes xf-shimmer { 0% { background-position: 0% 0; } 100% { background-position: 220% 0; } }
-        @keyframes xf-letter-pulse { 0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 26, 26, 0.35)); } 50% { filter: drop-shadow(0 0 22px rgba(255, 26, 26, 0.85)); } }
+        .xf-title { display: inline-block; cursor: default; position: relative; padding-bottom: 10px; perspective: 700px; }
+        .xf-tilt { display: inline-block; transform-style: preserve-3d; will-change: transform; }
+        .xf-clip { position: relative; display: inline-block; overflow: hidden; }
+        .xf-part { display: inline-block; color: #ffffff; animation: xf-glow-pulse 3s ease-in-out infinite; }
+        .xf-red { color: #ff1a1a; text-shadow: 0 0 22px rgba(255, 26, 26, 0.9); }
+        @keyframes xf-glow-pulse { 0%, 100% { text-shadow: 0 0 10px rgba(255, 26, 26, 0.3); } 50% { text-shadow: 0 0 26px rgba(255, 26, 26, 0.85); } }
+        .xf-title .xf-sheen { position: absolute; top: 0; bottom: 0; width: 35%; pointer-events: none; background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.16), transparent); transform: skewX(-12deg); animation: xf-sheen-move 3.6s ease-in-out infinite; }
+        @keyframes xf-sheen-move { 0% { left: -45%; } 55%, 100% { left: 115%; } }
+        .xf-title .xf-underline { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; border-radius: 3px; background: linear-gradient(90deg, #ff1a1a, #ff6b6b, #ff1a1a); background-size: 200% 100%; box-shadow: 0 0 14px rgba(255, 26, 26, 0.7); animation: xf-ul-move 3s linear infinite, xf-ul-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.1s backwards; }
+        @keyframes xf-ul-move { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
+        @keyframes xf-ul-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
         
         .page { display: none; }
         .page.active { display: block; }
@@ -503,7 +503,7 @@
         <header class="bg-[#0d0505]/90 backdrop-blur border-b red-border sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()" title="Actualizar página">
                 <img src="files/XF_LOGO.png" alt="XF CODE" class="w-9 h-9 rounded-lg object-cover">
-                <span class="xf-title text-white font-black tracking-widest text-lg">XF <span class="text-red-400">CODE</span></span>
+                <span class="text-white font-black tracking-widest text-lg">XF <span class="text-red-400">CODE</span></span>
             </div>
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-300">
                 <a href="#" onclick="showPage('inicio')" data-page="inicio" class="nav-link hover:text-red-400 transition-colors">Inicio</a>
@@ -535,7 +535,15 @@
         <section id="page-inicio" class="page active max-w-6xl w-full mx-auto px-6 py-16">
             <div class="grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                    <h2 class="xf-title text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-4">XF <span class="text-red-400 red-glow">CODE</span></h2>
+                    <h2 class="xf-title text-5xl md:text-6xl font-black uppercase tracking-tight mb-4">
+                        <span class="xf-tilt">
+                            <span class="xf-clip">
+                                <span class="xf-sheen"></span>
+                                <span class="xf-part">XF</span>&nbsp;<span class="xf-part xf-red">CODE</span>
+                            </span>
+                            <span class="xf-underline"></span>
+                        </span>
+                    </h2>
                     <p class="text-gray-300 text-sm md:text-base mb-8">XF CODE — LA TIENDA DE SCRIPTS QUE LLEVA TU SERVIDOR AL SIGUIENTE NIVEL</p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <button onclick="showPage('productos')" class="bg-red-600 hover:bg-red-700 text-white font-black px-8 py-4 rounded-xl shadow-lg shadow-red-600/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wider">
@@ -1799,52 +1807,34 @@ function clearFilters() {
             var isTouch = window.matchMedia('(pointer: coarse)').matches;
 
             titles.forEach(function (title) {
-                if (title.getAttribute('data-xf-logo') === '1') return;
-                title.setAttribute('data-xf-logo', '1');
-                var text = title.textContent;
-                title.textContent = '';
-                var letters = [];
-                for (var i = 0; i < text.length; i++) {
-                    var s = document.createElement('span');
-                    s.className = 'xf-letter';
-                    if (text[i] === ' ') s.innerHTML = '&nbsp;';
-                    else s.textContent = text[i];
-                    title.appendChild(s);
-                    letters.push(s);
-                }
-                if (isTouch) return;
-
-                var txs = letters.map(function () { return 0; });
-                var tys = letters.map(function () { return 0; });
-                var cxs = letters.map(function () { return 0; });
-                var cys = letters.map(function () { return 0; });
-                var active = false;
+                var tilt = title.querySelector('.xf-tilt');
+                if (!tilt) return;
+                var tx = 0, ty = 0, cx = 0, cy = 0, active = false;
 
                 function step() {
-                    var done = true;
-                    for (var i = 0; i < letters.length; i++) {
-                        cxs[i] += (txs[i] - cxs[i]) * 0.18;
-                        cys[i] += (tys[i] - cys[i]) * 0.18;
-                        if (Math.abs(txs[i] - cxs[i]) > 0.05 || Math.abs(tys[i] - cys[i]) > 0.05) done = false;
-                        letters[i].style.transform = 'translate(' + cxs[i].toFixed(2) + 'px,' + cys[i].toFixed(2) + 'px)';
+                    cx += (tx - cx) * 0.12;
+                    cy += (ty - cy) * 0.12;
+                    tilt.style.transform =
+                        'rotateX(' + cy.toFixed(2) + 'deg) rotateY(' + cx.toFixed(2) + 'deg)';
+                    if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05) {
+                        requestAnimationFrame(step);
+                    } else {
+                        active = false;
                     }
-                    if (done) { active = false; return; }
-                    requestAnimationFrame(step);
                 }
 
                 title.addEventListener('mousemove', function (e) {
-                    for (var i = 0; i < letters.length; i++) {
-                        var r = letters[i].getBoundingClientRect();
-                        var cx = r.left + r.width / 2;
-                        var cy = r.top + r.height / 2;
-                        txs[i] = Math.max(-12, Math.min(12, (e.clientX - cx) * 0.3));
-                        tys[i] = Math.max(-10, Math.min(10, (e.clientY - cy) * 0.35));
-                    }
+                    if (isTouch) return;
+                    var r = title.getBoundingClientRect();
+                    var dx = e.clientX - (r.left + r.width / 2);
+                    var dy = e.clientY - (r.top + r.height / 2);
+                    tx = Math.max(-8, Math.min(8, dx / 30));
+                    ty = Math.max(-6, Math.min(6, -dy / 45));
                     if (!active) { active = true; requestAnimationFrame(step); }
                 });
 
                 title.addEventListener('mouseleave', function () {
-                    for (var i = 0; i < letters.length; i++) { txs[i] = 0; tys[i] = 0; }
+                    tx = 0; ty = 0;
                     if (!active) { active = true; requestAnimationFrame(step); }
                 });
             });
