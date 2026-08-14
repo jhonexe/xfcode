@@ -443,7 +443,7 @@
             <span id="panel-user-role" class="user-panel-role">CLIENTE</span>
         </div>
         <div class="space-y-2">
-            <a href="AreaCliente.html" class="user-menu-item">
+            <a href="AreaCliente" class="user-menu-item">
                 <div class="user-menu-icon"><i class="fas fa-box"></i></div>
                 <div class="user-menu-text"><h4>Mis Productos</h4><p>Ver y descargar mis compras</p></div>
             </a>
@@ -451,11 +451,11 @@
                 <div class="user-menu-icon"><i class="fas fa-store"></i></div>
                 <div class="user-menu-text"><h4>Tienda</h4><p>Explorar más productos</p></div>
             </a>
-            <a href="Carrito.html" class="user-menu-item">
+            <a href="Carrito" class="user-menu-item">
                 <div class="user-menu-icon"><i class="fas fa-shopping-cart"></i></div>
                 <div class="user-menu-text"><h4>Carrito</h4><p>Ver mi carrito de compras</p></div>
             </a>
-            <a href="Admin.html" id="user-panel-config-btn" class="user-menu-item hidden" style="display: none;">
+            <a href="Admin" id="user-panel-config-btn" class="user-menu-item hidden" style="display: none;">
                 <div class="user-menu-icon"><i class="fas fa-cog"></i></div>
                 <div class="user-menu-text"><h4>Config</h4><p>Panel de Administrador</p></div>
             </a>
@@ -475,11 +475,11 @@
             <button onclick="toggleConfigPanel()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
-            <a href="SubirProducto.html" class="config-menu-item">
+            <a href="SubirProducto" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                 <div class="config-menu-text"><h4>Subir Producto</h4><p>Agregar nuevos recursos a la tienda</p></div>
             </a>
-            <a href="LicenciaUsuario.html" class="config-menu-item">
+            <a href="LicenciaUsuario" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-key"></i></div>
                 <div class="config-menu-text"><h4>Licencias Usuario</h4><p>Ver historial de compras y reclamos</p></div>
             </a>
@@ -487,11 +487,11 @@
                 <div class="config-menu-icon"><i class="fas fa-user-plus"></i></div>
                 <div class="config-menu-text"><h4>Pasar a Usuarios</h4><p>Asignar productos gratis manualmente</p></div>
             </div>
-            <a href="UsuariosAutorizado.html" class="config-menu-item">
+            <a href="UsuariosAutorizado" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-users-cog"></i></div>
                 <div class="config-menu-text"><h4>Usuarios Autorizados</h4><p>Gestionar roles Admin y Mod</p></div>
             </a>
-            <a href="CrearRol.html" class="config-menu-item">
+            <a href="CrearRol" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-id-badge"></i></div>
                 <div class="config-menu-text"><h4>Crear Rol</h4><p>Definir permisos personalizados</p></div>
             </a>
@@ -514,7 +514,7 @@
                 <a href="#" onclick="showPage('preguntas')" data-page="preguntas" class="nav-link hover:text-red-400 transition-colors">Preguntas</a>
             </nav>
             <div class="flex items-center gap-3">
-                <a href="Carrito.html" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
+                <a href="Carrito" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
                     <i class="fas fa-shopping-cart text-gray-300 group-hover:text-white transition-colors"></i>
                     <span id="cart-count" class="cart-badge hidden">0</span>
                 </a>
@@ -734,7 +734,7 @@
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
             if (currentUser && myAssignedProductIds.has(productId)) { 
-                window.location.href = 'AreaCliente.html'; 
+                window.location.href = 'AreaCliente'; 
                 return; 
             }
             let cart = JSON.parse(localStorage.getItem('papeleta_cart') || '[]');
@@ -1018,7 +1018,7 @@ function clearFilters() {
             overlay.classList.toggle('active');
         }
 
-        function openAssignProductModal() { window.location.href = 'PasarUsuarios.html'; }
+        function openAssignProductModal() { window.location.href = 'PasarUsuarios'; }
 
         function previewMultipleImages(input) {
             const previewContainer = document.getElementById('multiple-images-preview');
@@ -1190,7 +1190,7 @@ function clearFilters() {
             if (alreadyOwned) {
                 buyBtn.innerHTML = '<i class="fas fa-book text-xl"></i> Biblioteca';
                 buyBtn.className = 'w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-green-900/30 text-lg';
-                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente.html'; };
+                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente'; };
             } else if (currentUser) {
                 if (Number(product.price) === 0) {
                     buyBtn.innerHTML = '<i class="fas fa-gift text-xl"></i> Reclamar Gratis';
@@ -1214,12 +1214,12 @@ function clearFilters() {
         function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); document.body.style.overflow = ''; currentDetailProduct = null; currentImageIndex = 0; }
         function buyFromDetail() {
             if (!currentDetailProduct) return;
-            if (currentUser && myAssignedProductIds.has(currentDetailProduct.id)) { window.location.href = 'AreaCliente.html'; return; }
+            if (currentUser && myAssignedProductIds.has(currentDetailProduct.id)) { window.location.href = 'AreaCliente'; return; }
             if (!currentUser) { closeProductDetailModal(); openLoginModal(); } 
             else { addToCart(currentDetailProduct.id); closeProductDetailModal(); }
         }
 
-        function openLoginModal() { window.location.href = 'Login.html'; }
+        function openLoginModal() { window.location.href = 'Login'; }
         function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
         function redirectToDiscord() {
             const url = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
@@ -1514,13 +1514,13 @@ function clearFilters() {
                         </div>
                         ${alreadyOwned ? `
                             <div class="grid grid-cols-2 gap-2">
-                                <button onclick="window.location.href='AreaCliente.html'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
-                                <a href="Producto.html?id=${p.id}" class="bg-[#0d0505] hover:bg-[#150a0a] border border-red-800/50 text-gray-300 text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-eye"></i> Ver</a>
+                                <button onclick="window.location.href='AreaCliente'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
+                                <a href="Producto?id=${p.id}" class="bg-[#0d0505] hover:bg-[#150a0a] border border-red-800/50 text-gray-300 text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-eye"></i> Ver</a>
                             </div>
                         ` : `
                             <div class="grid grid-cols-2 gap-2">
                                 <button onclick="addToCart('${p.id}')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-900/30"><i class="fas fa-cart-plus"></i> Añadir</button>
-                                <a href="Producto.html?id=${p.id}" class="bg-[#0d0505] hover:bg-[#1a0a0a] border border-red-800/50 text-gray-300 hover:text-white text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-info-circle"></i> Detalles</a>
+                                <a href="Producto?id=${p.id}" class="bg-[#0d0505] hover:bg-[#1a0a0a] border border-red-800/50 text-gray-300 hover:text-white text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-info-circle"></i> Detalles</a>
                             </div>
                         `}
                         ${isAdmin(currentUser) ? `<button onclick="deleteProduct('${p.id}')" class="w-full mt-3 bg-transparent border border-red-900/50 hover:border-red-500 hover:bg-red-950/30 text-red-300 text-xs font-semibold py-2 rounded-xl transition-all"><i class="fas fa-trash mr-1"></i> Eliminar</button>` : ''}

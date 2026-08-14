@@ -171,6 +171,12 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Clean URLs: si la ruta no tiene extensión y existe el archivo con .html, servirlo
+  if (!fs.existsSync(filePath) && !path.extname(filePath)) {
+    const withHtml = filePath + '.html';
+    if (fs.existsSync(withHtml)) filePath = withHtml;
+  }
+
   if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/html; charset=utf-8');

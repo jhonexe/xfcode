@@ -283,21 +283,21 @@
     <!-- MAIN CONTENT -->
     <div class="relative z-10 flex-grow flex flex-col">
         <header class="bg-[#0d0505]/90 backdrop-blur border-b red-border sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index'">
                 <img src="files/XF_LOGO.png" alt="XF CODE" class="w-9 h-9 rounded-lg object-cover">
                 <span class="text-white font-black tracking-widest text-lg">XF <span class="text-red-400">CODE</span></span>
             </div>
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-300">
-                <a href="index.html" class="hover:text-red-400 transition-colors">Inicio</a>
-                <a href="Tienda.html" class="text-red-400">Productos</a>
-                <a href="index.html#preguntas" class="hover:text-red-400 transition-colors">Preguntas</a>
+                <a href="index" class="hover:text-red-400 transition-colors">Inicio</a>
+                <a href="Tienda" class="text-red-400">Productos</a>
+                <a href="index#preguntas" class="hover:text-red-400 transition-colors">Preguntas</a>
             </nav>
             <div class="flex items-center gap-3">
-                <a href="Carrito.html" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
+                <a href="Carrito" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
                     <i class="fas fa-shopping-cart text-gray-300 group-hover:text-white transition-colors"></i>
                     <span id="cart-count" class="cart-badge hidden">0</span>
                 </a>
-                <button id="login-btn" onclick="window.location.href='Login.html'" class="bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-2 px-5 rounded-lg flex items-center gap-2 transition-all text-sm shadow-lg shadow-blue-900/20">
+                <button id="login-btn" onclick="window.location.href='Login'" class="bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-2 px-5 rounded-lg flex items-center gap-2 transition-all text-sm shadow-lg shadow-blue-900/20">
                     <i class="fab fa-discord"></i> Acceder
                 </button>
                 <div id="user-section" class="hidden flex items-center gap-3 bg-[#150a0a] px-3 py-1.5 rounded-full border border-red-900/50 cursor-pointer hover:border-red-600 transition-all group" onclick="toggleUserPanel()">
@@ -386,7 +386,7 @@
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
             if (currentUser && myAssignedProductIds.has(productId)) { 
-                window.location.href = 'AreaCliente.html'; 
+                window.location.href = 'AreaCliente'; 
                 return; 
             }
             let cart = JSON.parse(localStorage.getItem('papeleta_cart') || '[]');
@@ -607,7 +607,7 @@
             if (alreadyOwned) {
                 buyBtn.innerHTML = '<i class="fas fa-book text-xl"></i> Biblioteca';
                 buyBtn.className = 'w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-green-900/30 text-lg';
-                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente.html'; };
+                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente'; };
             } else if (currentUser) {
                 if (Number(product.price) === 0) {
                     buyBtn.innerHTML = '<i class="fas fa-gift text-xl"></i> Reclamar Gratis';
@@ -621,7 +621,7 @@
             } else {
                 buyBtn.innerHTML = '<i class="fab fa-discord text-xl"></i> Iniciar Sesión para Comprar';
                 buyBtn.className = 'w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-red-900/30 text-lg';
-                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'Login.html'; };
+                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'Login'; };
             }
             
             document.getElementById('product-detail-modal').classList.remove('hidden');
@@ -640,12 +640,12 @@
         function buyFromDetail() {
             if (!currentDetailProduct) return;
             if (currentUser && myAssignedProductIds.has(currentDetailProduct.id)) {
-                window.location.href = 'AreaCliente.html';
+                window.location.href = 'AreaCliente';
                 return;
             }
             if (!currentUser) {
                 closeProductDetailModal();
-                window.location.href = 'Login.html';
+                window.location.href = 'Login';
             } else {
                 addToCart(currentDetailProduct.id);
                 closeProductDetailModal();
@@ -654,7 +654,7 @@
 
         function toggleUserPanel() {
             if (!currentUser) { 
-                window.location.href = 'Login.html';
+                window.location.href = 'Login';
                 return; 
             }
             // Aquí podrías abrir un panel lateral si lo necesitas
@@ -820,7 +820,7 @@
                         </div>
                         ${alreadyOwned ? `
                             <div class="grid grid-cols-2 gap-2">
-                                <button onclick="window.location.href='AreaCliente.html'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
+                                <button onclick="window.location.href='AreaCliente'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
                                 <button onclick="showProductDetails('${p.id}')" class="bg-[#0d0505] hover:bg-[#150a0a] border border-red-800/50 text-gray-300 text-sm font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-eye"></i> Ver</button>
                             </div>
                         ` : `
