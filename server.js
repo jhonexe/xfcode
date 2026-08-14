@@ -162,6 +162,14 @@ const server = http.createServer(async (req, res) => {
   }
 
   let pathname = decodeURIComponent(url.pathname);
+
+  if (pathname === '/index' || pathname === '/index.html') {
+    res.statusCode = 301;
+    res.setHeader('Location', '/');
+    res.end();
+    return;
+  }
+
   if (pathname === '/') pathname = '/index.html';
 
   let filePath = path.join(__dirname, pathname);
