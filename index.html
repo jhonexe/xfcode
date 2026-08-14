@@ -82,6 +82,22 @@
         .xf-title .xf-underline { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; border-radius: 3px; background: linear-gradient(90deg, #ff0000, #ff5555, #ff0000); background-size: 200% 100%; box-shadow: 0 0 14px rgba(255, 0, 0, 0.7); animation: xf-ul-move 3s linear infinite, xf-ul-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.1s backwards; }
         @keyframes xf-ul-move { 0% { background-position: 0% 0; } 100% { background-position: 200% 0; } }
         @keyframes xf-ul-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+        @property --xf-a { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+        .hero-logo-wrap { position: relative; width: 100%; max-width: 400px; display: flex; align-items: center; justify-content: center; padding: 44px 32px; animation: xf-hero-bob 4.5s ease-in-out infinite; }
+        @keyframes xf-hero-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+        .hero-ring { position: absolute; border-radius: 50%; pointer-events: none; }
+        .hero-ring-1 { width: 118%; height: 118%; border: 3px dashed rgba(255, 0, 0, 0.4); animation: xf-spin 14s linear infinite reverse; }
+        .hero-ring-2 { width: 142%; height: 142%; border: 3px solid transparent; border-top-color: #ff0000; border-right-color: #ff4040; border-bottom-color: #ff0000; border-left-color: #ff4040; animation: xf-spin 5s linear infinite; filter: drop-shadow(0 0 12px rgba(255, 0, 0, 0.8)); }
+        @keyframes xf-spin { to { transform: rotate(360deg); } }
+        .hero-logo-inner { position: relative; border-radius: 24px; padding: 4px; background: conic-gradient(from var(--xf-a), #ff0000, #ff4040, #ff0000, #660000, #ff0000); animation: xf-border-spin 4s linear infinite; box-shadow: 0 0 45px rgba(255, 0, 0, 0.45); }
+        @keyframes xf-border-spin { to { --xf-a: 360deg; } }
+        .hero-logo-content { position: relative; border-radius: 20px; overflow: hidden; background: #0a0505; }
+        .hero-logo-img { display: block; width: 100%; height: auto; animation: xf-logo-glow 3s ease-in-out infinite; }
+        @keyframes xf-logo-glow { 0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.35)); } 50% { filter: drop-shadow(0 0 30px rgba(255, 0, 0, 0.9)); } }
+        .hero-logo-sheen { position: absolute; top: 0; bottom: 0; left: -60%; width: 60%; background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.18), transparent); transform: skewX(-12deg); animation: xf-hero-sheen 2.6s ease-in-out infinite; }
+        @keyframes xf-hero-sheen { 0% { left: -60%; } 55%, 100% { left: 120%; } }
+        @media (max-width: 767px) { .hero-logo-wrap { max-width: 300px; padding: 32px 22px; } }
         
         .page { display: none; }
         .page.active { display: block; }
@@ -588,6 +604,18 @@
                             <i class="fas fa-shopping-cart text-red-400 text-xl mb-2"></i>
                             <p id="stat-ventas" class="text-2xl font-black text-white">+0</p>
                             <p class="text-xs text-gray-400 uppercase">Ventas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center">
+                    <div class="hero-logo-wrap">
+                        <div class="hero-ring hero-ring-1"></div>
+                        <div class="hero-ring hero-ring-2"></div>
+                        <div class="hero-logo-inner">
+                            <div class="hero-logo-content">
+                                <img src="files/XF_HERO_LOGO.png" alt="XF CODE" class="hero-logo-img">
+                                <div class="hero-logo-sheen"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
