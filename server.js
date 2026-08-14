@@ -4,6 +4,70 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import checkoutHandler from './api/create-checkout-session.js';
 
+const PAYPAL_API_BASE = process.env.PAYPAL_API_BASE || 'https://api-m.paypal.com';
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || '';
+const PAYPAL_SECRET = process.env.PAYPAL_SECRET || '';
+
+async function getPayPalAccessToken() {
+    if (!PAYPAL_CLIENT_ID || !PAYPAL_SECRET) {
+        throw new Error('PAYPAL_CLIENT_ID / PAYPAL_SECRET no configurados en .env');
+    }
+    const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString('base64');
+    const res = await fetch(`${PAYPAL_API_BASE}/v1/oauth2/token`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'grant_type=client_credentials'
+    });
+    if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`PayPal token error (${res.status}): ${text}`);
+    }
+    const data = await res.json();
+    return data.access_token;
+}
+
+async function createPayPalOrder(amount) {
+    const token = await getPayPalAccessToken();
+    const res = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            intent: 'CAPTURE',
+            purchase_units: [{
+                description: 'XF CODE Store',
+                amount: { currency_code: 'USD', value: amount }
+            }]
+        })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(`PayPal create order error (${res.status}): ${JSON.stringify(data)}`);
+    }
+    return data;
+}
+
+async function capturePayPalOrder(orderId) {
+    const token = await getPayPalAccessToken();
+    const res = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders/${orderId}/capture`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(`PayPal capture error (${res.status}): ${JSON.stringify(data)}`);
+    }
+    return data;
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 
@@ -54,6 +118,49 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (url.pathname === '/api/paypal/create-order' && req.method === 'POST') {
+    req.body = await readBody(req);
+    try {
+      const amount = Number(req.body.amount);
+      if (isNaN(amount) || amount <= 0) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Monto inválido' }));
+        return;
+      }
+      const order = await createPayPalOrder(amount.toFixed(2));
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(order));
+    } catch (err) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: err.message || 'Error al crear orden de PayPal' }));
+    }
+    return;
+  }
+
+  if (url.pathname === '/api/paypal/capture-order' && req.method === 'POST') {
+    req.body = await readBody(req);
+    try {
+      if (!req.body.orderId) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: 'Falta orderId' }));
+        return;
+      }
+      const details = await capturePayPalOrder(req.body.orderId);
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(details));
+    } catch (err) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: err.message || 'Error al capturar orden de PayPal' }));
+    }
+    return;
+  }
+
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === '/') pathname = '/index.html';
 
@@ -82,4 +189,7 @@ server.listen(PORT, () => {
   console.log('   - Página principal: /index.html (o /)');
   console.log('   - API Stripe local: /api/create-checkout-session (POST)');
   console.log('   - STRIPE_SECRET_KEY: ' + (process.env.STRIPE_SECRET_KEY ? 'configurada' : 'NO configurada (el checkout devolverá error)'));
+  console.log('   - PayPal local: ' + (PAYPAL_CLIENT_ID && PAYPAL_SECRET ? 'configurado' : 'NO configurado (.env)'));
+  console.log('     - POST /api/paypal/create-order  { amount }');
+  console.log('     - POST /api/paypal/capture-order  { orderId }');
 });
