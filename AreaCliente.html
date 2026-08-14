@@ -200,7 +200,6 @@
                 <a href="#" onclick="showSection('reviews', event)" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300"><i class="fas fa-star w-5"></i><span>Mis Reseñas</span></a>
                 <a href="#" onclick="showSection('support', event)" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300"><i class="fas fa-headset w-5"></i><span>Soporte</span></a>
                 <a href="#" onclick="goToDiscord()" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300"><i class="fab fa-discord w-5"></i><span>Discord</span></a>
-                <a href="#" onclick="openLinkModal()" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300"><i class="fas fa-link w-5"></i><span>Link</span></a>
             </nav>
         </div>
         <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-red-900/20 bg-[#0a0505]/50">
@@ -370,24 +369,6 @@
         </div>
     </div>
 
-    <!-- Modal para cambiar Link de Discord -->
-    <div id="link-modal" class="review-modal">
-        <div class="review-modal-content">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-white">Configurar Link de Discord</h3>
-                <button onclick="closeLinkModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="mb-6">
-                <label class="block text-gray-400 text-sm mb-2">Nuevo link de Discord:</label>
-                <input type="text" id="discord-link-input" class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none" placeholder="https://discord.gg/...">
-            </div>
-            <div class="flex gap-3">
-                <button onclick="closeLinkModal()" class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-800 font-medium">Cancelar</button>
-                <button onclick="saveDiscordLink()" class="flex-1 btn-primary px-4 py-3 rounded-lg text-white font-bold"><i class="fas fa-save mr-2"></i> Guardar</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Login Modal -->
     <div id="login-modal" class="hidden fixed inset-0 bg-black/90 z-[60] flex items-center justify-center px-4 backdrop-blur-sm">
         <div class="max-w-md w-full bg-[#150a0a] border border-red-600/30 rounded-2xl p-8 text-center">
@@ -425,47 +406,24 @@
         const REDIRECT_URI = window.location.href.split('#')[0]; 
         const ADMIN_DISCORD_IDS = ['890526767608127489']; 
 
-        // Función para obtener el link de Discord (personalizado o por defecto)
-        function getDiscordLink() {
-            return localStorage.getItem('custom_discord_link') || 'https://discord.gg/qZarkeCSA';
+        // Link de Discord configurado desde el panel de administración
+        let discordLink = 'https://discord.gg/qZarkeCSA';
+
+        async function loadDiscordLink() {
+            try {
+                const configDoc = await db.collection('Configuracion').doc('general').get();
+                if (configDoc.exists && configDoc.data().discord_link) {
+                    discordLink = configDoc.data().discord_link;
+                }
+            } catch (e) { }
         }
 
         // Función para ir a Discord
         function goToDiscord() {
-            window.open(getDiscordLink(), '_blank');
+            window.open(discordLink, '_blank');
         }
 
-        // Abrir modal para cambiar link
-        function openLinkModal() {
-            const currentLink = getDiscordLink();
-            document.getElementById('discord-link-input').value = currentLink;
-            document.getElementById('link-modal').classList.add('active');
-        }
-
-        // Cerrar modal
-        function closeLinkModal() {
-            document.getElementById('link-modal').classList.remove('active');
-        }
-
-        // Guardar nuevo link
-        function saveDiscordLink() {
-            const newLink = document.getElementById('discord-link-input').value.trim();
-            
-            if (!newLink) {
-                showToast('Por favor ingresa un link válido', 'warning');
-                return;
-            }
-            
-            // Validar que sea un link de Discord
-            if (!newLink.includes('discord.gg/') && !newLink.includes('discord.com/')) {
-                showToast('El link debe ser de Discord (discord.gg/...)', 'error');
-                return;
-            }
-            
-            localStorage.setItem('custom_discord_link', newLink);
-            showToast('Link de Discord actualizado correctamente', 'success');
-            closeLinkModal();
-        }
+        loadDiscordLink();
 
         function showToast(message, type = 'success', title = '') {
             const container = document.getElementById('toast-container');

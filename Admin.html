@@ -551,6 +551,11 @@
                     <span>Licencias Usuario</span>
                 </a>
 
+                <a onclick="openLinkModal()" class="nav-item flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:text-white">
+                    <i class="fas fa-link w-5 text-center"></i>
+                    <span>Link de Discord</span>
+                </a>
+
                 <div class="text-xs text-gray-500 uppercase font-semibold mt-8 mb-4 px-3 tracking-wider">Gestión de Usuarios</div>
 
                 <a onclick="showSection('migrate', this)" class="nav-item flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:text-white">
@@ -1358,6 +1363,23 @@ setTimer(validateOnce, 2000, 1)
         </div>
     </div>
 
+    <!-- LINK DE DISCORD MODAL -->
+    <div id="link-modal" class="login-modal-overlay hidden">
+        <div class="max-w-md w-full bg-[#150a0a] border border-red-600/30 rounded-2xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-white"><i class="fas fa-link text-red-500 mr-2"></i>Link de Discord</h3>
+                <button onclick="closeLinkModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
+            </div>
+            <label class="block text-gray-400 text-sm mb-2">Link de invitación de Discord:</label>
+            <input type="text" id="discord-link-input" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="https://discord.gg/...">
+            <p class="text-gray-500 text-xs mt-2">Este enlace se usa en el panel de clientes al pulsar Discord.</p>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeLinkModal()" class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-800 font-medium">Cancelar</button>
+                <button onclick="saveDiscordLink()" class="flex-1 bg-red-600 hover:bg-red-700 px-4 py-3 rounded-lg text-white font-bold"><i class="fas fa-save mr-2"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div id="toast-container" class="toast-container"></div>
 
@@ -1485,6 +1507,42 @@ setTimer(validateOnce, 2000, 1)
         document.getElementById('custom-confirm-modal').addEventListener('click', function(e) {
             if (e.target === this) handleConfirmCancel();
         });
+
+        // ========== LINK DE DISCORD (configurado por el admin) ==========
+        const DEFAULT_DISCORD_LINK = 'https://discord.gg/qZarkeCSA';
+
+        async function openLinkModal() {
+            const input = document.getElementById('discord-link-input');
+            input.value = DEFAULT_DISCORD_LINK;
+            try {
+                const configDoc = await db.collection('Configuracion').doc('general').get();
+                if (configDoc.exists && configDoc.data().discord_link) {
+                    input.value = configDoc.data().discord_link;
+                }
+            } catch (e) { }
+            document.getElementById('link-modal').classList.remove('hidden');
+        }
+
+        function closeLinkModal() {
+            document.getElementById('link-modal').classList.add('hidden');
+        }
+
+        async function saveDiscordLink() {
+            const newLink = document.getElementById('discord-link-input').value.trim();
+            if (!newLink) { showToast('Por favor ingresa un link válido', 'warning'); return; }
+            if (!newLink.includes('discord.gg/') && !newLink.includes('discord.com/')) {
+                showToast('El link debe ser de Discord (discord.gg/...)', 'error');
+                return;
+            }
+            try {
+                await db.collection('Configuracion').doc('general').set({ discord_link: newLink }, { merge: true });
+                sendAdminLog('🔗 Actualizó el link de Discord', `Nuevo link: \`${newLink}\``);
+                showToast('Link de Discord actualizado correctamente', 'success');
+                closeLinkModal();
+            } catch (err) {
+                showToast('Error al guardar: ' + err.message, 'error');
+            }
+        }
 
         // ========== BORRAR TODAS LAS RESEÑAS ==========
         async function deleteAllReviews() {
