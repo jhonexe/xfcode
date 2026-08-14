@@ -1380,6 +1380,70 @@ setTimer(validateOnce, 2000, 1)
         </div>
     </div>
 
+    <!-- EDITAR PRODUCTO MODAL -->
+    <div id="edit-product-modal" class="login-modal-overlay hidden">
+        <div class="w-full max-w-2xl bg-[#150a0a] border border-red-600/30 rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-white"><i class="fas fa-pen text-red-500 mr-2"></i>Editar Producto</h3>
+                <button onclick="closeEditProduct()" class="text-gray-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Nombre del Producto *</label>
+                    <input type="text" id="edit-prod-name" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Precio (USD) *</label>
+                        <input type="number" id="edit-prod-price" step="0.01" min="0" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Categoría</label>
+                        <select id="edit-prod-category" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500">
+                            <option value="Scripts">Scripts</option>
+                            <option value="Modelajes">Modelajes</option>
+                            <option value="Mappings">Mapeos</option>
+                            <option value="Bots">Bots Discord</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2">Descripción/Detalle *</label>
+                    <textarea id="edit-prod-description" rows="4" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2"><i class="fab fa-youtube text-red-500 mr-1"></i>Link de YouTube (Opcional)</label>
+                    <input type="url" id="edit-prod-youtube" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2"><i class="fas fa-image text-red-500 mr-1"></i>Fotos del Producto</label>
+                    <div id="edit-images-preview" class="grid grid-cols-3 md:grid-cols-4 gap-3 mb-3"></div>
+                    <div class="border-2 border-dashed border-red-900/40 rounded-xl p-4 text-center hover:border-red-500/50 transition-colors bg-[#0d0505]/50 cursor-pointer" onclick="document.getElementById('edit-prod-images').click()">
+                        <input type="file" id="edit-prod-images" accept="image/*" multiple onchange="addEditImages(this)" class="hidden">
+                        <p class="text-gray-300 text-sm font-semibold"><i class="fas fa-plus-circle text-red-400 mr-1"></i> Agregar más imágenes</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2"><i class="fab fa-google-drive text-red-500 mr-1"></i>Enlace de Google Drive (Link de descarga) *</label>
+                    <input type="url" id="edit-prod-file-link" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
+                    <p class="text-gray-500 text-xs mt-1">El cliente será llevado a este enlace cuando pulse Descargar.</p>
+                </div>
+
+                <div class="pt-2 flex gap-4">
+                    <button onclick="saveEditProduct()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2"><i class="fas fa-save"></i> Guardar Cambios</button>
+                    <button onclick="closeEditProduct()" class="px-8 py-3.5 rounded-xl border border-red-900/40 text-red-400 hover:bg-red-900/20 font-bold">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div id="toast-container" class="toast-container"></div>
 
@@ -1931,9 +1995,14 @@ setTimer(validateOnce, 2000, 1)
                         </button>
                     </div>
                 </div>
-                <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:text-red-300 w-10 h-10 rounded-lg hover:bg-red-950/30">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="openEditProduct('${p.id}')" class="text-blue-400 hover:text-blue-300 w-10 h-10 rounded-lg hover:bg-blue-950/30" title="Editar producto">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:text-red-300 w-10 h-10 rounded-lg hover:bg-red-950/30" title="Eliminar producto">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             </div>
             `;
         }).join('');
@@ -1990,6 +2059,99 @@ setTimer(validateOnce, 2000, 1)
                 sendAdminLog(`🗑️ Eliminó el producto **${(allProducts.find(p => p.id === id) || {}).name || id}**`, `ID: \`${id}\``);
                 loadProducts();
             } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ========== EDITAR PRODUCTO ==========
+        let editProductId = null;
+        let editImages = [];
+
+        function openEditProduct(id) {
+            const p = allProducts.find(pr => pr.id === id);
+            if (!p) return;
+            editProductId = id;
+            document.getElementById('edit-prod-name').value = p.name || '';
+            document.getElementById('edit-prod-price').value = (p.price !== undefined && p.price !== null) ? p.price : '';
+            document.getElementById('edit-prod-category').value = p.category || 'Scripts';
+            document.getElementById('edit-prod-description').value = p.description || '';
+            document.getElementById('edit-prod-youtube').value = p.youtube_url || '';
+            document.getElementById('edit-prod-file-link').value = p.file_data || '';
+            editImages = (p.images && p.images.length) ? p.images.slice() : (p.image_url ? [p.image_url] : []);
+            renderEditImages();
+            document.getElementById('edit-product-modal').classList.remove('hidden');
+        }
+
+        function closeEditProduct() {
+            document.getElementById('edit-product-modal').classList.add('hidden');
+            editProductId = null;
+            editImages = [];
+        }
+
+        function renderEditImages() {
+            const container = document.getElementById('edit-images-preview');
+            if (editImages.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-xs col-span-full text-center py-3">Sin fotos. Agrega al menos una.</p>';
+                return;
+            }
+            container.innerHTML = editImages.map((img, idx) => `
+                <div class="relative rounded-lg overflow-hidden border border-red-900/40 bg-black">
+                    <img src="${img}" class="w-full h-20 object-cover">
+                    <button type="button" onclick="removeEditImage(${idx})" class="absolute top-1 right-1 w-6 h-6 bg-red-600 hover:bg-red-500 text-white rounded-full text-xs flex items-center justify-center shadow-lg" title="Borrar foto">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function addEditImages(input) {
+            const files = Array.from(input.files || []);
+            input.value = '';
+            for (const file of files) {
+                const dataUrl = await resizeImage(file);
+                editImages.push(dataUrl);
+            }
+            renderEditImages();
+        }
+
+        function removeEditImage(index) {
+            editImages.splice(index, 1);
+            renderEditImages();
+        }
+
+        async function saveEditProduct() {
+            const name = document.getElementById('edit-prod-name').value.trim();
+            const price = parseFloat(document.getElementById('edit-prod-price').value);
+            const category = document.getElementById('edit-prod-category').value;
+            const description = document.getElementById('edit-prod-description').value.trim();
+            const youtubeUrl = document.getElementById('edit-prod-youtube').value.trim();
+            const downloadLink = document.getElementById('edit-prod-file-link').value.trim();
+
+            if (!name) { showToast('El nombre es obligatorio', 'warning'); return; }
+            if (isNaN(price) || price < 0) { showToast('Precio inválido', 'error'); return; }
+            if (editImages.length === 0) { showToast('El producto debe tener al menos una foto', 'warning'); return; }
+            if (!downloadLink) { showToast('Pega el enlace de Google Drive', 'warning'); return; }
+
+            try {
+                const product = allProducts.find(p => p.id === editProductId);
+                const updateData = {
+                    name, price, category, description,
+                    youtube_url: youtubeUrl || null,
+                    youtube_id: youtubeUrl ? extractYouTubeId(youtubeUrl) : null,
+                    file_data: downloadLink,
+                    images: editImages,
+                    image_url: editImages[0]
+                };
+                if (product && !product.original_price && product.price > 0) {
+                    updateData.original_price = product.price;
+                }
+                await db.collection("Productos").doc(editProductId).update(updateData);
+                showToast('Producto actualizado exitosamente', 'success');
+                sendAdminLog(`✏️ Editó el producto **${name}**`, `ID: \`${editProductId}\` • Precio: $${Number(price).toFixed(2)}`);
+                closeEditProduct();
+                loadProducts();
+            } catch (error) {
+                console.error(error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
