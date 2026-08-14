@@ -1000,7 +1000,6 @@
                                 description: `> **${currentUser.username}** dejó una reseña\n\n**${starsFull}${starsEmpty}**  \`${selectedRating}/5\`\n\n*"${reviewPreview}"*`,
                                 color: embedColor,
                                 thumbnail: { url: avatarURL },
-                                image: productImage && !productImage.startsWith('data:') ? { url: productImage } : undefined,
                                 footer: { text: `XF CODE • ${productName}`, icon_url: xfLogo },
                                 timestamp: new Date().toISOString()
                             }]
