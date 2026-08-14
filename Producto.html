@@ -7,6 +7,21 @@
     <link rel="icon" type="image/png" href="files/XF_LOGO.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        red: {
+                            50: '#fff5f5', 100: '#ffe0e0', 200: '#ffb3b3', 300: '#ff8080',
+                            400: '#ff4040', 500: '#ff0000', 600: '#e60000', 700: '#cc0000',
+                            800: '#b30000', 900: '#990000', 950: '#660000'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -14,11 +29,11 @@
 
     <style>
         :root {
-            --primary: #ff1a1a;
-            --primary-dark: #991b1b;
+            --primary: #ff0000;
+            --primary-dark: #990000;
             --bg-dark: #050507;
             --card-bg: rgba(20, 5, 5, 0.7);
-            --border-color: rgba(255, 26, 26, 0.2);
+            --border-color: rgba(255, 0, 0, 0.2);
         }
         
         body {
@@ -38,13 +53,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(to right, #dc2626, #991b1b);
+            background: linear-gradient(to right, #e60000, #990000);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+            box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+            box-shadow: 0 6px 20px rgba(230, 0, 0, 0.5);
             filter: brightness(1.1);
         }
 
@@ -54,8 +69,8 @@
             transition: all 0.3s ease;
         }
         .btn-secondary:hover {
-            border-color: rgba(255, 26, 26, 0.5);
-            background: rgba(255, 26, 26, 0.05);
+            border-color: rgba(255, 0, 0, 0.5);
+            background: rgba(255, 0, 0, 0.05);
         }
 
         .glass-panel {
@@ -68,7 +83,7 @@
 
         .gallery-frame {
             background: #000;
-            border: 1px dashed rgba(220, 38, 38, 0.4);
+            border: 1px dashed rgba(230, 0, 0, 0.4);
             border-radius: 12px;
             overflow: hidden;
             position: relative;
@@ -138,7 +153,7 @@
         .thumb:hover, .thumb.active {
             opacity: 1;
             border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
+            box-shadow: 0 0 8px rgba(230, 0, 0, 0.4);
         }
 
         .tab-button {
@@ -169,8 +184,8 @@
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0a0505; }
-        ::-webkit-scrollbar-thumb { background: #450a0a; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #7f1d1d; }
+        ::-webkit-scrollbar-thumb { background: #660000; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #990000; }
 
         .badge-gratis {
             color: #4ade80;
@@ -203,7 +218,7 @@
             width: 90%;
             max-width: 480px;
             border-radius: 16px;
-            border: 1px solid rgba(220, 38, 38, 0.3);
+            border: 1px solid rgba(230, 0, 0, 0.3);
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             overflow: hidden;
             animation: slideUp 0.3s ease;
@@ -213,7 +228,7 @@
             to { transform: translateY(0); opacity: 1; }
         }
         .cart-header {
-            background: #dc2626;
+            background: #e60000;
             padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
@@ -226,7 +241,7 @@
         }
         .cart-footer {
             padding: 1.5rem;
-            border-top: 1px solid rgba(220, 38, 38, 0.2);
+            border-top: 1px solid rgba(230, 0, 0, 0.2);
             background: rgba(0,0,0,0.2);
         }
         .cart-item {
@@ -861,7 +876,7 @@
                     if(p.x < 0 || p.x > w) p.vx *= -1;
                     if(p.y < 0 || p.y > h) p.vy *= -1;
                     
-                    ctx.fillStyle = 'rgba(255, 26, 26, 0.5)';
+                    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
                     ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
 
                     for(let j=i; j<points.length; j++) {
@@ -869,7 +884,7 @@
                         let dx = p.x - p2.x, dy = p.y - p2.y;
                         let dist = Math.sqrt(dx*dx + dy*dy);
                         if(dist < 150) {
-                            ctx.strokeStyle = `rgba(255, 26, 26, ${1 - dist/150})`;
+                            ctx.strokeStyle = `rgba(255, 0, 0, ${1 - dist/150})`;
                             ctx.lineWidth = 0.5;
                             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
                         }
