@@ -1389,6 +1389,7 @@ setTimer(validateOnce, 2000, 1)
         const ADMIN_DISCORD_IDS = ['890526767608127489'];
         const ADMIN_DISCORD_USERNAMES = ['Papeleta'];
         const ADMIN_LOG_WEBHOOK_URL = "https://discord.com/api/webhooks/1535352755990822953/5biUrONnLKHKNSZB61Z5oYjobL5mSDRAwJCDHAYD0aZci2qLfwA37uWs6B-wYsRmMG8i";
+        const PRODUCT_WEBHOOK_URL = ADMIN_LOG_WEBHOOK_URL; // Cambiar aquí si quieres que los productos vayan a otro canal
 
         async function sendAdminLog(action, details) {
             try {
@@ -1724,6 +1725,62 @@ setTimer(validateOnce, 2000, 1)
             updateImageCount();
         }
 
+        // ========== WEBHOOK DE PRODUCTO NUEVO ==========
+        async function sendProductWebhook(product) {
+            try {
+                const xfLogo = 'https://xfcode.xyz/files/XF_LOGO.png';
+                const productUrl = window.location.origin + '/Producto?id=' + encodeURIComponent(product.id);
+                const embed = {
+                    author: { name: 'XF CODE • Nuevo Producto', icon_url: xfLogo },
+                    title: `🛒 ${product.name}`,
+                    description: product.description ? product.description.substring(0, 900) : 'Nuevo producto disponible en la tienda XF CODE',
+                    color: 0xff0000,
+                    fields: [
+                        { name: '💰 Precio', value: `> **$${Number(product.price).toFixed(2)}**`, inline: true },
+                        { name: '📂 Categoría', value: `> ${product.category || 'General'}`, inline: true }
+                    ],
+                    footer: { text: 'XF CODE • Tienda de Scripts', icon_url: xfLogo },
+                    timestamp: new Date().toISOString()
+                };
+                const buttons = {
+                    type: 1,
+                    components: [
+                        { type: 2, style: 5, label: '🛒 Adquirir ahora', url: productUrl },
+                        { type: 2, style: 5, label: '👀 Ver producto', url: productUrl }
+                    ]
+                };
+                const imageData = product.image_url || '';
+
+                if (imageData.startsWith('data:image')) {
+                    const blob = await (await fetch(imageData)).blob();
+                    const ext = imageData.includes('image/png') ? 'png' : 'jpg';
+                    embed.image = { url: 'attachment://product.' + ext };
+                    const fd = new FormData();
+                    fd.append('payload_json', JSON.stringify({
+                        username: 'XF CODE Productos',
+                        avatar_url: xfLogo,
+                        embeds: [embed],
+                        components: [buttons]
+                    }));
+                    fd.append('file', blob, 'product.' + ext);
+                    await fetch(PRODUCT_WEBHOOK_URL, { method: 'POST', body: fd });
+                } else {
+                    await fetch(PRODUCT_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: 'XF CODE Productos',
+                            avatar_url: xfLogo,
+                            embeds: [embed],
+                            components: [buttons]
+                        })
+                    });
+                }
+            } catch (error) {
+                console.error('Error enviando webhook de producto:', error);
+            }
+        }
+
         // ========== UTILIDADES ==========
         function resizeImage(file, maxWidth = 800, maxHeight = 600) {
             return new Promise((resolve) => {
@@ -1799,6 +1856,7 @@ setTimer(validateOnce, 2000, 1)
                 await db.collection("Productos").doc(newProduct.id).set(newProduct);
                 showToast('Producto guardado exitosamente', 'success');
                 sendAdminLog(`🆕 Creó el producto **${name}**`, `ID: \`${productId}\` • Precio: $${price.toFixed(2)} • Categoría: ${category}`);
+                sendProductWebhook(newProduct);
                 resetForm();
                 loadProducts();
             } catch (error) {
