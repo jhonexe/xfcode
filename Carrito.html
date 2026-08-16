@@ -517,8 +517,6 @@
         async function handlePayment(method) {
             if (!currentUser) { showToast('Debes iniciar sesión primero', 'error'); return; }
             if (!document.getElementById('terms-checkbox').checked) { showToast('Acepta los términos de uso', 'warning'); return; }
-            const alreadyOwnedItems = cart.filter(item => ownedProducts.has(item.id));
-            if (alreadyOwnedItems.length > 0) { showToast('Ya tienes algunos productos en el carrito. Elimínalos para continuar.', 'error'); return; }
 
             if (method === 'discord') await processDiscordPayment();
             else if (method === 'paypal') await startPayPalCheckout();
