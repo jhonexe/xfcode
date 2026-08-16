@@ -252,9 +252,9 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script>
-        const DISCORD_INVITE_LINK = "https://discord.gg/6XgvxeHEJ"; 
+        const DISCORD_INVITE_LINK = "https://discord.gg/uhypzHGKVM"; 
+        const DISCORD_GUILD_ID = "1534955507394023567";
         const PAYPAL_CLIENT_ID = "AULkHt7UBHVfvb1ZQRXhNCq-ZI8KhL6AglMpDPNscegwri16CKuSO8AlcHPOIOCPN05MFYpGFpf9wtfV";
-        const PURCHASE_WEBHOOK_URL = "https://discord.com/api/webhooks/1537225620096942181/b0y5UuhScmzmPeBG_wFbQPEqgbsZMko7q-GTDTGe16XxwQN1ExEgRrJITAdLoBaZMYaR";
         
         const firebaseConfig = {
   apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
@@ -275,6 +275,7 @@
         let discountPercentage = 0;
         let ownedProducts = new Set();
         let pendingOrderUnsubscribe = null;
+        let ticketOpened = false;
         let isFreeProduct = false;
         let globalLicense = null;
 
@@ -371,7 +372,12 @@
                         // CUANDO EL STAFF MODIFICA LA ORDEN (POR EJEMPLO, LA APRUEBA)
                         if (change.type === "modified") {
                             const data = change.doc.data();
-                            // Ajusta 'approved' o 'aprobado' según como lo guarde tu panel de staff
+                            // Cuando el bot crea el ticket, lleva al comprador directo a él
+                            if (data.ticket_channel_id && !ticketOpened) {
+                                ticketOpened = true;
+                                window.open('https://discord.com/channels/' + DISCORD_GUILD_ID + '/' + data.ticket_channel_id, '_blank');
+                            }
+                            // CUANDO EL STAFF MODIFICA LA ORDEN (POR EJEMPLO, LA APRUEBA)
                             if (data.status === 'approved' || data.status === 'aprobado') {
                                 console.log("Orden aprobada - Vaciar carrito y notificar");
                                 cart = [];
@@ -513,8 +519,6 @@
             if (!document.getElementById('terms-checkbox').checked) { showToast('Acepta los términos de uso', 'warning'); return; }
             const alreadyOwnedItems = cart.filter(item => ownedProducts.has(item.id));
             if (alreadyOwnedItems.length > 0) { showToast('Ya tienes algunos productos en el carrito. Elimínalos para continuar.', 'error'); return; }
-            const pendingQuery = await db.collection("Compra").where("discord_id", "==", currentUser.id).where("status", "==", "pending_approval").limit(1).get();
-            if (!pendingQuery.empty) { showToast('⚠️ Ya tienes una solicitud pendiente de aprobación.', 'warning'); return; }
 
             if (method === 'discord') await processDiscordPayment();
             else if (method === 'paypal') await startPayPalCheckout();
@@ -540,11 +544,10 @@
             };
             try {
                 await db.collection("Compra").add(orderData);
-                // ✅ CAMBIO: Ya no redirige automáticamente. Se queda en la página y espera la aprobación.
-                showToast('✅ Solicitud enviada correctamente. Por favor, espera a que el staff la apruebe. No cierres esta pestaña.', 'success');
-                
-                // Opcional: Si quieres que se abra Discord en otra pestaña sin sacar al usuario de aquí, descomenta la siguiente línea:
-                // window.open(DISCORD_INVITE_LINK, '_blank');
+                ticketOpened = false;
+                // Abre Discord en otra pestaña: el bot creará el ticket y redirigirá al comprador ahí
+                window.open(DISCORD_INVITE_LINK, '_blank');
+                showToast('✅ Solicitud enviada. Se abrió Discord: ve a tu ticket 🎫 y completa el pago ahí.', 'success');
             } catch (error) {
                 console.error('Error:', error);
                 showToast('Error al procesar: ' + error.message, 'error');
@@ -655,7 +658,6 @@
 
             try {
                 await db.collection("Compra").add(orderData);
-                await sendPurchaseWebhook(orderData);
             } catch (error) {
                 console.error('Error guardando compra PayPal:', error);
             }
@@ -697,70 +699,7 @@
             setTimeout(() => { window.location.href = 'AreaCliente'; }, 2500);
         }
 
-        // ✅ NOTIFICACIÓN DE COMPRA A DISCORD
-        async function sendPurchaseWebhook(orderInfo) {
-            try {
-                const productList = orderInfo.products.map(p => {
-                    const price = Number(p.price) === 0 ? '🆓 GRATIS' : `💲${Number(p.price).toFixed(2)}`;
-                    return `> 🛒 **${p.name}** — ${price}`;
-                }).join('\n');
-
-                const discordId = orderInfo.discord_id || (currentUser && currentUser.id);
-
-                const avatarURL = orderInfo.avatar
-                    ? `https://cdn.discordapp.com/avatars/${discordId}/${orderInfo.avatar}.png?size=128`
-                    : 'https://cdn.discordapp.com/embed/avatars/0.png';
-
-                const paymentMethodLabel = {
-                    'discord_manual': '💬 Discord Manual',
-                    'paypal': '🅿️ PayPal',
-                    'stripe': '💳 Stripe',
-                    'free': '🎁 Producto Gratuito'
-                }[orderInfo.payment_method] || orderInfo.payment_method;
-
-                const totalDisplay = orderInfo.total_amount === 0 || orderInfo.total_amount === 'Gratis'
-                    ? '🆓 GRATIS'
-                    : `💲${Number(orderInfo.total_amount).toFixed(2)} USD`;
-
-                const embed = {
-                    title: '🛍️ Nueva Compra Realizada',
-                    description: `Un cliente ha realizado una nueva compra en **XF CODE**.`,
-                    color: 0xff0000,
-                    fields: [
-                        { name: '👤 Cliente', value: `> **${orderInfo.username || 'Usuario'}**\n> ID: \`${discordId || 'Sin ID'}\``, inline: true },
-                        { name: '💰 Total', value: `> **${totalDisplay}**`, inline: true },
-                        { name: '💳 Método de Pago', value: `> ${paymentMethodLabel}`, inline: true },
-                        { name: '📦 Productos', value: productList.substring(0, 1000), inline: false }
-                    ],
-                    thumbnail: { url: avatarURL },
-                    footer: { text: `XF CODE • Compra #${orderInfo.order_id || Date.now()}` },
-                    timestamp: new Date().toISOString()
-                };
-
-                if (orderInfo.license_key) {
-                    embed.fields.push({
-                        name: '🔑 Licencia',
-                        value: `> \`XF ######\``,
-                        inline: false
-                    });
-                }
-
-                await fetch(PURCHASE_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: 'XF CODE Store',
-                        avatar_url: 'https://cdn.discordapp.com/embed/avatars/0.png',
-                        embeds: [embed]
-                    })
-                });
-
-                console.log('✅ Webhook de compra enviado correctamente');
-            } catch (error) {
-                console.error('❌ Error enviando webhook de compra:', error);
-            }
-        }
-
+        // ✅ NOTIFICACIÓN DE COMPRA: la publica el bot XF CODE leyendo la colección "Compra"
         async function claimFreeProduct() {
             if (!currentUser) { showToast('Debes iniciar sesión primero', 'error'); return; }
             if (!document.getElementById('terms-checkbox').checked) { showToast('Acepta los términos de uso', 'warning'); return; }
@@ -781,7 +720,7 @@
                     });
                 }
 
-                await sendPurchaseWebhook({
+                await db.collection("Compra").add({
                     discord_id: currentUser.id,
                     username: currentUser.username,
                     discriminator: currentUser.discriminator || '0000',
@@ -789,6 +728,8 @@
                     products: cart,
                     total_amount: 'Gratis',
                     payment_method: 'free',
+                    status: 'completed',
+                    date: firebase.firestore.FieldValue.serverTimestamp(),
                     order_id: Date.now().toString(),
                     license_key: license.key
                 });
