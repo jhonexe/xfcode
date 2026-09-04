@@ -1154,7 +1154,7 @@
                 <i class="fas fa-file-code text-red-500 text-xl"></i>
                 <div>
                     <h3 class="text-white font-bold">Server.lua (MainS.lua)</h3>
-                    <p class="text-xs text-gray-400">Codigo de validación de licencia por producto</p>
+                    <p class="text-xs text-gray-400">Codigo de validación por IP (sin key de licencia)</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -1173,18 +1173,18 @@
         <div class="p-0">
             <textarea id="server-lua-code" class="w-full h-[600px] bg-[#050507] text-white font-mono text-sm p-6 focus:outline-none resize-none" spellcheck="false">
 
---═══════════════════════════════════════════════════════════════--
---              © XF CODE - ALL RIGHTS RESERVED
--- VALIDACION POR KEY + IP + PRODUCTO
---═══════════════════════════════════════════════════════════════--
+-- ============================================
+--   XF CODE - ALL RIGHTS RESERVED
+--   VALIDACION POR IP + ADMIN (SIN KEY DE LICENCIA)
+-- ============================================
 
-local FIREBASE_URL = "https://firestore.googleapis.com/v1/projects/xfcode-e3805/databases/(default)/documents/Licencias"
-
--- ═══════════════════════════════════════════════════════════════
---  ID DEL PRODUCTO (fijo, no se toca desde config.lua)
---  Solo se activara si el cliente tiene comprado ESTE producto.
--- ═══════════════════════════════════════════════════════════════
+-- ID/NOMBRE/recursos del producto a proteger.
+-- Se reemplaza automaticamente al elegir producto en el panel.
+-- Dejalo vacio ("") para validar solo por IP de cualquier producto.
 local PRODUCT_ID = "prod_0000000000000"
+
+local FIREBASE_PROJECT = "xfcode-e3805"
+local FIREBASE_API_KEY  = "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4"
 
 local CONFIG = {
     check_interval = 30000
@@ -1192,7 +1192,7 @@ local CONFIG = {
 
 local function clean(s)
     if not s then return "" end
-    return tostring(s):gsub("%s+", ""):upper()
+    return tostring(s):gsub("%s+", "")
 end
 
 local validating = false
@@ -1223,7 +1223,7 @@ local function getPublicIP(cb)
 end
 
 -- =========================
--- ESTADO DE LA LICENCIA
+-- ESTADO DEL ACCESO
 -- =========================
 local function isActive(f)
     if f and f.active and f.active.booleanValue ~= nil then
@@ -1231,6 +1231,56 @@ local function isActive(f)
     end
     local status = (f and f.status and f.status.stringValue) or ""
     return status:upper() == "ACTIVE"
+end
+
+-- =========================
+-- CONSULTAR LICENCIAS POR IP
+-- =========================
+local function queryByIp(ipValue, cb)
+    local url = "https://firestore.googleapis.com/v1/projects/" .. FIREBASE_PROJECT
+        .. "/databases/(default)/documents:runQuery?key=" .. FIREBASE_API_KEY .. "&t=" .. getTickCount()
+
+    local body = '{"structuredQuery":{"from":[{"collectionId":"Licencias"}],' ..
+        '"where":{"fieldFilter":{"field":{"fieldPath":"ip"},' ..
+        '"op":"EQUAL","value":{"stringValue":"' .. ipValue .. '"}}}}}'
+
+    fetchRemote(url,
+        { method = "POST", headers = { ["Content-Type"] = "application/json" }, postData = body, connectionAttempts = 2, connectTimeout = 8000 },
+        function(data, info)
+            if not info or info.statusCode ~= 200 then
+                cb(false, true)
+                return
+            end
+
+            local j = fromJSON(data)
+            if not j or type(j) ~= "table" or #j == 0 then
+                cb(false, false)
+                return
+            end
+
+            local productLocal = clean(PRODUCT_ID)
+
+            for _, r in ipairs(j) do
+                if r and r.document and r.document.fields then
+                    local f = r.document.fields
+
+                    local pId  = clean(f.product_id and f.product_id.stringValue or "")
+                    local pName = clean(f.product_name and f.product_name.stringValue or "")
+                    local pRes = clean(f.resource and f.resource.stringValue or "")
+
+                    local productMatch = productLocal == "" or
+                        pId == productLocal or pName == productLocal or pRes == productLocal
+
+                    if productMatch and isActive(f) then
+                        cb(true, false)
+                        return
+                    end
+                end
+            end
+
+            cb(false, false)
+        end
+    )
 end
 
 -- =========================
@@ -1242,31 +1292,14 @@ function validateOnce()
 
     if not isObjectInACLGroup("resource." .. getResourceName(getThisResource()), aclGetGroup("Admin")) then
         validating = false
-        outputDebugString("[LICENSE] El resource no tiene permiso en ACL 'Admin'", 1)
+        outputDebugString("[XF-LOGIN] El resource no tiene permiso en ACL 'Admin'", 1)
         stopResource(getThisResource())
         return
     end
 
     if not hasObjectPermissionTo(getThisResource(), "function.fetchRemote", true) then
         validating = false
-        outputDebugString("[LICENSE] ACL sin permisos para fetchRemote", 1)
-        stopResource(getThisResource())
-        return
-    end
-
-    if not license or not license.key then
-        validating = false
-        outputDebugString("[LICENSE] license.key no definido en config.lua", 1)
-        stopResource(getThisResource())
-        return
-    end
-
-    local keyLocal = clean(license.key)
-    local productLocal = clean(PRODUCT_ID)
-
-    if productLocal == "" then
-        validating = false
-        outputDebugString("[LICENSE] Define PRODUCT_ID con el ID del producto (ej: prod_...) en MainS.lua", 1)
+        outputDebugString("[XF-LOGIN] ACL sin permisos para fetchRemote", 1)
         stopResource(getThisResource())
         return
     end
@@ -1274,68 +1307,48 @@ function validateOnce()
     getPublicIP(function(okIP, publicIP)
         if not okIP then
             validating = false
-            outputDebugString("[LICENSE] " .. tostring(publicIP), 1)
+            outputDebugString("[XF-LOGIN] " .. tostring(publicIP), 1)
             stopResource(getThisResource())
             return
         end
 
-        local serverIP = clean(publicIP)
-        local serverIpPort = clean(publicIP .. ":" .. tostring(getServerPort()))
-        local url = FIREBASE_URL .. "?t=" .. getTickCount()
+        local bare = clean(publicIP)
+        local variants = { bare }
 
-        fetchRemote(url,
-            { connectionAttempts = 2, connectTimeout = 8000 },
-            function(data, info)
-                if not info or info.statusCode ~= 200 then
-                    validating = false
-                    outputDebugString("[LICENSE] Firebase no responde", 1)
-                    stopResource(getThisResource())
-                    return
-                end
+        local ipPort = clean(publicIP .. ":" .. tostring(getServerPort()))
+        if ipPort ~= bare then
+            table.insert(variants, ipPort)
+        end
 
-                local j = fromJSON(data)
-                if not j or not j.documents then
-                    validating = false
-                    outputDebugString("[LICENSE] Respuesta invalida de Firebase", 1)
-                    stopResource(getThisResource())
-                    return
-                end
-
-                local autorizado = false
-                for _, doc in ipairs(j.documents) do
-                    local f = doc.fields
-                    if f then
-                        local fireKey     = clean(f.key and f.key.stringValue or "")
-                        local fireProduct = clean(f.product_id and f.product_id.stringValue or "")
-
-                        if fireKey == keyLocal and fireProduct == productLocal then
-                            if not isActive(f) then break end
-                            local fireIp = clean(f.ip and f.ip.stringValue or "")
-                            if fireIp == "" or (fireIp ~= serverIpPort and fireIp ~= serverIP) then
-                                outputDebugString("[LICENSE] IP no coincide. Servidor: " .. serverIpPort .. " | Licencia: " .. (f.ip and f.ip.stringValue or "(sin IP)"), 3)
-                                break
-                            end
-                            autorizado = true
-                            break
-                        end
-                    end
-                end
-
+        local function tryVariant(i)
+            if i > #variants then
                 validating = false
+                outputDebugString("[XF-LOGIN] IP no registrada en el panel de clientes. Server: " .. tostring(publicIP), 1)
+                stopResource(getThisResource())
+                return
+            end
+
+            queryByIp(variants[i], function(autorizado, errorFirestore)
                 if autorizado then
+                    validating = false
                     verifiedOnce = true
-                    outputDebugString("[LICENSE] Licencia verificada correctamente", 3)
+                    outputDebugString("[XF-LOGIN] IP verificada correctamente: " .. tostring(publicIP), 3)
 
                     setTimer(function()
                         verifiedOnce = false
                         validateOnce()
                     end, CONFIG.check_interval, 0)
-                else
-                    outputDebugString("[LICENSE] LICENCIA DENEGADA. Revisa tu Key, IP y Producto en la web.", 1)
+                elseif errorFirestore then
+                    validating = false
+                    outputDebugString("[XF-LOGIN] Firestore no respondio", 1)
                     stopResource(getThisResource())
+                else
+                    tryVariant(i + 1)
                 end
-            end
-        )
+            end)
+        end
+
+        tryVariant(1)
     end)
 end
 
@@ -1344,7 +1357,7 @@ end
 -- =========================
 setTimer(validateOnce, 2000, 1)
 
-                    </textarea>
+                </textarea>
                 </div>
             </div>
         </section>
@@ -2201,11 +2214,11 @@ setTimer(validateOnce, 2000, 1)
                     </div>
                 </div>
 
-                <!-- Gestión de Licencia -->
+                <!-- Gestión de IP -->
                 <div class="flex-1">
                     <div class="flex justify-between items-center mb-3">
                         <h4 class="text-gray-400 text-sm font-semibold flex items-center gap-2">
-                            <i class="fas fa-key text-red-400"></i> Licencia Única
+                            <i class="fas fa-server text-red-400"></i> IP del Servidor
                         </h4>
                         <!-- TOGGLE SWITCH ACTIVAR/DESACTIVAR -->
                         <div class="flex items-center gap-2">
@@ -2221,35 +2234,27 @@ setTimer(validateOnce, 2000, 1)
 
                     ${userLicense ? `
                     <div class="space-y-3">
-                        <!-- EDITOR DE CLAVE -->
+                        <!-- EDITOR DE IP -->
                         <div class="flex gap-2">
-                            <input type="text" id="edit-key-${cliente.discord_id}" value="${escapeHTML(userLicense.key)}" 
+                            <input type="text" id="edit-ip-${cliente.discord_id}" value="${escapeHTML(userLicense.ip || '')}" 
                                 class="license-key-unique flex-1 text-left focus:border-red-500 focus:bg-black/80 transition-all outline-none cursor-text"
-                                placeholder="Clave de licencia...">
-                            <button onclick="updateLicenseKey('${cliente.discord_id}')" 
+                                placeholder="IP del server (ej: 37.148.216.26:22003)">
+                            <button onclick="updateLicenseIp('${cliente.discord_id}')" 
                                 class="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-lg transition-all text-sm font-bold flex items-center gap-2 whitespace-nowrap">
                                 <i class="fas fa-save"></i> Guardar
                             </button>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyToClipboard('${escapeHTML(userLicense.key)}')"
+                            <button onclick="copyToClipboard('${escapeHTML(userLicense.ip || '')}')"
                                 class="flex-1 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-600/20 px-4 py-2 rounded-lg transition-all text-xs font-semibold">
                                 <i class="fas fa-copy mr-2"></i>Copiar
-                            </button>
-                            <button onclick="regenerateLicenseKey('${cliente.discord_id}')"
-                                class="flex-1 bg-yellow-600/10 hover:bg-yellow-600/20 text-yellow-400 border border-yellow-600/20 px-4 py-2 rounded-lg transition-all text-xs font-semibold">
-                                <i class="fas fa-sync-alt mr-2"></i>Regenerar
                             </button>
                         </div>
                     </div>
                     ` : `
                     <div class="text-center py-4 bg-[#0d0505] border border-red-950/30 rounded-lg">
-                        <i class="fas fa-exclamation-circle text-yellow-500 text-2xl mb-2"></i>
-                        <p class="text-gray-400 text-sm">Sin licencia generada</p>
-                        <button onclick="generateLicenseForUser('${cliente.discord_id}', '${escapeHTML(cliente.username)}')" 
-                            class="mt-2 text-xs bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded transition-all">
-                            Generar Licencia Ahora
-                        </button>
+                        <i class="fas fa-globe text-yellow-500 text-2xl mb-2"></i>
+                        <p class="text-gray-400 text-sm">Sin IP registrada (el cliente la configura desde el Area de Cliente)</p>
                     </div>
                     `}
                 </div>
@@ -2277,10 +2282,10 @@ setTimer(validateOnce, 2000, 1)
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Licencia copiada al portapapeles', 'success');
+                showToast('Copiado al portapapeles', 'success');
             }).catch(err => {
                 console.error('Error al copiar:', err);
-                showToast('Error al copiar la licencia', 'error');
+                showToast('Error al copiar', 'error');
             });
         }
 
@@ -2312,13 +2317,13 @@ async function toggleLicenseStatus(discordId, newState) {
     }
 }
 
-async function updateLicenseKey(discordId) {
-    const input = document.getElementById(`edit-key-${discordId}`);
+async function updateLicenseIp(discordId) {
+    const input = document.getElementById(`edit-ip-${discordId}`);
     if (!input) return;
-    
-    const newKey = input.value.trim();
-    if (!newKey) {
-        showToast('La clave no puede estar vacía', 'warning');
+
+    const newIp = input.value.trim();
+    if (!newIp) {
+        showToast('La IP no puede estar vacía', 'warning');
         return;
     }
 
@@ -2326,105 +2331,18 @@ async function updateLicenseKey(discordId) {
         const licenseRef = allLicencias.find(l => l.discord_id === discordId);
         if (licenseRef) {
             await db.collection("Licencias").doc(licenseRef.id).update({
-                key: newKey,
+                ip: newIp,
                 updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
-            showToast('Clave de licencia actualizada', 'success');
-            sendAdminLog(`🔑 Actualizó la clave de licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • Clave (oculta): XF ######`);
+            showToast('IP del servidor actualizada', 'success');
+            sendAdminLog(`✏️ Actualizó la IP del servidor de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • IP: \`${newIp}\``);
             await loadLicenciasData();
         } else {
             showToast('Licencia no encontrada en base de datos', 'error');
         }
     } catch (error) {
-        console.error("Error updating key:", error);
+        console.error("Error updating IP:", error);
         showToast('Error al guardar: ' + error.message, 'error');
-    }
-}
-
-async function regenerateLicenseKey(discordId) {
-    showConfirmModal(
-        'REGENERAR LICENCIA',
-        '¿Estás seguro? La clave anterior dejará de funcionar inmediatamente.',
-        async () => {
-            try {
-                const newKey = generateUniqueKey();
-                const licenseRef = allLicencias.find(l => l.discord_id === discordId);
-                
-                if (licenseRef) {
-                    await db.collection("Licencias").doc(licenseRef.id).update({
-                        key: newKey,
-                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    showToast('Nueva clave generada exitosamente', 'success');
-                    sendAdminLog(`🔄 Regeneró la licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • Nueva clave (oculta): XF ######`);
-                    await loadLicenciasData();
-                }
-            } catch (error) {
-                showToast('Error al regenerar: ' + error.message, 'error');
-            }
-        }
-    );
-}
-
-async function generateLicenseForUser(discordId, username) {
-    try {
-        const newKey = generateUniqueKey();
-        await db.collection("Licencias").add({
-            discord_id: discordId,
-            username: username,
-            key: newKey,
-            active: true,
-            status: "ACTIVE",
-            created_at: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast('Licencia generada correctamente', 'success');
-        sendAdminLog(`🆕 Generó licencia para **${username}**`, `ID: \`${discordId}\` • Clave (oculta): XF ######`);
-        await loadLicenciasData();
-    } catch (error) {
-        showToast('Error al generar licencia: ' + error.message, 'error');
-    }
-}
-async function regenerateLicenseKey(discordId) {
-    showConfirmModal(
-        'REGENERAR LICENCIA',
-        '¿Estás seguro? La clave anterior dejará de funcionar inmediatamente.',
-        async () => {
-            try {
-                const newKey = generateUniqueKey();
-                const licenseRef = allLicencias.find(l => l.discord_id === discordId);
-                
-                if (licenseRef) {
-                    await db.collection("Licencias").doc(licenseRef.id).update({
-                        key: newKey,
-                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    showToast('Nueva clave generada exitosamente', 'success');
-                    sendAdminLog(`🔄 Regeneró la licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • Nueva clave (oculta): XF ######`);
-                    await loadLicenciasData();
-                }
-            } catch (error) {
-                showToast('Error al regenerar: ' + error.message, 'error');
-            }
-        }
-    );
-}
-
-async function generateLicenseForUser(discordId, username) {
-    try {
-        const newKey = generateUniqueKey();
-        await db.collection("Licencias").add({
-            discord_id: discordId,
-            username: username,
-            key: newKey,
-            active: true,
-            status: "ACTIVE",
-            created_at: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast('Licencia generada correctamente', 'success');
-        sendAdminLog(`🆕 Generó licencia para **${username}**`, `ID: \`${discordId}\` • Clave (oculta): XF ######`);
-        await loadLicenciasData();
-    } catch (error) {
-        showToast('Error al generar licencia: ' + error.message, 'error');
     }
 }
 
@@ -2922,13 +2840,11 @@ async function generateLicenseForUser(discordId, username) {
                 `¿Estás seguro de asignar el producto <strong>"${productName}"</strong> al usuario <strong class="highlight">${userName}</strong> de forma <span class="highlight">GRATIS</span>?`,
                 async () => {
                     try {
-                        const licenseKey = generateUniqueKey();
                         await db.collection("Licencias").add({
                             discord_id: migrateSelectedUser.discord_id,
                             username: migrateSelectedUser.username,
                             product_id: migrateSelectedProduct.id,
                             product_name: migrateSelectedProduct.name,
-                            key: licenseKey,
                             created_at: firebase.firestore.FieldValue.serverTimestamp(),
                             status: 'active',
                             assigned_by: 'admin_manual',
@@ -2993,12 +2909,6 @@ async function generateLicenseForUser(discordId, username) {
                     </span>
                 </div>
             `).join('');
-        }
-
-        function generateUniqueKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            const block = () => { let s = ''; for (let i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length)); return s; };
-            return `XF(${block()}-${block()}-${block()})`;
         }
 
         // ========== FUNCIONES PARA CREAR ROLES ==========
