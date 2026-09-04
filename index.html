@@ -1535,12 +1535,6 @@ function clearFilters() {
 
         function escapeHTML(str) { return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
 
-        function generateUniqueKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            const block = () => { let s = ''; for (let i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length)); return s; };
-            return `XF(${block()}-${block()}-${block()})`;
-        }
-
         async function getOrCreateLicense(userId, productId, productName) {
             try {
                 const querySnapshot = await db.collection("Licencias").where("discord_id", "==", userId).where("product_id", "==", productId).where("status", "==", "active").limit(1).get();
@@ -1548,10 +1542,9 @@ function clearFilters() {
                     console.log(`✅ Licencia ya existente para ${userId} en ${productId}. No se crea duplicado.`);
                     return querySnapshot.docs[0].data();
                 }
-                const newKey = generateUniqueKey();
                 const licenseData = { 
                     discord_id: userId, username: currentUser ? currentUser.username : 'Unknown', product_id: productId, 
-                    product_name: productName, key: newKey,
+                    product_name: productName,
                     created_at: firebase.firestore.FieldValue.serverTimestamp(), status: 'active' 
                 };
                 const docRef = await db.collection("Licencias").add(licenseData);

@@ -338,10 +338,8 @@
                     return globalLicense;
                 }
 
-                const key = generateUniqueKey();
-                
                 const licenseData = {
-                    discord_id: userId, username: currentUser.username, key: key,
+                    discord_id: userId, username: currentUser.username,
                     type: "general", created_at: firebase.firestore.FieldValue.serverTimestamp(), status: 'active'
                 };
 
@@ -352,12 +350,6 @@
                 console.error("Error obteniendo licencia global:", error);
                 return null;
             }
-        }
-
-        function generateUniqueKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            const block = () => { let s = ''; for (let i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length)); return s; };
-            return `XF(${block()}-${block()}-${block()})`;
         }
 
         // ✅ ESCUCHAR CAMBIOS EN ÓRDENES EN TIEMPO REAL (MODIFICADO PARA APROBACIÓN)
@@ -537,8 +529,7 @@
             const orderData = {
                 discord_id: currentUser.id, username: currentUser.username, discriminator: currentUser.discriminator || '0000',
                 avatar: currentUser.avatar, products: cart, total_amount: total, payment_method: 'discord_manual',
-                status: 'pending_approval', date: firebase.firestore.FieldValue.serverTimestamp(), order_id: Date.now().toString(),
-                license_key: license.key
+                status: 'pending_approval', date: firebase.firestore.FieldValue.serverTimestamp(), order_id: Date.now().toString()
             };
             try {
                 await db.collection("Compra").add(orderData);
@@ -650,8 +641,7 @@
                 paypal_status: details.status || 'COMPLETED',
                 status: 'completed',
                 date: firebase.firestore.FieldValue.serverTimestamp(),
-                order_id: Date.now().toString(),
-                license_key: license.key
+                order_id: Date.now().toString()
             };
 
             try {
@@ -674,7 +664,6 @@
                     username: currentUser.username,
                     product_id: product.id,
                     product_name: product.name,
-                    key: generateUniqueKey(),
                     type: "product",
                     created_at: firebase.firestore.FieldValue.serverTimestamp(),
                     status: 'active'
@@ -714,7 +703,7 @@
                         discord_id: currentUser.id, username: currentUser.username,
                         products: [{ id: item.id, name: item.name, price: "Gratis" }],
                         total_price: "Gratis", date: firebase.firestore.FieldValue.serverTimestamp(),
-                        status: "Reclamado Exitosamente", license_key: license.key
+                        status: "Reclamado Exitosamente"
                     });
                 }
 
@@ -728,8 +717,7 @@
                     payment_method: 'free',
                     status: 'completed',
                     date: firebase.firestore.FieldValue.serverTimestamp(),
-                    order_id: Date.now().toString(),
-                    license_key: license.key
+                    order_id: Date.now().toString()
                 });
 
                 cart = [];
