@@ -220,7 +220,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-white mb-1">Bienvenido, <span id="header-username" class="gradient-text">usuario</span><span id="header-admin-badge" class="admin-badge hidden ml-2">ADMIN</span></h1>
-                    <p class="text-gray-400 text-sm">Gestiona tus productos y licencias desde aquí</p>
+                    <p class="text-gray-400 text-sm">Gestiona tus productos y el acceso por IP desde aquí</p>
                 </div>
                 <a href="/" class="btn-primary px-5 py-2.5 rounded-lg text-white font-bold flex items-center gap-2 shadow-lg shadow-red-900/20"><i class="fas fa-shopping-cart"></i> Ir al Catálogo</a>
             </div>
@@ -279,20 +279,9 @@
                         </div>
                         <div class="space-y-4 mb-6">
                             <div><label class="block text-gray-400 text-xs uppercase font-semibold mb-2 tracking-wider">Server IP</label><input type="text" id="server-ip" value="0.0.0.0" placeholder="37.148.216.26:22003" onfocus="if(this.value==='0.0.0.0')this.value=''" onblur="if(this.value==='')this.value='0.0.0.0'" class="input-field w-full px-4 py-3 rounded-lg text-white focus:outline-none font-mono text-sm"></div>
-                            <div><label class="block text-gray-400 text-xs uppercase font-semibold mb-2 tracking-wider">Key de Licencia</label><input type="text" id="server-key" placeholder="XF(XXXX-XXXX-XXXX)" class="input-field w-full px-4 py-3 rounded-lg text-white focus:outline-none font-mono text-sm"></div>
                         </div>
-                        <div class="mb-6">
-                            <div class="flex items-center justify-between mb-2">
-                                <label class="block text-gray-400 text-xs uppercase font-semibold tracking-wider">TU LICENCIA</label>
-                                <span class="text-[10px] text-red-400 font-mono bg-red-900/20 px-2 py-0.5 rounded">LUA CONFIG</span>
-                            </div>
-                            <div class="code-block rounded-lg p-4 font-mono text-sm">
-                                <pre class="text-white whitespace-pre-wrap break-all"><code id="license-code">Generando...</code></pre>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <button onclick="saveServerConfig(event)" class="btn-primary px-4 py-2.5 rounded-lg text-white font-medium flex items-center justify-center gap-2 text-sm"><i class="fas fa-save"></i> Guardar</button>
-                            <button onclick="copyLicenseCode(event)" class="px-4 py-2.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 font-medium flex items-center justify-center gap-2 text-sm"><i class="fas fa-copy"></i> Copiar</button>
+                        <div class="mb-4">
+                            <button onclick="saveServerConfig(event)" class="btn-primary w-full px-4 py-2.5 rounded-lg text-white font-medium flex items-center justify-center gap-2 text-sm"><i class="fas fa-save"></i> Guardar IP</button>
                         </div>
                     </div>
                 </div>
@@ -398,7 +387,6 @@
         let currentUser = null;
         let currentUserRole = 'client';
         let allProducts = [];
-        let userFixedLicenseKey = null;
         let currentReviewProduct = null;
         let selectedRating = 0;
 
@@ -505,12 +493,8 @@
                 document.getElementById('sidebar-avatar').src = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png';
                 document.getElementById('login-modal').classList.add('hidden');
                 
-                ensureFixedLicense().then(() => { 
-                    loadDashboardData(); 
-                    updateLicenseDisplay(); 
-                    const keyInput = document.getElementById('server-key');
-                    if (keyInput && !keyInput.value && userFixedLicenseKey) keyInput.value = userFixedLicenseKey;
-                });
+                loadDashboardData();
+                loadServerConfig();
             })
             .catch(err => { console.error(err); logout(); });
         }
@@ -572,83 +556,36 @@
             
             const saved = JSON.parse(localStorage.getItem('server_config') || '{}');
             document.getElementById('server-ip').value = saved.ip || '0.0.0.0';
-            document.getElementById('server-key').value = saved.key || '';
         });
 
-        function generateUniqueKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            const block = () => { let s = ''; for (let i = 0; i < 4; i++) s += chars.charAt(Math.floor(Math.random() * chars.length)); return s; };
-            return `XF(${block()}-${block()}-${block()})`;
-        }
-
-        async function ensureFixedLicense() {
-            if (!currentUser) return;
-            try {
-                const snapshot = await db.collection("Licencias")
-                    .where("discord_id", "==", currentUser.id)
-                    .where("type", "==", "general")
-                    .limit(1).get();
-
-                if (!snapshot.empty) {
-                    userFixedLicenseKey = snapshot.docs[0].data().key;
-                } else {
-                    const newKey = generateUniqueKey();
-                    
-                    await db.collection("Licencias").add({
-                        discord_id: currentUser.id, 
-                        username: currentUser.username, 
-                        key: newKey,
-                        type: "general",
-                        created_at: firebase.firestore.FieldValue.serverTimestamp(), 
-                        status: 'active'
-                    });
-                    userFixedLicenseKey = newKey;
-                }
-                updateLicenseDisplay();
-            } catch (error) { console.error("Error gestionando licencia fija:", error); }
-        }
-
-        function updateLicenseDisplay() {
-            const codeBlock = document.getElementById('license-code');
-            if (!currentUser || !codeBlock) return;
-
+        function loadServerConfig() {
+            const saved = JSON.parse(localStorage.getItem('server_config') || '{}');
+            const ipInput = document.getElementById('server-ip');
+            if (!ipInput || !currentUser) return;
+            if (saved.ip) ipInput.value = saved.ip;
             db.collection("Licencias")
-              .where("discord_id", "==", currentUser.id)
-              .where("type", "==", "general")
-              .limit(1)
-              .get()
-              .then(snapshot => {
-                  if (!snapshot.empty) {
-                      const license = snapshot.docs[0].data();
-                      codeBlock.textContent = 
-                          'license = {\n' +
-                          '    key = "' + (license.key || 'XF(PENDIENTE)') + '"\n' +
-                          '}';
-                  } else {
-                      codeBlock.textContent = 
-                          'license = {\n' +
-                          '    key = "XF(PENDIENTE)"\n' +
-                          '}';
-                  }
-              });
+                .where("discord_id", "==", currentUser.id)
+                .where("status", "==", "active")
+                .limit(1)
+                .get()
+                .then(snapshot => {
+                    if (!snapshot.empty) {
+                        const lic = snapshot.docs[0].data();
+                        if (lic.ip && (!saved.ip || saved.ip === '0.0.0.0')) ipInput.value = lic.ip;
+                    }
+                })
+                .catch(() => {});
         }
 
         async function saveServerConfig(event) {
             const ipInput = document.getElementById('server-ip');
-            const keyInput = document.getElementById('server-key');
             
-            if (!ipInput || !keyInput) {
-                console.error("No se encontraron los campos de IP/Key");
+            if (!ipInput) {
+                console.error("No se encontraron los campos de IP");
                 return;
             }
 
             const typed = ipInput.value.trim();
-            const key = keyInput.value.trim();
-            
-            if (!key) {
-                showToast('Ingresa tu Key de licencia (ej: XF(ABCD-EFGH-IJKL))', 'warning');
-                return;
-            }
 
             let ip = '';
             if (typed && typed !== '0.0.0.0') {
@@ -671,7 +608,7 @@
             }
             
             try {
-                localStorage.setItem('server_config', JSON.stringify({ ip, key }));
+                localStorage.setItem('server_config', JSON.stringify({ ip }));
                 
                 const licenseSnapshot = await db.collection("Licencias")
                     .where("discord_id", "==", currentUser.id)
@@ -685,7 +622,6 @@
                     licenseSnapshot.forEach((doc) => {
                         batch.update(doc.ref, {
                             ip: ip,
-                            key: key,
                             updated_at: firebase.firestore.FieldValue.serverTimestamp()
                         });
                         count++;
@@ -698,7 +634,6 @@
                         discord_id: currentUser.id,
                         username: currentUser.username || "Unknown",
                         ip: ip,
-                        key: key,
                         status: 'pending_config',
                         type: 'server_config',
                         created_at: firebase.firestore.FieldValue.serverTimestamp()
@@ -717,7 +652,7 @@
                     }, 2000);
                 }
                 
-                showToast('IP y Key guardados correctamente', 'success');
+                showToast('IP guardada correctamente', 'success');
                 
             } catch (error) {
                 console.error("❌ ERROR CRÍTICO EN SAVE:", error);
@@ -727,7 +662,6 @@
 
         async function downloadProduct(productId) {
             const typed = document.getElementById('server-ip').value.trim();
-            const key = document.getElementById('server-key').value.trim();
             
             if (!typed || typed === '0.0.0.0') {
                 showToast('Debes configurar tu IP antes de descargar.', 'warning', 'Configuración Requerida');
@@ -746,12 +680,6 @@
                 document.getElementById('server-ip').value = resolved.ip;
             }
 
-            if (!key) {
-                showToast('Debes ingresar tu Key de licencia antes de descargar.', 'warning', 'Configuración Requerida');
-                document.getElementById('server-key').focus();
-                return;
-            }
-
             const product = allProducts.find(p => String(p.id) === String(productId) || String(p.docId) === String(productId));
             if (!product || !product.file_data) {
                 showToast('Archivo no disponible', 'error');
@@ -759,7 +687,7 @@
             }
 
             try {
-                showToast('Vinculando licencia con tu servidor...', 'success', 'Procesando');
+                showToast('Vinculando tu servidor...', 'success', 'Procesando');
                 
                 let licenseRef = null;
                 const licenseSnapshot = await db.collection("Licencias")
@@ -787,31 +715,18 @@
                 if (licenseRef) {
                     await licenseRef.update({
                         ip: ip,
-                        key: key,
                         resource: product.name
                     });
                 }
 
                 window.open(product.file_data, '_blank', 'noopener');
                 
-                showToast('Redirigiendo a Google Drive. Licencia vinculada.', 'success', '¡Listo!');
+                showToast('Redirigiendo a Google Drive. IP vinculada.', 'success', '¡Listo!');
                 
             } catch (error) {
                 console.error("Error al vincular licencia:", error);
                 showToast('Error al vincular la licencia.', 'error');
             }
-        }
-
-        function copyLicenseCode(event) {
-            const code = document.getElementById('license-code').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                const btn = event?.currentTarget;
-                if (btn) {
-                    const original = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-check"></i> Copiado';
-                    setTimeout(() => btn.innerHTML = original, 2000);
-                }
-            });
         }
 
         function listenForApprovedOrders() {
@@ -834,14 +749,12 @@
                                             .limit(1).get();
 
                                         if (existingLicense.empty) {
-                                            const newKey = generateUniqueKey();
 
                                             await db.collection("Licencias").add({
                                                 discord_id: currentUser.id,
                                                 username: currentUser.username,
                                                 product_id: product.id,
                                                 product_name: product.name,
-                                                key: newKey,
                                                 type: "product",
                                                 created_at: firebase.firestore.FieldValue.serverTimestamp(),
                                                 status: 'active'
