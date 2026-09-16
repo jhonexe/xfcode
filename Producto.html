@@ -4,24 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producto</title>
-    <link rel="icon" type="image/png" href="files/XF_LOGO.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff1a1a'/%3E%3Cstop offset='1' stop-color='%23cc1b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='70' font-family='Arial, sans-serif' font-size='58' font-weight='900' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        red: {
-                            50: '#fff5f5', 100: '#ffe0e0', 200: '#ffb3b3', 300: '#ff8080',
-                            400: '#ff4040', 500: '#ff0000', 600: '#e60000', 700: '#cc0000',
-                            800: '#b30000', 900: '#990000', 950: '#660000'
-                        }
-                    }
-                }
-            }
-        };
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -29,11 +14,11 @@
 
     <style>
         :root {
-            --primary: #ff0000;
-            --primary-dark: #990000;
+            --primary: #ff1a1a;
+            --primary-dark: #991b1b;
             --bg-dark: #050507;
             --card-bg: rgba(20, 5, 5, 0.7);
-            --border-color: rgba(255, 0, 0, 0.2);
+            --border-color: rgba(255, 26, 26, 0.2);
         }
         
         body {
@@ -53,13 +38,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(to right, #e60000, #990000);
+            background: linear-gradient(to right, #dc2626, #991b1b);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(230, 0, 0, 0.5);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
             filter: brightness(1.1);
         }
 
@@ -69,8 +54,8 @@
             transition: all 0.3s ease;
         }
         .btn-secondary:hover {
-            border-color: rgba(255, 0, 0, 0.5);
-            background: rgba(255, 0, 0, 0.05);
+            border-color: rgba(255, 26, 26, 0.5);
+            background: rgba(255, 26, 26, 0.05);
         }
 
         .glass-panel {
@@ -83,7 +68,7 @@
 
         .gallery-frame {
             background: #000;
-            border: 1px dashed rgba(230, 0, 0, 0.4);
+            border: 1px dashed rgba(220, 38, 38, 0.4);
             border-radius: 12px;
             overflow: hidden;
             position: relative;
@@ -153,7 +138,7 @@
         .thumb:hover, .thumb.active {
             opacity: 1;
             border-color: var(--primary);
-            box-shadow: 0 0 8px rgba(230, 0, 0, 0.4);
+            box-shadow: 0 0 8px rgba(220, 38, 38, 0.4);
         }
 
         .tab-button {
@@ -184,8 +169,8 @@
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0a0505; }
-        ::-webkit-scrollbar-thumb { background: #660000; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #990000; }
+        ::-webkit-scrollbar-thumb { background: #450a0a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7f1d1d; }
 
         .badge-gratis {
             color: #4ade80;
@@ -218,7 +203,7 @@
             width: 90%;
             max-width: 480px;
             border-radius: 16px;
-            border: 1px solid rgba(230, 0, 0, 0.3);
+            border: 1px solid rgba(220, 38, 38, 0.3);
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             overflow: hidden;
             animation: slideUp 0.3s ease;
@@ -228,7 +213,7 @@
             to { transform: translateY(0); opacity: 1; }
         }
         .cart-header {
-            background: #e60000;
+            background: #dc2626;
             padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
@@ -241,7 +226,7 @@
         }
         .cart-footer {
             padding: 1.5rem;
-            border-top: 1px solid rgba(230, 0, 0, 0.2);
+            border-top: 1px solid rgba(220, 38, 38, 0.2);
             background: rgba(0,0,0,0.2);
         }
         .cart-item {
@@ -290,7 +275,7 @@
             <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
                 <i class="fas fa-times text-xl"></i>
             </button>
-            <img src="files/XF_LOGO.png" alt="XF CODE" class="mx-auto w-20 h-20 rounded-xl mb-6 object-cover shadow-lg border-2 border-red-600">
+            <div class="mx-auto w-20 h-20 rounded-xl mb-6 shadow-lg border-2 border-red-600 bg-gradient-to-br from-red-500 to-red-800 flex items-center justify-center text-3xl font-black">P</div>
             <h1 class="text-2xl font-black text-white mb-2 tracking-wide uppercase">INICIAR SESIÓN</h1>
             <p class="text-gray-400 text-sm mb-8">Debes acceder con Discord para comprar o reclamar productos.</p>
             <button onclick="redirectToDiscord()" class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-200 shadow-lg transform hover:scale-[1.02]">
@@ -301,13 +286,13 @@
 
     <header class="relative z-10 border-b border-white/5 bg-black/40 backdrop-blur-md sticky top-0">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='/'">
-                <img src="files/XF_LOGO.png" alt="XF CODE" class="w-8 h-8 rounded object-cover">
-                <span class="font-bold tracking-wider text-lg">XF <span class="text-red-500">CODE</span></span>
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-8 h-8 rounded bg-red-600 flex items-center justify-center font-bold text-white shadow-[0_0_10px_rgba(220,38,38,0.6)]">P</div>
+                <span class="font-bold tracking-wider text-lg">PAPELETA <span class="text-red-500">STORE</span></span>
             </div>
             
             <div class="flex items-center gap-4">
-                <a href="/" class="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors hidden md:flex">
+                <a href="index.html" class="text-gray-400 hover:text-white text-sm flex items-center gap-2 transition-colors hidden md:flex">
                     <i class="fas fa-arrow-left"></i> Volver a la Tienda
                 </a>
                 <button onclick="openCartModal()" class="relative group p-2 cursor-pointer">
@@ -377,7 +362,7 @@
                         <i class="fas fa-credit-card"></i> Ir al Carrito para Pagar
                     </button>
 
-                    <button onclick="window.location.href='/'" class="w-full py-3 text-gray-500 hover:text-gray-300 text-sm font-medium transition-colors">
+                    <button onclick="window.location.href='index.html'" class="w-full py-3 text-gray-500 hover:text-gray-300 text-sm font-medium transition-colors">
                         Volver a la Tienda
                     </button>
                 </div>
@@ -393,7 +378,7 @@
     </main>
 
     <footer class="relative z-10 border-t border-white/5 bg-black/40 text-center py-6 text-xs text-gray-600 mt-10">
-        <p>&copy; 2026 XF CODE. Todos los derechos reservados.</p>
+        <p>&copy; 2026 Papeleta Store. Todos los derechos reservados.</p>
     </footer>
 
     <!-- MODAL DEL CARRITO (Ya no se usa pero se mantiene por si acaso) -->
@@ -434,14 +419,14 @@
 
     <script>
         const firebaseConfig = {
-  apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
-  authDomain: "xfcode-e3805.firebaseapp.com",
-  projectId: "xfcode-e3805",
-  storageBucket: "xfcode-e3805.firebasestorage.app",
-  messagingSenderId: "305007654133",
-  appId: "1:305007654133:web:b1b8f433bf0f506c0c81bc",
-  measurementId: "G-3456M1F6PD"
-};
+            apiKey: "AIzaSyBWggE0KFiVZDxwxvmhuWXEKu6bNguV0mM",
+            authDomain: "papeletalicencia.firebaseapp.com",
+            databaseURL: "https://papeletalicencia-default-rtdb.firebaseio.com",
+            projectId: "papeletalicencia",
+            storageBucket: "papeletalicencia.firebasestorage.app",
+            messagingSenderId: "677208314051",
+            appId: "1:677208314051:web:a27c04f31d402e83f29276"
+        };
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -516,7 +501,7 @@
 
         // ✅ MODIFICADO: REDIRIGE AL CARRITO PRINCIPAL EN LUGAR DE ABRIR MODAL
         function openCartModal() {
-            window.location.href = 'Carrito';
+            window.location.href = 'Carrito.html';
         }
 
         function closeCartModal() {
@@ -567,7 +552,7 @@
         }
 
         function redirectToDiscord() {
-            const CLIENT_ID = '1535346943482531892'; 
+            const CLIENT_ID = '1213866547181780992'; 
             const REDIRECT_URI = window.location.href.split('#')[0];
             const url = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
             window.location.href = url;
@@ -607,7 +592,7 @@
                     return;
                 }
 
-                window.location.href = 'Carrito';
+                window.location.href = 'Carrito.html';
 
             } catch (error) {
                 console.error(error);
@@ -618,7 +603,7 @@
 
         function handleMainAction() {
             if (userAlreadyOwns) {
-                window.location.href = 'AreaCliente';
+                window.location.href = 'AreaCliente.html';
             } else {
                 addToCartFromDetail();
             }
@@ -740,7 +725,7 @@
         }
 
         async function loadProduct() {
-            if (!productId) return window.location.href = '/';
+            if (!productId) return window.location.href = 'index.html';
 
             try {
                 const [doc, ownsProduct] = await Promise.all([
@@ -748,7 +733,7 @@
                     checkIfUserOwnsProduct()
                 ]);
 
-                if (!doc.exists) return window.location.href = '/';
+                if (!doc.exists) return window.location.href = 'index.html';
 
                 currentProduct = doc.data();
                 userAlreadyOwns = ownsProduct;
@@ -876,7 +861,7 @@
                     if(p.x < 0 || p.x > w) p.vx *= -1;
                     if(p.y < 0 || p.y > h) p.vy *= -1;
                     
-                    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                    ctx.fillStyle = 'rgba(255, 26, 26, 0.5)';
                     ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
 
                     for(let j=i; j<points.length; j++) {
@@ -884,7 +869,7 @@
                         let dx = p.x - p2.x, dy = p.y - p2.y;
                         let dist = Math.sqrt(dx*dx + dy*dy);
                         if(dist < 150) {
-                            ctx.strokeStyle = `rgba(255, 0, 0, ${1 - dist/150})`;
+                            ctx.strokeStyle = `rgba(255, 26, 26, ${1 - dist/150})`;
                             ctx.lineWidth = 0.5;
                             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
                         }
