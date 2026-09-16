@@ -3,10 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Papeleta Store</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff1a1a'/%3E%3Cstop offset='1' stop-color='%23cc1b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='70' font-family='Arial, sans-serif' font-size='58' font-weight='900' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+    <title>XF CODE</title>
+    <script>
+        if (location.pathname === '/index' || location.pathname === '/index.html') {
+            location.replace('/');
+        }
+    </script>
+    <link rel="icon" type="image/png" href="files/XF_LOGO.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        red: {
+                            50: '#fff5f5', 100: '#ffe0e0', 200: '#ffb3b3', 300: '#ff8080',
+                            400: '#ff4040', 500: '#ff0000', 600: '#e60000', 700: '#cc0000',
+                            800: '#b30000', 900: '#990000', 950: '#660000'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Firebase -->
@@ -17,10 +37,10 @@
         :root {
             --bg-body: #050507;
             --bg-card: rgba(20, 10, 10, 0.6);
-            --primary: #ff1a1a;
+            --primary: #ff0000;
             --text-muted: #9496a1;
             --text-dim: #6b7280;
-            --border-color: rgba(255, 26, 26, 0.15);
+            --border-color: rgba(255, 0, 0, 0.15);
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,9 +58,9 @@
             background: radial-gradient(ellipse at top, rgba(255,26,26,0.15) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(255,26,26,0.1) 0%, transparent 50%);
         }
         .mesh-blob { position: absolute; filter: blur(90px); opacity: 0.25; animation: float 10s infinite ease-in-out; }
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #ff1a1a, transparent); }
-        .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #cc1b1b, transparent); animation-delay: -5s; }
-        .blob-3 { top: 50%; left: 50%; width: 40vw; height: 40vw; background: radial-gradient(circle, #ff4444, transparent); animation-delay: -2.5s; opacity: 0.15; }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #ff0000, transparent); }
+        .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #cc0000, transparent); animation-delay: -5s; }
+        .blob-3 { top: 50%; left: 50%; width: 40vw; height: 40vw; background: radial-gradient(circle, #ff4040, transparent); animation-delay: -2.5s; opacity: 0.15; }
         @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, 30px) scale(1.1); } }
 
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
@@ -53,62 +73,62 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6e6e6e; border-radius: 4px; }
         
-        .red-glow { text-shadow: 0 0 18px rgba(255, 26, 26, 0.85), 0 0 36px rgba(204, 27, 27, 0.4); }
-        .red-border { border-color: rgba(255, 26, 26, 0.25); }
-        
+        .red-glow { text-shadow: 0 0 18px rgba(255, 0, 0, 0.85), 0 0 36px rgba(204, 27, 27, 0.4); }
+        .red-border { border-color: rgba(255, 0, 0, 0.25); }
+
         .page { display: none; }
         .page.active { display: block; }
-        .nav-link.active-page { color: #ff6b6b; }
+        .nav-link.active-page { color: #ff5555; }
         
         .cart-badge {
-            position: absolute; top: -8px; right: -8px; background: #ff1a1a; color: white; border-radius: 50%;
+            position: absolute; top: -8px; right: -8px; background: #ff0000; color: white; border-radius: 50%;
             width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
             font-size: 11px; font-weight: bold; animation: bounce 0.3s ease;
         }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
         .product-detail-modal { backdrop-filter: blur(10px); }
-        .gallery-main-image { width: 100%; height: 400px; object-fit: contain; border-radius: 16px; background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(153, 27, 27, 0.1)); }
+        .gallery-main-image { width: 100%; height: 400px; object-fit: contain; border-radius: 16px; background: linear-gradient(135deg, rgba(230, 0, 0, 0.1), rgba(153, 27, 27, 0.1)); }
         .gallery-thumbnails { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding: 5px; }
         .gallery-thumbnail { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; flex-shrink: 0; }
-        .gallery-thumbnail:hover { border-color: #dc2626; transform: scale(1.05); }
-        .gallery-thumbnail.active { border-color: #dc2626; box-shadow: 0 0 10px rgba(220, 38, 38, 0.5); }
-        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(220, 38, 38, 0.8); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .gallery-thumbnail:hover { border-color: #e60000; transform: scale(1.05); }
+        .gallery-thumbnail.active { border-color: #e60000; box-shadow: 0 0 10px rgba(230, 0, 0, 0.5); }
+        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(230, 0, 0, 0.8); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .gallery-nav.prev { left: 10px; }
         .gallery-nav.next { right: 10px; }
 
         .multiple-preview-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 15px; }
-        .preview-item { position: relative; border-radius: 8px; overflow: hidden; border: 2px solid rgba(220, 38, 38, 0.3); }
+        .preview-item { position: relative; border-radius: 8px; overflow: hidden; border: 2px solid rgba(230, 0, 0, 0.3); }
         .preview-item img { width: 100%; height: 150px; object-fit: cover; }
-        .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(220, 38, 38, 0.9); color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(230, 0, 0, 0.9); color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 
         .config-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .config-panel-overlay.active { opacity: 1; pointer-events: auto; }
-        .config-panel { position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: linear-gradient(180deg, #150a0a 0%, #0a0505 100%); border-left: 1px solid rgba(255, 26, 26, 0.3); box-shadow: -10px 0 40px rgba(0,0,0,0.8); z-index: 101; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; overflow-y: auto; }
+        .config-panel { position: fixed; top: 0; right: -400px; width: 350px; height: 100vh; background: linear-gradient(180deg, #150a0a 0%, #0a0505 100%); border-left: 1px solid rgba(255, 0, 0, 0.3); box-shadow: -10px 0 40px rgba(0,0,0,0.8); z-index: 101; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; overflow-y: auto; }
         .config-panel.active { right: 0; }
         .config-menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; margin-bottom: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit; }
-        .config-menu-item:hover { background: rgba(255, 26, 26, 0.1); border-color: rgba(255, 26, 26, 0.4); transform: translateX(-4px); }
-        .config-menu-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(255, 26, 26, 0.1); color: #ff1a1a; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .config-menu-item:hover { background: rgba(255, 0, 0, 0.1); border-color: rgba(255, 0, 0, 0.4); transform: translateX(-4px); }
+        .config-menu-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(255, 0, 0, 0.1); color: #ff0000; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .config-menu-text h4 { margin: 0; font-size: 14px; font-weight: 700; color: #fff; }
         .config-menu-text p { margin: 2px 0 0; font-size: 11px; color: #9496a1; }
 
         .user-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .user-panel-overlay.active { opacity: 1; pointer-events: auto; }
-        .user-panel { position: fixed; top: 0; left: -400px; width: 350px; height: 100vh; background: linear-gradient(180deg, #150a0a 0%, #0a0505 100%); border-right: 1px solid rgba(255, 26, 26, 0.3); box-shadow: 10px 0 40px rgba(0,0,0,0.8); z-index: 101; transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; overflow-y: auto; }
+        .user-panel { position: fixed; top: 0; left: -400px; width: 350px; height: 100vh; background: linear-gradient(180deg, #150a0a 0%, #0a0505 100%); border-right: 1px solid rgba(255, 0, 0, 0.3); box-shadow: 10px 0 40px rgba(0,0,0,0.8); z-index: 101; transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; overflow-y: auto; }
         .user-panel.active { left: 0; }
         .user-panel-header { text-align: center; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 24px; }
-        .user-panel-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff1a1a; margin: 0 auto 16px; box-shadow: 0 0 20px rgba(255, 26, 26, 0.4); }
+        .user-panel-avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ff0000; margin: 0 auto 16px; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
         .user-panel-name { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
         .user-panel-role { display: inline-block; padding: 6px 16px; background: rgba(0, 255, 68, 0.15); border: 1px solid rgba(0, 255, 68, 0.4); color: #00ff44; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .user-panel-role.admin { background: rgba(255, 26, 26, 0.15); border-color: rgba(255, 26, 26, 0.4); color: #ff1a1a; }
+        .user-panel-role.admin { background: rgba(255, 0, 0, 0.15); border-color: rgba(255, 0, 0, 0.4); color: #ff0000; }
         .user-menu-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; margin-bottom: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit; }
-        .user-menu-item:hover { background: rgba(255, 26, 26, 0.1); border-color: rgba(255, 26, 26, 0.4); transform: translateX(4px); }
-        .user-menu-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(255, 26, 26, 0.1); color: #ff1a1a; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .user-menu-item:hover { background: rgba(255, 0, 0, 0.1); border-color: rgba(255, 0, 0, 0.4); transform: translateX(4px); }
+        .user-menu-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(255, 0, 0, 0.1); color: #ff0000; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .user-menu-text h4 { margin: 0; font-size: 14px; font-weight: 700; color: #fff; }
         .user-menu-text p { margin: 2px 0 0; font-size: 11px; color: #9496a1; }
         .user-panel-footer { margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .logout-btn { width: 100%; padding: 12px; background: rgba(255, 26, 26, 0.15); border: 1px solid rgba(255, 26, 26, 0.4); color: #ff1a1a; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .logout-btn:hover { background: rgba(255, 26, 26, 0.25); transform: translateY(-2px); }
+        .logout-btn { width: 100%; padding: 12px; background: rgba(255, 0, 0, 0.15); border: 1px solid rgba(255, 0, 0, 0.4); color: #ff0000; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .logout-btn:hover { background: rgba(255, 0, 0, 0.25); transform: translateY(-2px); }
 
         .reviews-section {
             padding: 80px 0; position: relative; overflow: hidden; width: 100vw; margin-left: calc(50% - 50vw);
@@ -117,7 +137,7 @@
         .reviews-container { max-width: 7xl; margin: 0 auto; position: relative; padding: 0 20px; }
         .reviews-title { text-align: center; margin-bottom: 50px; position: relative; z-index: 10; padding: 10px 0; }
         .reviews-title h2 { font-size: 2.5rem; font-weight: 900; color: white; margin-bottom: 15px; }
-        .reviews-title h2 span { color: var(--primary); text-shadow: 0 0 20px rgba(255, 26, 26, 0.5); }
+        .reviews-title h2 span { color: var(--primary); text-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
         .reviews-title p { color: var(--text-muted); font-size: 1.1rem; }
 
         .reviews-slider-wrapper {
@@ -135,7 +155,7 @@
             border-radius: 20px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between;
             backdrop-filter: blur(10px); transition: transform 0.3s ease, border-color 0.3s ease;
         }
-        .review-card-slide:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(255, 26, 26, 0.1); }
+        .review-card-slide:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1); }
         .review-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .review-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
         .review-user-info h4 { color: white; font-weight: 700; font-size: 1.1rem; margin: 0; }
@@ -143,7 +163,7 @@
         .review-stars { color: #fbbf24; font-size: 1rem; margin-bottom: 15px; letter-spacing: 2px; }
         .review-text { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
         .review-product-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #ffffff; padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; width: fit-content; }
-        .review-product-tag i { color: #ff1a1a; }
+        .review-product-tag i { color: #ff0000; }
 
         /* --- ESTILOS DEL PODIO DE TOP USUARIOS --- */
         .leaderboard-section { padding: 40px 0 60px 0; position: relative; z-index: 5; }
@@ -154,10 +174,10 @@
             transition: transform 0.3s ease, border-color 0.3s ease; width: 100%; max-width: 260px;
             display: flex; flex-direction: column; align-items: center;
         }
-        .podium-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(255, 26, 26, 0.15); }
+        .podium-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(255, 0, 0, 0.15); }
 
         /* Orden visual: 2do a la izq, 1ro al centro (más grande), 3ro a la der */
-        .rank-1 { order: 2; transform: scale(1.1); z-index: 10; border-color: rgba(255, 26, 26, 0.5); box-shadow: 0 0 25px rgba(255, 26, 26, 0.2); }
+        .rank-1 { order: 2; transform: scale(1.1); z-index: 10; border-color: rgba(255, 0, 0, 0.5); box-shadow: 0 0 25px rgba(255, 0, 0, 0.2); }
         .rank-1:hover { transform: scale(1.12); }
         .rank-2 { order: 1; opacity: 0.9; margin-bottom: 20px; }
         .rank-3 { order: 3; opacity: 0.9; margin-bottom: 20px; }
@@ -176,7 +196,7 @@
             width: 80px; height: 80px; border-radius: 50%; border: 3px solid #333; object-fit: cover;
             margin-top: 15px; margin-bottom: 12px; background: #000;
         }
-        .rank-1 .podium-avatar { width: 100px; height: 100px; border-color: #ff1a1a; box-shadow: 0 0 15px rgba(255, 26, 26, 0.4); margin-top: 20px; }
+        .rank-1 .podium-avatar { width: 100px; height: 100px; border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.4); margin-top: 20px; }
 
         .podium-name {
             color: white; font-weight: 700; font-size: 1.1rem; margin-bottom: 0;
@@ -188,7 +208,7 @@
             display: flex; flex-direction: column; align-items: center; background: rgba(255, 255, 255, 0.03);
             padding: 10px 15px; border-radius: 12px; margin-top: auto; width: 100%; border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .stat-number { color: #ff1a1a; font-weight: 900; font-size: 1.5rem; line-height: 1; }
+        .stat-number { color: #ff0000; font-weight: 900; font-size: 1.5rem; line-height: 1; }
         .rank-1 .stat-number { font-size: 1.8rem; }
         .stat-label { color: #9496a1; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-top: 4px; }
 
@@ -212,7 +232,7 @@
             width: 350px; 
             height: 100vh; 
             background: linear-gradient(180deg, #150a0a 0%, #0a0505 100%); 
-            border-left: 1px solid rgba(255, 26, 26, 0.3); 
+            border-left: 1px solid rgba(255, 0, 0, 0.3); 
             box-shadow: -10px 0 40px rgba(0,0,0,0.8); 
             z-index: 101; 
             transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -227,14 +247,14 @@
             margin-bottom: 24px;
         }
         .filter-header h3 { color: white; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
-        .filter-header h3 i { color: #ff1a1a; }
+        .filter-header h3 i { color: #ff0000; }
         .filter-close-btn { 
             background: transparent; border: none; 
             color: #9496a1; width: 36px; height: 36px; border-radius: 8px; 
             cursor: pointer; font-size: 1.2rem; transition: all 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
-        .filter-close-btn:hover { background: rgba(255, 26, 26, 0.1); color: #ff1a1a; }
+        .filter-close-btn:hover { background: rgba(255, 0, 0, 0.1); color: #ff0000; }
         
         .filter-section { margin-bottom: 28px; }
         .filter-section-title { 
@@ -254,12 +274,12 @@
             background: rgba(255,255,255,0.1); border-radius: 3px; 
         }
         .price-slider-progress { 
-            position: absolute; height: 100%; background: linear-gradient(90deg, #ff1a1a, #ff4444); 
+            position: absolute; height: 100%; background: linear-gradient(90deg, #ff0000, #ff4040); 
             border-radius: 3px; 
         }
         .price-slider-thumb { 
             position: absolute; width: 18px; height: 18px; 
-            background: white; border: 3px solid #ff1a1a; border-radius: 50%; 
+            background: white; border: 3px solid #ff0000; border-radius: 50%; 
             top: 50%; transform: translate(-50%, -50%); 
             cursor: pointer; box-shadow: 0 2px 8px rgba(255,26,26,0.4);
             transition: transform 0.1s;
@@ -275,23 +295,23 @@
             border-radius: 10px; cursor: pointer; transition: all 0.2s; 
         }
         .category-checkbox:hover { 
-            background: rgba(255, 26, 26, 0.05); border-color: rgba(255, 26, 26, 0.3); 
+            background: rgba(255, 0, 0, 0.05); border-color: rgba(255, 0, 0, 0.3); 
         }
         .category-checkbox input[type="checkbox"] { 
-            width: 18px; height: 18px; accent-color: #ff1a1a; cursor: pointer; 
+            width: 18px; height: 18px; accent-color: #ff0000; cursor: pointer; 
         }
         .category-checkbox label { 
             color: #f3f4f6; font-weight: 500; cursor: pointer; flex: 1; 
         }
         
         .filter-clear-btn { 
-            width: 100%; background: rgba(255, 26, 26, 0.1); 
-            border: 1px solid rgba(255, 26, 26, 0.3); 
-            color: #ff1a1a; padding: 12px; border-radius: 10px; 
+            width: 100%; background: rgba(255, 0, 0, 0.1); 
+            border: 1px solid rgba(255, 0, 0, 0.3); 
+            color: #ff0000; padding: 12px; border-radius: 10px; 
             font-weight: 600; cursor: pointer; transition: all 0.2s;
             margin-bottom: 12px;
         }
-        .filter-clear-btn:hover { background: rgba(255, 26, 26, 0.2); }
+        .filter-clear-btn:hover { background: rgba(255, 0, 0, 0.2); }
 
         @media (max-width: 768px) {
             .podium-container { flex-direction: column; align-items: center; }
@@ -315,8 +335,8 @@
     <div id="login-modal" class="hidden fixed inset-0 bg-black/80 z-[60] flex items-center justify-center px-4 backdrop-blur-sm transition-opacity duration-300">
         <div class="max-w-md w-full bg-[#150a0a] border red-border rounded-2xl p-8 text-center shadow-[0_0_40px_rgba(255,26,26,0.2)] relative transform transition-all scale-100">
             <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"><i class="fas fa-times text-xl"></i></button>
-            <div class="mx-auto w-20 h-20 rounded-xl mb-6 shadow-lg border-2 border-red-600 bg-gradient-to-br from-red-500 to-red-800 flex items-center justify-center text-3xl font-black">P</div>
-            <h1 class="text-3xl font-black text-white mb-2 tracking-wide uppercase">PAPELETA <span class="text-red-400 red-glow">STORE</span></h1>
+            <img src="files/XF_LOGO.png" alt="XF CODE" class="mx-auto w-20 h-20 rounded-xl mb-6 object-cover shadow-lg border-2 border-red-600">
+            <h1 class="text-3xl font-black text-white mb-2 tracking-wide uppercase">XF <span class="text-red-400 red-glow">CODE</span></h1>
             <p class="text-gray-400 text-sm mb-8">Debes iniciar sesión para realizar compras y descargar archivos.</p>
             <button onclick="redirectToDiscord()" class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-200 shadow-lg transform hover:scale-[1.02]">
                 <i class="fab fa-discord text-xl"></i> Iniciar Sesión con Discord
@@ -428,7 +448,7 @@
             <span id="panel-user-role" class="user-panel-role">CLIENTE</span>
         </div>
         <div class="space-y-2">
-            <a href="AreaCliente.html" class="user-menu-item">
+            <a href="AreaCliente" class="user-menu-item">
                 <div class="user-menu-icon"><i class="fas fa-box"></i></div>
                 <div class="user-menu-text"><h4>Mis Productos</h4><p>Ver y descargar mis compras</p></div>
             </a>
@@ -436,11 +456,11 @@
                 <div class="user-menu-icon"><i class="fas fa-store"></i></div>
                 <div class="user-menu-text"><h4>Tienda</h4><p>Explorar más productos</p></div>
             </a>
-            <a href="Carrito.html" class="user-menu-item">
+            <a href="Carrito" class="user-menu-item">
                 <div class="user-menu-icon"><i class="fas fa-shopping-cart"></i></div>
                 <div class="user-menu-text"><h4>Carrito</h4><p>Ver mi carrito de compras</p></div>
             </a>
-            <a href="Admin.html" id="user-panel-config-btn" class="user-menu-item hidden" style="display: none;">
+            <a href="Admin" id="user-panel-config-btn" class="user-menu-item hidden" style="display: none;">
                 <div class="user-menu-icon"><i class="fas fa-cog"></i></div>
                 <div class="user-menu-text"><h4>Config</h4><p>Panel de Administrador</p></div>
             </a>
@@ -460,27 +480,23 @@
             <button onclick="toggleConfigPanel()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
-            <a href="SubirProducto.html" class="config-menu-item">
+            <a href="SubirProducto" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                 <div class="config-menu-text"><h4>Subir Producto</h4><p>Agregar nuevos recursos a la tienda</p></div>
             </a>
-            <a href="LicenciaUsuario.html" class="config-menu-item">
+            <a href="LicenciaUsuario" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-key"></i></div>
                 <div class="config-menu-text"><h4>Licencias Usuario</h4><p>Ver historial de compras y reclamos</p></div>
-            </a>
-            <a href="Encriptar.html" class="config-menu-item">
-                <div class="config-menu-icon"><i class="fas fa-lock"></i></div>
-                <div class="config-menu-text"><h4>Encriptar Script</h4><p>Proteger archivos Lua de MTA:SA</p></div>
             </a>
             <div class="config-menu-item" onclick="openAssignProductModal()">
                 <div class="config-menu-icon"><i class="fas fa-user-plus"></i></div>
                 <div class="config-menu-text"><h4>Pasar a Usuarios</h4><p>Asignar productos gratis manualmente</p></div>
             </div>
-            <a href="UsuariosAutorizado.html" class="config-menu-item">
+            <a href="UsuariosAutorizado" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-users-cog"></i></div>
                 <div class="config-menu-text"><h4>Usuarios Autorizados</h4><p>Gestionar roles Admin y Mod</p></div>
             </a>
-            <a href="CrearRol.html" class="config-menu-item">
+            <a href="CrearRol" class="config-menu-item">
                 <div class="config-menu-icon"><i class="fas fa-id-badge"></i></div>
                 <div class="config-menu-text"><h4>Crear Rol</h4><p>Definir permisos personalizados</p></div>
             </a>
@@ -494,8 +510,8 @@
     <div id="main-content" class="relative z-10 flex-grow flex flex-col">
         <header class="bg-[#0d0505]/90 backdrop-blur border-b red-border sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()" title="Actualizar página">
-                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-red-500 to-red-800 flex items-center justify-center font-black">P</div>
-                <span class="text-white font-black tracking-widest text-lg">PAPELETA <span class="text-red-400">STORE</span></span>
+                <img src="files/XF_LOGO.png" alt="XF CODE" class="w-9 h-9 rounded-lg object-cover">
+                <span class="text-white font-black tracking-widest text-lg">XF <span class="text-red-400">CODE</span></span>
             </div>
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-300">
                 <a href="#" onclick="showPage('inicio')" data-page="inicio" class="nav-link hover:text-red-400 transition-colors">Inicio</a>
@@ -503,7 +519,7 @@
                 <a href="#" onclick="showPage('preguntas')" data-page="preguntas" class="nav-link hover:text-red-400 transition-colors">Preguntas</a>
             </nav>
             <div class="flex items-center gap-3">
-                <a href="Carrito.html" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
+                <a href="Carrito" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
                     <i class="fas fa-shopping-cart text-gray-300 group-hover:text-white transition-colors"></i>
                     <span id="cart-count" class="cart-badge hidden">0</span>
                 </a>
@@ -527,8 +543,10 @@
         <section id="page-inicio" class="page active max-w-6xl w-full mx-auto px-6 py-16">
             <div class="grid md:grid-cols-2 gap-10 items-center">
                 <div>
-                    <h2 class="text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-4">PAPELETA <span class="text-red-400 red-glow">STORE</span></h2>
-                    <p class="text-gray-300 text-sm md:text-base mb-8">PAPELETA STORE — LA TIENDA DE SCRIPTS QUE LLEVA TU SERVIDOR AL SIGUIENTE NIVEL</p>
+                    <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tight mb-4">
+                        <span class="text-white">XF</span> <span class="text-[#ff0000]">CODE</span>
+                    </h2>
+                    <p class="text-gray-300 text-sm md:text-base mb-8">XF CODE — LA TIENDA DE SCRIPTS QUE LLEVA TU SERVIDOR AL SIGUIENTE NIVEL</p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <button onclick="showPage('productos')" class="bg-red-600 hover:bg-red-700 text-white font-black px-8 py-4 rounded-xl shadow-lg shadow-red-600/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wider">
                             Ver Recursos <i class="fas fa-arrow-right text-xs"></i>
@@ -606,7 +624,7 @@
                     <div><label class="block text-gray-300 text-sm font-semibold mb-2">Categoría</label><select id="prod-category" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500"><option value="Scripts">Scripts</option><option value="Modelajes">Modelajes</option><option value="Mappings">Mappings</option><option value="Webs">Sitios Web</option><option value="Bots">Bots Discord</option><option value="Otros">Otros</option></select></div>
                     <div><label class="block text-gray-300 text-sm font-semibold mb-2">Descripción/Detalle *</label><textarea id="prod-description" required rows="4" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="Describe las características del producto..."></textarea></div>
                     <div><label class="block text-gray-300 text-sm font-semibold mb-2">Fotos del Producto (Múltiples) *</label><div class="border-2 border-dashed border-red-900/40 rounded-xl p-4 text-center hover:border-red-500/50 transition-colors"><input type="file" id="prod-images" accept="image/*" multiple required onchange="previewMultipleImages(this)" class="hidden"><label for="prod-images" class="cursor-pointer block"><i class="fas fa-cloud-upload-alt text-3xl text-red-400 mb-2"></i><p class="text-gray-400 text-sm">Haz clic para subir imágenes</p><p class="text-gray-500 text-xs mt-1">Puedes seleccionar varias imágenes a la vez (máx. 800x600)</p></label><div id="multiple-images-preview" class="multiple-preview-container"></div></div></div>
-                    <div><label class="block text-gray-300 text-sm font-semibold mb-2">Archivo del Producto (Zip/Rar/Lua) *</label><div class="border-2 border-dashed border-red-900/40 rounded-xl p-4 text-center hover:border-red-500/50 transition-colors bg-[#0d0505]"><input type="file" id="prod-file" accept=".zip,.rar,.7z,.lua,.txt" required onchange="updateFileName(this)" class="hidden"><label for="prod-file" class="cursor-pointer block"><i class="fas fa-file-archive text-3xl text-red-400 mb-2"></i><p id="file-label-text" class="text-gray-400 text-sm">Haz clic para subir el archivo descargable</p><p class="text-gray-500 text-xs mt-1">El usuario podrá descargar este archivo tras comprarlo</p></label></div></div>
+                    <div><label class="block text-gray-300 text-sm font-semibold mb-2"><i class="fab fa-google-drive text-red-400 mr-1"></i>Enlace de Google Drive del Producto *</label><input type="url" id="prod-file-link" required class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="https://drive.google.com/file/d/.../view?usp=sharing"><p class="text-gray-500 text-xs mt-1">El cliente será llevado a este enlace al pulsar Descargar</p></div>
                     <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-red-900/30"><i class="fas fa-plus"></i> Agregar Producto</button>
                 </form>
                 <div class="mt-6 pt-6 border-t border-red-950/40">
@@ -661,17 +679,16 @@
     </div>
 
     <footer class="relative z-10 bg-[#080505] text-center py-6 border-t border-red-950/30 text-xs text-gray-500">
-        <p>&copy; 2026 Papeleta Store. Todos los derechos reservados.</p>
+        <p>&copy; 2026 XF CODE. Todos los derechos reservados.</p>
     </footer>
 
     <script>
-        const CLIENT_ID = '1213866547181780992'; 
-        const REDIRECT_URI = 'https://papeleta-script-github-io.vercel.app';
-        const DISCORD_INVITE = 'https://discord.gg/rvxEdWcGkf';
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1530402751375216720/CM6vWGEYqf3aWPiCmIBf_ycp29k686sO6Fc9HB4wisAZTAGe3OiRt5OKZoxbsINHvjgq";
+        const CLIENT_ID = '1535346943482531892'; 
+        const REDIRECT_URI = window.location.origin + '/#';
+        const DISCORD_INVITE = 'https://discord.gg/uhypzHGKVM';
         const STORE_LOGO_URL = "https://cdn.discordapp.com/embed/avatars/0.png"; 
-        const ADMIN_DISCORD_IDS = ['890526767608127489']; 
-        const ADMIN_DISCORD_USERNAMES = ['Papeleta']; 
+        const ADMIN_DISCORD_IDS = ['890526767608127489', '1525732580790636696']; 
+        const ADMIN_DISCORD_USERNAMES = ['jkingv2']; 
 
         function isAdmin(user) {
             if (!user) return false;
@@ -696,15 +713,14 @@
         let selectedCategories = [];
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBWggE0KFiVZDxwxvmhuWXEKu6bNguV0mM",
-            authDomain: "papeletalicencia.firebaseapp.com",
-            databaseURL: "https://papeletalicencia-default-rtdb.firebaseio.com",
-            projectId: "papeletalicencia",
-            storageBucket: "papeletalicencia.firebasestorage.app",
-            messagingSenderId: "677208314051",
-            appId: "1:677208314051:web:a27c04f31d402e83f29276",
-            measurementId: "G-RPJ4KQ6EQ4"
-        };
+  apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
+  authDomain: "xfcode-e3805.firebaseapp.com",
+  projectId: "xfcode-e3805",
+  storageBucket: "xfcode-e3805.firebasestorage.app",
+  messagingSenderId: "305007654133",
+  appId: "1:305007654133:web:b1b8f433bf0f506c0c81bc",
+  measurementId: "G-3456M1F6PD"
+};
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -722,7 +738,7 @@
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
             if (currentUser && myAssignedProductIds.has(productId)) { 
-                window.location.href = 'AreaCliente.html'; 
+                window.location.href = 'AreaCliente'; 
                 return; 
             }
             let cart = JSON.parse(localStorage.getItem('papeleta_cart') || '[]');
@@ -1006,7 +1022,7 @@ function clearFilters() {
             overlay.classList.toggle('active');
         }
 
-        function openAssignProductModal() { window.location.href = 'PasarUsuarios.html'; }
+        function openAssignProductModal() { window.location.href = 'PasarUsuarios'; }
 
         function previewMultipleImages(input) {
             const previewContainer = document.getElementById('multiple-images-preview');
@@ -1039,14 +1055,6 @@ function clearFilters() {
             });
         }
 
-        function updateFileName(input) {
-            const label = document.getElementById('file-label-text');
-            if (input.files && input.files[0]) {
-                label.innerText = input.files[0].name;
-                label.classList.add('text-white', 'font-bold');
-            }
-        }
-        
         function resizeImage(file, maxWidth = 800, maxHeight = 600) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -1066,30 +1074,21 @@ function clearFilters() {
             });
         }
 
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader(); reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-        
         async function handleProductSubmit(e) {
             e.preventDefault();
             const name = document.getElementById('prod-name').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const category = document.getElementById('prod-category').value;
             const description = document.getElementById('prod-description').value;
-            const downloadFile = document.getElementById('prod-file').files[0];
+            const downloadLink = document.getElementById('prod-file-link').value.trim();
             
             if (tempImages.length === 0) { alert('Por favor selecciona al menos una imagen'); return; }
-            if (!downloadFile) { alert('Por favor selecciona el archivo de descarga'); return; }
+            if (!downloadLink) { alert('Por favor pega el enlace de Google Drive'); return; }
             
             try {
                 const resizedImages = [];
                 const imageFiles = Array.from(document.getElementById('prod-images').files);
                 for (let i = 0; i < imageFiles.length; i++) { const resized = await resizeImage(imageFiles[i]); resizedImages.push(resized); }
-                const fileBase64 = await fileToBase64(downloadFile);
                 
                 const productsSnapshot = await db.collection("Productos").get();
                 const nextIdNumber = productsSnapshot.size + 1;
@@ -1098,7 +1097,7 @@ function clearFilters() {
                 const newProduct = {
                     id: sequentialId, name: name, price: price, original_price: price,
                     category: category, description: description, image_url: resizedImages[0], 
-                    images: resizedImages, file_data: fileBase64, file_name: downloadFile.name,
+                    images: resizedImages, file_data: downloadLink, file_name: 'Google Drive',
                     created_at: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
@@ -1106,8 +1105,6 @@ function clearFilters() {
                 alert('Producto guardado en Firebase exitosamente con ID: ' + sequentialId);
                 document.getElementById('product-form').reset();
                 document.getElementById('multiple-images-preview').innerHTML = '';
-                document.getElementById('file-label-text').innerText = 'Haz clic para subir el archivo descargable';
-                document.getElementById('file-label-text').classList.remove('text-white', 'font-bold');
                 tempImages = []; loadProducts();
             } catch (error) { console.error(error); alert('Error al guardar en Firebase: ' + error.message); }
         }
@@ -1197,7 +1194,7 @@ function clearFilters() {
             if (alreadyOwned) {
                 buyBtn.innerHTML = '<i class="fas fa-book text-xl"></i> Biblioteca';
                 buyBtn.className = 'w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-green-900/30 text-lg';
-                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente.html'; };
+                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente'; };
             } else if (currentUser) {
                 if (Number(product.price) === 0) {
                     buyBtn.innerHTML = '<i class="fas fa-gift text-xl"></i> Reclamar Gratis';
@@ -1221,12 +1218,12 @@ function clearFilters() {
         function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); document.body.style.overflow = ''; currentDetailProduct = null; currentImageIndex = 0; }
         function buyFromDetail() {
             if (!currentDetailProduct) return;
-            if (currentUser && myAssignedProductIds.has(currentDetailProduct.id)) { window.location.href = 'AreaCliente.html'; return; }
+            if (currentUser && myAssignedProductIds.has(currentDetailProduct.id)) { window.location.href = 'AreaCliente'; return; }
             if (!currentUser) { closeProductDetailModal(); openLoginModal(); } 
             else { addToCart(currentDetailProduct.id); closeProductDetailModal(); }
         }
 
-        function openLoginModal() { window.location.href = 'Login.html'; }
+        function openLoginModal() { window.location.href = 'Login'; }
         function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
         function redirectToDiscord() {
             const url = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20email`;
@@ -1521,13 +1518,13 @@ function clearFilters() {
                         </div>
                         ${alreadyOwned ? `
                             <div class="grid grid-cols-2 gap-2">
-                                <button onclick="window.location.href='AreaCliente.html'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
-                                <a href="Producto.html?id=${p.id}" class="bg-[#0d0505] hover:bg-[#150a0a] border border-red-800/50 text-gray-300 text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-eye"></i> Ver</a>
+                                <button onclick="window.location.href='AreaCliente'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
+                                <a href="Producto?id=${p.id}" class="bg-[#0d0505] hover:bg-[#150a0a] border border-red-800/50 text-gray-300 text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-eye"></i> Ver</a>
                             </div>
                         ` : `
                             <div class="grid grid-cols-2 gap-2">
                                 <button onclick="addToCart('${p.id}')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-900/30"><i class="fas fa-cart-plus"></i> Añadir</button>
-                                <a href="Producto.html?id=${p.id}" class="bg-[#0d0505] hover:bg-[#1a0a0a] border border-red-800/50 text-gray-300 hover:text-white text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-info-circle"></i> Detalles</a>
+                                <a href="Producto?id=${p.id}" class="bg-[#0d0505] hover:bg-[#1a0a0a] border border-red-800/50 text-gray-300 hover:text-white text-sm font-semibold py-3 rounded-xl transition-all text-center no-underline flex items-center justify-center gap-2"><i class="fas fa-info-circle"></i> Detalles</a>
                             </div>
                         `}
                         ${isAdmin(currentUser) ? `<button onclick="deleteProduct('${p.id}')" class="w-full mt-3 bg-transparent border border-red-900/50 hover:border-red-500 hover:bg-red-950/30 text-red-300 text-xs font-semibold py-2 rounded-xl transition-all"><i class="fas fa-trash mr-1"></i> Eliminar</button>` : ''}
@@ -1545,11 +1542,9 @@ function clearFilters() {
                     console.log(`✅ Licencia ya existente para ${userId} en ${productId}. No se crea duplicado.`);
                     return querySnapshot.docs[0].data();
                 }
-                const newUser = "USER_" + Math.random().toString(36).substring(2, 8).toUpperCase();
-                const newKey = Array.from({length: 24}, () => "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 36)]).join('');
                 const licenseData = { 
                     discord_id: userId, username: currentUser ? currentUser.username : 'Unknown', product_id: productId, 
-                    product_name: productName, user_code: newUser, key: newKey,
+                    product_name: productName,
                     created_at: firebase.firestore.FieldValue.serverTimestamp(), status: 'active' 
                 };
                 const docRef = await db.collection("Licencias").add(licenseData);
@@ -1578,7 +1573,7 @@ function clearFilters() {
                 if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
             }
             draw() {
-                ctx.fillStyle = `rgba(255, 26, 26, ${this.opacity})`;
+                ctx.fillStyle = `rgba(255, 0, 0, ${this.opacity})`;
                 ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
@@ -1774,10 +1769,10 @@ function clearFilters() {
 
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            toast.style.cssText = `background: rgba(20, 10, 10, 0.95); border-left: 4px solid ${type === 'success' ? '#00ff44' : '#ff1a1a'}; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transform: translateX(120%); transition: transform 0.3s ease-out; display: flex; align-items: center; gap: 10px; min-width: 250px;`;
+            toast.style.cssText = `background: rgba(20, 10, 10, 0.95); border-left: 4px solid ${type === 'success' ? '#00ff44' : '#ff0000'}; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transform: translateX(120%); transition: transform 0.3s ease-out; display: flex; align-items: center; gap: 10px; min-width: 250px;`;
             
             const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-            const iconColor = type === 'success' ? '#00ff44' : '#ff1a1a';
+            const iconColor = type === 'success' ? '#00ff44' : '#ff0000';
             
             toast.innerHTML = `<i class="fas ${icon}" style="font-size: 1.2rem; color: ${iconColor};"></i> <span>${message}</span>`;
             container.appendChild(toast);
