@@ -2214,11 +2214,11 @@ setTimer(validateOnce, 2000, 1)
                     </div>
                 </div>
 
-                <!-- Gestión de Licencia -->
+                <!-- Gestión de IP -->
                 <div class="flex-1">
                     <div class="flex justify-between items-center mb-3">
                         <h4 class="text-gray-400 text-sm font-semibold flex items-center gap-2">
-                            <i class="fas fa-key text-red-400"></i> Licencia Única
+                            <i class="fas fa-server text-red-400"></i> IP del Servidor
                         </h4>
                         <!-- TOGGLE SWITCH ACTIVAR/DESACTIVAR -->
                         <div class="flex items-center gap-2">
@@ -2234,35 +2234,27 @@ setTimer(validateOnce, 2000, 1)
 
                     ${userLicense ? `
                     <div class="space-y-3">
-                        <!-- EDITOR DE CLAVE -->
+                        <!-- EDITOR DE IP -->
                         <div class="flex gap-2">
-                            <input type="text" id="edit-key-${cliente.discord_id}" value="${escapeHTML(userLicense.key)}" 
+                            <input type="text" id="edit-ip-${cliente.discord_id}" value="${escapeHTML(userLicense.ip || '')}" 
                                 class="license-key-unique flex-1 text-left focus:border-red-500 focus:bg-black/80 transition-all outline-none cursor-text"
-                                placeholder="Clave de licencia...">
-                            <button onclick="updateLicenseKey('${cliente.discord_id}')" 
+                                placeholder="IP del server (ej: 37.148.216.26:22003)">
+                            <button onclick="updateLicenseIp('${cliente.discord_id}')" 
                                 class="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-lg transition-all text-sm font-bold flex items-center gap-2 whitespace-nowrap">
                                 <i class="fas fa-save"></i> Guardar
                             </button>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyToClipboard('${escapeHTML(userLicense.key)}')"
+                            <button onclick="copyToClipboard('${escapeHTML(userLicense.ip || '')}')"
                                 class="flex-1 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-600/20 px-4 py-2 rounded-lg transition-all text-xs font-semibold">
                                 <i class="fas fa-copy mr-2"></i>Copiar
-                            </button>
-                            <button onclick="regenerateLicenseKey('${cliente.discord_id}')"
-                                class="flex-1 bg-yellow-600/10 hover:bg-yellow-600/20 text-yellow-400 border border-yellow-600/20 px-4 py-2 rounded-lg transition-all text-xs font-semibold">
-                                <i class="fas fa-sync-alt mr-2"></i>Regenerar
                             </button>
                         </div>
                     </div>
                     ` : `
                     <div class="text-center py-4 bg-[#0d0505] border border-red-950/30 rounded-lg">
-                        <i class="fas fa-exclamation-circle text-yellow-500 text-2xl mb-2"></i>
-                        <p class="text-gray-400 text-sm">Sin licencia generada</p>
-                        <button onclick="generateLicenseForUser('${cliente.discord_id}', '${escapeHTML(cliente.username)}')" 
-                            class="mt-2 text-xs bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded transition-all">
-                            Generar Licencia Ahora
-                        </button>
+                        <i class="fas fa-globe text-yellow-500 text-2xl mb-2"></i>
+                        <p class="text-gray-400 text-sm">Sin IP registrada (el cliente la configura desde el Area de Cliente)</p>
                     </div>
                     `}
                 </div>
@@ -2290,10 +2282,10 @@ setTimer(validateOnce, 2000, 1)
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Licencia copiada al portapapeles', 'success');
+                showToast('Copiado al portapapeles', 'success');
             }).catch(err => {
                 console.error('Error al copiar:', err);
-                showToast('Error al copiar la licencia', 'error');
+                showToast('Error al copiar', 'error');
             });
         }
 
@@ -2314,6 +2306,7 @@ async function toggleLicenseStatus(discordId, newState) {
                 updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             showToast(`Licencia ${newState ? 'ACTIVADA' : 'DESACTIVADA'} correctamente`, newState ? 'success' : 'warning');
+            sendAdminLog(`🔑 ${newState ? 'Activó' : 'Desactivó'} la licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\``);
             await loadLicenciasData(); // Recargar para reflejar cambios visuales
         } else {
             showToast('No se encontró documento de licencia para actualizar', 'error');
@@ -2324,13 +2317,13 @@ async function toggleLicenseStatus(discordId, newState) {
     }
 }
 
-async function updateLicenseKey(discordId) {
-    const input = document.getElementById(`edit-key-${discordId}`);
+async function updateLicenseIp(discordId) {
+    const input = document.getElementById(`edit-ip-${discordId}`);
     if (!input) return;
-    
-    const newKey = input.value.trim();
-    if (!newKey) {
-        showToast('La clave no puede estar vacía', 'warning');
+
+    const newIp = input.value.trim();
+    if (!newIp) {
+        showToast('La IP no puede estar vacía', 'warning');
         return;
     }
 
@@ -2338,100 +2331,18 @@ async function updateLicenseKey(discordId) {
         const licenseRef = allLicencias.find(l => l.discord_id === discordId);
         if (licenseRef) {
             await db.collection("Licencias").doc(licenseRef.id).update({
-                key: newKey,
+                ip: newIp,
                 updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
-            showToast('Clave de licencia actualizada', 'success');
+            showToast('IP del servidor actualizada', 'success');
+            sendAdminLog(`✏️ Actualizó la IP del servidor de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • IP: \`${newIp}\``);
             await loadLicenciasData();
         } else {
             showToast('Licencia no encontrada en base de datos', 'error');
         }
     } catch (error) {
-        console.error("Error updating key:", error);
+        console.error("Error updating IP:", error);
         showToast('Error al guardar: ' + error.message, 'error');
-    }
-}
-
-async function regenerateLicenseKey(discordId) {
-    showConfirmModal(
-        'REGENERAR LICENCIA',
-        '¿Estás seguro? La clave anterior dejará de funcionar inmediatamente.',
-        async () => {
-            try {
-                const newKey = generateUniqueKey();
-                const licenseRef = allLicencias.find(l => l.discord_id === discordId);
-                
-                if (licenseRef) {
-                    await db.collection("Licencias").doc(licenseRef.id).update({
-                        key: newKey,
-                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    showToast('Nueva clave generada exitosamente', 'success');
-                    await loadLicenciasData();
-                }
-            } catch (error) {
-                showToast('Error al regenerar: ' + error.message, 'error');
-            }
-        }
-    );
-}
-
-async function generateLicenseForUser(discordId, username) {
-    try {
-        const newKey = generateUniqueKey();
-        await db.collection("Licencias").add({
-            discord_id: discordId,
-            username: username,
-            key: newKey,
-            active: true,
-            status: "ACTIVE",
-            created_at: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast('Licencia generada correctamente', 'success');
-        await loadLicenciasData();
-    } catch (error) {
-        showToast('Error al generar licencia: ' + error.message, 'error');
-    }
-}
-async function regenerateLicenseKey(discordId) {
-    showConfirmModal(
-        'REGENERAR LICENCIA',
-        '¿Estás seguro? La clave anterior dejará de funcionar inmediatamente.',
-        async () => {
-            try {
-                const newKey = generateUniqueKey();
-                const licenseRef = allLicencias.find(l => l.discord_id === discordId);
-                
-                if (licenseRef) {
-                    await db.collection("Licencias").doc(licenseRef.id).update({
-                        key: newKey,
-                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    showToast('Nueva clave generada exitosamente', 'success');
-                    await loadLicenciasData();
-                }
-            } catch (error) {
-                showToast('Error al regenerar: ' + error.message, 'error');
-            }
-        }
-    );
-}
-
-async function generateLicenseForUser(discordId, username) {
-    try {
-        const newKey = generateUniqueKey();
-        await db.collection("Licencias").add({
-            discord_id: discordId,
-            username: username,
-            key: newKey,
-            active: true,
-            status: "ACTIVE",
-            created_at: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showToast('Licencia generada correctamente', 'success');
-        await loadLicenciasData();
-    } catch (error) {
-        showToast('Error al generar licencia: ' + error.message, 'error');
     }
 }
 
@@ -3346,5 +3257,3 @@ document.getElementById('btn-confirm-create-discount').addEventListener('click',
     </script>
 </body>
 </html>
-
-
