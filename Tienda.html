@@ -3,25 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda - XF CODE</title>
-    <link rel="icon" type="image/png" href="files/XF_LOGO.png">
+    <title>Tienda - Papeleta Store</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff1a1a'/%3E%3Cstop offset='1' stop-color='%23cc1b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='70' font-family='Arial, sans-serif' font-size='58' font-weight='900' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        red: {
-                            50: '#fff5f5', 100: '#ffe0e0', 200: '#ffb3b3', 300: '#ff8080',
-                            400: '#ff4040', 500: '#ff0000', 600: '#e60000', 700: '#cc0000',
-                            800: '#b30000', 900: '#990000', 950: '#660000'
-                        }
-                    }
-                }
-            }
-        };
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Firebase -->
@@ -32,10 +17,10 @@
         :root {
             --bg-body: #050507;
             --bg-card: rgba(20, 10, 10, 0.6);
-            --primary: #ff0000;
+            --primary: #ff1a1a;
             --text-muted: #9496a1;
             --text-dim: #6b7280;
-            --border-color: rgba(255, 0, 0, 0.15);
+            --border-color: rgba(255, 26, 26, 0.15);
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,9 +38,9 @@
             background: radial-gradient(ellipse at top, rgba(255,26,26,0.15) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(255,26,26,0.1) 0%, transparent 50%);
         }
         .mesh-blob { position: absolute; filter: blur(90px); opacity: 0.25; animation: float 10s infinite ease-in-out; }
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #ff0000, transparent); }
-        .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #cc0000, transparent); animation-delay: -5s; }
-        .blob-3 { top: 50%; left: 50%; width: 40vw; height: 40vw; background: radial-gradient(circle, #ff4040, transparent); animation-delay: -2.5s; opacity: 0.15; }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #ff1a1a, transparent); }
+        .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #cc1b1b, transparent); animation-delay: -5s; }
+        .blob-3 { top: 50%; left: 50%; width: 40vw; height: 40vw; background: radial-gradient(circle, #ff4444, transparent); animation-delay: -2.5s; opacity: 0.15; }
         @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, 30px) scale(1.1); } }
 
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
@@ -68,23 +53,23 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6e6e6e; border-radius: 4px; }
         
-        .red-glow { text-shadow: 0 0 18px rgba(255, 0, 0, 0.85), 0 0 36px rgba(204, 27, 27, 0.4); }
-        .red-border { border-color: rgba(255, 0, 0, 0.25); }
+        .red-glow { text-shadow: 0 0 18px rgba(255, 26, 26, 0.85), 0 0 36px rgba(204, 27, 27, 0.4); }
+        .red-border { border-color: rgba(255, 26, 26, 0.25); }
         
         .cart-badge {
-            position: absolute; top: -8px; right: -8px; background: #ff0000; color: white; border-radius: 50%;
+            position: absolute; top: -8px; right: -8px; background: #ff1a1a; color: white; border-radius: 50%;
             width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
             font-size: 11px; font-weight: bold; animation: bounce 0.3s ease;
         }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
         .product-detail-modal { backdrop-filter: blur(10px); }
-        .gallery-main-image { width: 100%; height: 400px; object-fit: contain; border-radius: 16px; background: linear-gradient(135deg, rgba(230, 0, 0, 0.1), rgba(153, 27, 27, 0.1)); }
+        .gallery-main-image { width: 100%; height: 400px; object-fit: contain; border-radius: 16px; background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(153, 27, 27, 0.1)); }
         .gallery-thumbnails { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding: 5px; }
         .gallery-thumbnail { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s; flex-shrink: 0; }
-        .gallery-thumbnail:hover { border-color: #e60000; transform: scale(1.05); }
-        .gallery-thumbnail.active { border-color: #e60000; box-shadow: 0 0 10px rgba(230, 0, 0, 0.5); }
-        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(230, 0, 0, 0.8); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .gallery-thumbnail:hover { border-color: #dc2626; transform: scale(1.05); }
+        .gallery-thumbnail.active { border-color: #dc2626; box-shadow: 0 0 10px rgba(220, 38, 38, 0.5); }
+        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(220, 38, 38, 0.8); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .gallery-nav.prev { left: 10px; }
         .gallery-nav.next { right: 10px; }
 
@@ -107,7 +92,7 @@
             width: 350px; 
             height: 100vh; 
             background: linear-gradient(180deg, #150a0a 0%, #0a0505 100%); 
-            border-left: 1px solid rgba(255, 0, 0, 0.3); 
+            border-left: 1px solid rgba(255, 26, 26, 0.3); 
             box-shadow: -10px 0 40px rgba(0,0,0,0.8); 
             z-index: 101; 
             transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -122,14 +107,14 @@
             margin-bottom: 24px;
         }
         .filter-header h3 { color: white; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
-        .filter-header h3 i { color: #ff0000; }
+        .filter-header h3 i { color: #ff1a1a; }
         .filter-close-btn { 
             background: transparent; border: none; 
             color: #9496a1; width: 36px; height: 36px; border-radius: 8px; 
             cursor: pointer; font-size: 1.2rem; transition: all 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
-        .filter-close-btn:hover { background: rgba(255, 0, 0, 0.1); color: #ff0000; }
+        .filter-close-btn:hover { background: rgba(255, 26, 26, 0.1); color: #ff1a1a; }
         
         .filter-section { margin-bottom: 28px; }
         .filter-section-title { 
@@ -149,12 +134,12 @@
             background: rgba(255,255,255,0.1); border-radius: 3px; 
         }
         .price-slider-progress { 
-            position: absolute; height: 100%; background: linear-gradient(90deg, #ff0000, #ff4040); 
+            position: absolute; height: 100%; background: linear-gradient(90deg, #ff1a1a, #ff4444); 
             border-radius: 3px; 
         }
         .price-slider-thumb { 
             position: absolute; width: 18px; height: 18px; 
-            background: white; border: 3px solid #ff0000; border-radius: 50%; 
+            background: white; border: 3px solid #ff1a1a; border-radius: 50%; 
             top: 50%; transform: translate(-50%, -50%); 
             cursor: pointer; box-shadow: 0 2px 8px rgba(255,26,26,0.4);
             transition: transform 0.1s;
@@ -170,23 +155,23 @@
             border-radius: 10px; cursor: pointer; transition: all 0.2s; 
         }
         .category-checkbox:hover { 
-            background: rgba(255, 0, 0, 0.05); border-color: rgba(255, 0, 0, 0.3); 
+            background: rgba(255, 26, 26, 0.05); border-color: rgba(255, 26, 26, 0.3); 
         }
         .category-checkbox input[type="checkbox"] { 
-            width: 18px; height: 18px; accent-color: #ff0000; cursor: pointer; 
+            width: 18px; height: 18px; accent-color: #ff1a1a; cursor: pointer; 
         }
         .category-checkbox label { 
             color: #f3f4f6; font-weight: 500; cursor: pointer; flex: 1; 
         }
         
         .filter-clear-btn { 
-            width: 100%; background: rgba(255, 0, 0, 0.1); 
-            border: 1px solid rgba(255, 0, 0, 0.3); 
-            color: #ff0000; padding: 12px; border-radius: 10px; 
+            width: 100%; background: rgba(255, 26, 26, 0.1); 
+            border: 1px solid rgba(255, 26, 26, 0.3); 
+            color: #ff1a1a; padding: 12px; border-radius: 10px; 
             font-weight: 600; cursor: pointer; transition: all 0.2s;
             margin-bottom: 12px;
         }
-        .filter-clear-btn:hover { background: rgba(255, 0, 0, 0.2); }
+        .filter-clear-btn:hover { background: rgba(255, 26, 26, 0.2); }
 
         @media (max-width: 768px) {
             .filter-panel { width: 100%; right: -100%; }
@@ -283,21 +268,21 @@
     <!-- MAIN CONTENT -->
     <div class="relative z-10 flex-grow flex flex-col">
         <header class="bg-[#0d0505]/90 backdrop-blur border-b red-border sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='/'">
-                <img src="files/XF_LOGO.png" alt="XF CODE" class="w-9 h-9 rounded-lg object-cover">
-                <span class="text-white font-black tracking-widest text-lg">XF <span class="text-red-400">CODE</span></span>
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-red-500 to-red-800 flex items-center justify-center font-black">P</div>
+                <span class="text-white font-black tracking-widest text-lg">PAPELETA <span class="text-red-400">STORE</span></span>
             </div>
             <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-300">
-                <a href="/" class="hover:text-red-400 transition-colors">Inicio</a>
-                <a href="Tienda" class="text-red-400">Productos</a>
-                <a href="/" class="hover:text-red-400 transition-colors">Preguntas</a>
+                <a href="index.html" class="hover:text-red-400 transition-colors">Inicio</a>
+                <a href="Tienda.html" class="text-red-400">Productos</a>
+                <a href="index.html#preguntas" class="hover:text-red-400 transition-colors">Preguntas</a>
             </nav>
             <div class="flex items-center gap-3">
-                <a href="Carrito" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
+                <a href="Carrito.html" class="relative bg-[#150a0a] hover:bg-[#1a0a0a] border border-red-900/50 w-10 h-10 rounded-full flex items-center justify-center transition-all group">
                     <i class="fas fa-shopping-cart text-gray-300 group-hover:text-white transition-colors"></i>
                     <span id="cart-count" class="cart-badge hidden">0</span>
                 </a>
-                <button id="login-btn" onclick="window.location.href='Login'" class="bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-2 px-5 rounded-lg flex items-center gap-2 transition-all text-sm shadow-lg shadow-blue-900/20">
+                <button id="login-btn" onclick="window.location.href='Login.html'" class="bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-2 px-5 rounded-lg flex items-center gap-2 transition-all text-sm shadow-lg shadow-blue-900/20">
                     <i class="fab fa-discord"></i> Acceder
                 </button>
                 <div id="user-section" class="hidden flex items-center gap-3 bg-[#150a0a] px-3 py-1.5 rounded-full border border-red-900/50 cursor-pointer hover:border-red-600 transition-all group" onclick="toggleUserPanel()">
@@ -332,14 +317,14 @@
     </div>
 
     <footer class="relative z-10 bg-[#080505] text-center py-6 border-t border-red-950/30 text-xs text-gray-500">
-        <p>&copy; 2026 XF CODE. Todos los derechos reservados.</p>
+        <p>&copy; 2026 Papeleta Store. Todos los derechos reservados.</p>
     </footer>
 
     <script>
-        const CLIENT_ID = '1535346943482531892'; 
-        const REDIRECT_URI = window.location.origin + '/#';
-        const ADMIN_DISCORD_IDS = ['1342976448679641158', '1525732580790636696']; 
-        const ADMIN_DISCORD_USERNAMES = ['jkingv2']; 
+        const CLIENT_ID = '1213866547181780992'; 
+        const REDIRECT_URI = 'https://papeleta-script-github-io.vercel.app';
+        const ADMIN_DISCORD_IDS = ['890526767608127489']; 
+        const ADMIN_DISCORD_USERNAMES = ['Papeleta']; 
 
         function isAdmin(user) {
             if (!user) return false;
@@ -361,14 +346,15 @@
         let selectedCategories = [];
 
         const firebaseConfig = {
-  apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
-  authDomain: "xfcode-e3805.firebaseapp.com",
-  projectId: "xfcode-e3805",
-  storageBucket: "xfcode-e3805.firebasestorage.app",
-  messagingSenderId: "305007654133",
-  appId: "1:305007654133:web:b1b8f433bf0f506c0c81bc",
-  measurementId: "G-3456M1F6PD"
-};
+            apiKey: "AIzaSyBWggE0KFiVZDxwxvmhuWXEKu6bNguV0mM",
+            authDomain: "papeletalicencia.firebaseapp.com",
+            databaseURL: "https://papeletalicencia-default-rtdb.firebaseio.com",
+            projectId: "papeletalicencia",
+            storageBucket: "papeletalicencia.firebasestorage.app",
+            messagingSenderId: "677208314051",
+            appId: "1:677208314051:web:a27c04f31d402e83f29276",
+            measurementId: "G-RPJ4KQ6EQ4"
+        };
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -386,7 +372,7 @@
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
             if (currentUser && myAssignedProductIds.has(productId)) { 
-                window.location.href = 'AreaCliente'; 
+                window.location.href = 'AreaCliente.html'; 
                 return; 
             }
             let cart = JSON.parse(localStorage.getItem('papeleta_cart') || '[]');
@@ -607,7 +593,7 @@
             if (alreadyOwned) {
                 buyBtn.innerHTML = '<i class="fas fa-book text-xl"></i> Biblioteca';
                 buyBtn.className = 'w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-green-900/30 text-lg';
-                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente'; };
+                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'AreaCliente.html'; };
             } else if (currentUser) {
                 if (Number(product.price) === 0) {
                     buyBtn.innerHTML = '<i class="fas fa-gift text-xl"></i> Reclamar Gratis';
@@ -621,7 +607,7 @@
             } else {
                 buyBtn.innerHTML = '<i class="fab fa-discord text-xl"></i> Iniciar Sesión para Comprar';
                 buyBtn.className = 'w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-red-900/30 text-lg';
-                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'Login'; };
+                buyBtn.onclick = () => { closeProductDetailModal(); window.location.href = 'Login.html'; };
             }
             
             document.getElementById('product-detail-modal').classList.remove('hidden');
@@ -640,12 +626,12 @@
         function buyFromDetail() {
             if (!currentDetailProduct) return;
             if (currentUser && myAssignedProductIds.has(currentDetailProduct.id)) {
-                window.location.href = 'AreaCliente';
+                window.location.href = 'AreaCliente.html';
                 return;
             }
             if (!currentUser) {
                 closeProductDetailModal();
-                window.location.href = 'Login';
+                window.location.href = 'Login.html';
             } else {
                 addToCart(currentDetailProduct.id);
                 closeProductDetailModal();
@@ -654,7 +640,7 @@
 
         function toggleUserPanel() {
             if (!currentUser) { 
-                window.location.href = 'Login';
+                window.location.href = 'Login.html';
                 return; 
             }
             // Aquí podrías abrir un panel lateral si lo necesitas
@@ -820,7 +806,7 @@
                         </div>
                         ${alreadyOwned ? `
                             <div class="grid grid-cols-2 gap-2">
-                                <button onclick="window.location.href='AreaCliente'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
+                                <button onclick="window.location.href='AreaCliente.html'" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-download"></i> Descargar</button>
                                 <button onclick="showProductDetails('${p.id}')" class="bg-[#0d0505] hover:bg-[#150a0a] border border-red-800/50 text-gray-300 text-sm font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"><i class="fas fa-eye"></i> Ver</button>
                             </div>
                         ` : `
@@ -854,10 +840,10 @@
             }
 
             const toast = document.createElement('div');
-            toast.style.cssText = `background: rgba(20, 10, 10, 0.95); border-left: 4px solid ${type === 'success' ? '#00ff44' : '#ff0000'}; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transform: translateX(120%); transition: transform 0.3s ease-out; display: flex; align-items: center; gap: 10px; min-width: 250px;`;
+            toast.style.cssText = `background: rgba(20, 10, 10, 0.95); border-left: 4px solid ${type === 'success' ? '#00ff44' : '#ff1a1a'}; color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); transform: translateX(120%); transition: transform 0.3s ease-out; display: flex; align-items: center; gap: 10px; min-width: 250px;`;
             
             const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-            const iconColor = type === 'success' ? '#00ff44' : '#ff0000';
+            const iconColor = type === 'success' ? '#00ff44' : '#ff1a1a';
             
             toast.innerHTML = `<i class="fas ${icon}" style="font-size: 1.2rem; color: ${iconColor};"></i> <span>${message}</span>`;
             container.appendChild(toast);
@@ -900,7 +886,7 @@
                 if (this.y < 0) this.y = canvas.height;
             }
             draw() {
-                ctx.fillStyle = `rgba(255, 0, 0, ${this.opacity})`;
+                ctx.fillStyle = `rgba(255, 26, 26, ${this.opacity})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
