@@ -3,26 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo XF </title>
-    <link rel="icon" type="image/png" href="files/XF_LOGO.png">
+    <title>Admin Panel </title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff1a1a'/%3E%3Cstop offset='1' stop-color='%23cc1b1b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='70' font-family='Arial, sans-serif' font-size='58' font-weight='900' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        red: {
-                            50: '#fff5f5', 100: '#ffe0e0', 200: '#ffb3b3', 300: '#ff8080',
-                            400: '#ff4040', 500: '#ff0000', 600: '#e60000', 700: '#cc0000',
-                            800: '#b30000', 900: '#990000', 950: '#660000'
-                        }
-                    }
-                }
-            }
-        };
-    </script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
@@ -37,7 +25,7 @@
         .sidebar { 
             background: rgba(10, 5, 5, 0.95); 
             backdrop-filter: blur(10px); 
-            border-right: 1px solid rgba(255, 0, 0, 0.1); 
+            border-right: 1px solid rgba(255, 26, 26, 0.1); 
         }
         .nav-item { 
             transition: all 0.3s ease; 
@@ -46,52 +34,52 @@
             cursor: pointer;
         }
         .nav-item:hover { 
-            background: rgba(255, 0, 0, 0.1); 
+            background: rgba(255, 26, 26, 0.1); 
             color: white; 
             padding-left: 1.5rem;
         }
         .nav-item.active { 
-            background: rgba(255, 0, 0, 0.15); 
-            border-left: 3px solid #ff0000; 
-            color: #ff5555; 
+            background: rgba(255, 26, 26, 0.15); 
+            border-left: 3px solid #ff1a1a; 
+            color: #ff6b6b; 
         }
         
         .card { 
             background: rgba(21, 10, 10, 0.6); 
-            border: 1px solid rgba(255, 0, 0, 0.15); 
+            border: 1px solid rgba(255, 26, 26, 0.15); 
             backdrop-filter: blur(10px); 
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
         .btn-action {
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(20, 10, 10, 0.8) 100%);
-            border: 1px solid rgba(255, 0, 0, 0.2);
+            background: linear-gradient(135deg, rgba(255, 26, 26, 0.1) 0%, rgba(20, 10, 10, 0.8) 100%);
+            border: 1px solid rgba(255, 26, 26, 0.2);
             transition: all 0.3s ease;
         }
         .btn-action:hover {
-            border-color: #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 15px rgba(255, 26, 26, 0.2);
             transform: translateY(-2px);
         }
         .btn-primary {
-            background: linear-gradient(135deg, #e60000 0%, #990000 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
             transition: all 0.3s ease;
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(230, 0, 0, 0.3);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
         }
         .input-field { 
             background: rgba(13, 5, 5, 0.8); 
-            border: 1px solid rgba(255, 0, 0, 0.2); 
+            border: 1px solid rgba(255, 26, 26, 0.2); 
         }
         .input-field:focus { 
-            border-color: #ff0000; 
+            border-color: #ff1a1a; 
             outline: none; 
         }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0a0505; }
-        ::-webkit-scrollbar-thumb { background: #990000; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff4040; }
+        ::-webkit-scrollbar-thumb { background: #7f1d1d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -99,9 +87,9 @@
         .section-content.active { display: block; animation: fadeIn 0.4s ease; }
         
         .admin-badge { 
-            background: rgba(230, 0, 0, 0.2); 
-            border: 1px solid rgba(230, 0, 0, 0.5); 
-            color: #ff5555; 
+            background: rgba(220, 38, 38, 0.2); 
+            border: 1px solid rgba(220, 38, 38, 0.5); 
+            color: #ff6b6b; 
             padding: 2px 8px; 
             border-radius: 4px; 
             font-size: 10px; 
@@ -110,29 +98,29 @@
         }
         .stat-card { 
             background: linear-gradient(135deg, rgba(21, 10, 10, 0.8) 0%, rgba(13, 5, 5, 0.8) 100%); 
-            border: 1px solid rgba(255, 0, 0, 0.15); 
+            border: 1px solid rgba(255, 26, 26, 0.15); 
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, #ff0000 0%, #ff5555 100%);
+            background: linear-gradient(135deg, #ff1a1a 0%, #ff6b6b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .preview-item {
             position: relative; border-radius: 8px; overflow: hidden;
-            border: 2px solid rgba(230, 0, 0, 0.3); animation: slideIn 0.3s ease;
+            border: 2px solid rgba(220, 38, 38, 0.3); animation: slideIn 0.3s ease;
         }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .preview-item img { width: 100%; height: 120px; object-fit: cover; }
         .preview-item .remove-btn {
             position: absolute; top: 5px; right: 5px;
-            background: rgba(230, 0, 0, 0.9); color: white;
+            background: rgba(220, 38, 38, 0.9); color: white;
             border: none; width: 25px; height: 25px; border-radius: 50%;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
             font-size: 12px; transition: all 0.2s;
         }
-        .preview-item .remove-btn:hover { background: #e60000; transform: scale(1.1); }
+        .preview-item .remove-btn:hover { background: #dc2626; transform: scale(1.1); }
 
         .multiple-preview-container {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -142,7 +130,7 @@
         .youtube-preview {
             position: relative; padding-bottom: 56.25%; height: 0;
             overflow: hidden; border-radius: 8px;
-            border: 2px solid rgba(230, 0, 0, 0.3); background: #0d0505;
+            border: 2px solid rgba(220, 38, 38, 0.3); background: #0d0505;
         }
         .youtube-preview iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
@@ -156,28 +144,28 @@
         .glass-panel {
             background: rgba(20, 10, 10, 0.6);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 26, 26, 0.2);
             border-radius: 16px;
         }
 
         .license-user-card {
             background: rgba(13, 5, 5, 0.6);
-            border: 1px solid rgba(255, 0, 0, 0.15);
+            border: 1px solid rgba(255, 26, 26, 0.15);
             border-radius: 12px; transition: all 0.3s ease;
         }
         .license-user-card:hover {
-            border-color: rgba(255, 0, 0, 0.4);
+            border-color: rgba(255, 26, 26, 0.4);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(255, 26, 26, 0.1);
         }
 
         .license-key-unique {
             font-family: 'Fira Code', monospace;
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 0, 0, 0.4);
+            border: 1px solid rgba(255, 26, 26, 0.4);
             padding: 12px 16px; border-radius: 8px;
             font-size: 14px; letter-spacing: 2px;
-            color: #ff5555; text-align: center;
+            color: #ff6b6b; text-align: center;
         }
 
         .badge-status {
@@ -194,11 +182,11 @@
         /* Estilos específicos para Gestión de Usuarios */
         .user-row {
             background: rgba(13, 5, 5, 0.6);
-            border: 1px solid rgba(255, 0, 0, 0.15);
+            border: 1px solid rgba(255, 26, 26, 0.15);
             border-radius: 12px; padding: 16px;
             transition: all 0.3s ease;
         }
-        .user-row:hover { border-color: rgba(255, 0, 0, 0.4); transform: translateX(4px); }
+        .user-row:hover { border-color: rgba(255, 26, 26, 0.4); transform: translateX(4px); }
 
         .role-badge {
             padding: 4px 12px; border-radius: 20px;
@@ -206,7 +194,7 @@
             text-transform: uppercase; letter-spacing: 0.5px;
             display: inline-flex; align-items: center; gap: 6px;
         }
-        .role-admin { background: rgba(230, 0, 0, 0.2); color: #e60000; border: 1px solid rgba(230, 0, 0, 0.4); }
+        .role-admin { background: rgba(220, 38, 38, 0.2); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.4); }
         .role-mod { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); }
         .role-user { background: rgba(107, 114, 128, 0.2); color: #6b7280; border: 1px solid rgba(107, 114, 128, 0.3); }
         .role-custom { border: 1px solid; }
@@ -215,8 +203,8 @@
             transition: all 0.2s ease; font-size: 12px; font-weight: 600;
             padding: 6px 12px; border-radius: 8px; position: relative;
         }
-        .btn-role-admin { background: rgba(230, 0, 0, 0.1); border: 1px solid rgba(230, 0, 0, 0.3); color: #e60000; }
-        .btn-role-admin:hover:not(:disabled) { background: rgba(230, 0, 0, 0.3); border-color: rgba(230, 0, 0, 0.6); }
+        .btn-role-admin { background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3); color: #dc2626; }
+        .btn-role-admin:hover:not(:disabled) { background: rgba(220, 38, 38, 0.3); border-color: rgba(220, 38, 38, 0.6); }
         .btn-role-mod { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; }
         .btn-role-mod:hover:not(:disabled) { background: rgba(245, 158, 11, 0.3); border-color: rgba(245, 158, 11, 0.6); }
         .btn-role-user { background: rgba(107, 114, 128, 0.1); border: 1px solid rgba(107, 114, 128, 0.3); color: #6b7280; }
@@ -224,7 +212,7 @@
 
         .custom-roles-dropdown {
             position: absolute; bottom: 100%; left: 0; margin-bottom: 8px;
-            background: #1a0a0a; border: 1px solid rgba(255, 0, 0, 0.3);
+            background: #1a0a0a; border: 1px solid rgba(255, 26, 26, 0.3);
             border-radius: 10px; padding: 6px; min-width: 180px; z-index: 50;
             box-shadow: 0 -10px 25px rgba(0,0,0,0.5); display: none;
         }
@@ -243,8 +231,8 @@
             --enc-bg: #070707;
             --enc-card-bg: rgba(21, 10, 10, 0.6);
             --enc-muted: #666;
-            --enc-accent: #ff0000;
-            --enc-accent-2: #cc0000;
+            --enc-accent: #ff1a1a;
+            --enc-accent-2: #cc1b1b;
             --enc-white: #eee;
         }
         
@@ -320,17 +308,17 @@
 
         /* Estilos para Pasar a Usuarios (Migrate) */
         .migrate-user-item {
-            background: rgba(13, 5, 5, 0.6); border: 1px solid rgba(255, 0, 0, 0.15);
+            background: rgba(13, 5, 5, 0.6); border: 1px solid rgba(255, 26, 26, 0.15);
             border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.2s ease;
         }
-        .migrate-user-item:hover { border-color: rgba(255, 0, 0, 0.4); background: rgba(255, 0, 0, 0.05); }
-        .migrate-user-item.selected { border-color: #e60000; background: rgba(230, 0, 0, 0.1); box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.3); }
+        .migrate-user-item:hover { border-color: rgba(255, 26, 26, 0.4); background: rgba(255, 26, 26, 0.05); }
+        .migrate-user-item.selected { border-color: #dc2626; background: rgba(220, 38, 38, 0.1); box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3); }
 
         .migrate-product-card {
-            background: rgba(13, 5, 5, 0.6); border: 2px solid rgba(255, 0, 0, 0.2);
+            background: rgba(13, 5, 5, 0.6); border: 2px solid rgba(255, 26, 26, 0.2);
             border-radius: 12px; cursor: pointer; transition: all 0.3s ease;
         }
-        .migrate-product-card:hover { border-color: rgba(255, 0, 0, 0.5); transform: translateY(-2px); }
+        .migrate-product-card:hover { border-color: rgba(255, 26, 26, 0.5); transform: translateY(-2px); }
         .migrate-product-card.selected { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3); }
 
         .btn-assign {
@@ -343,17 +331,17 @@
         .permission-item {
             display: flex; align-items: center; justify-content: space-between;
             padding: 12px 16px; background: rgba(13, 5, 5, 0.6);
-            border: 1px solid rgba(255, 0, 0, 0.1); border-radius: 10px;
+            border: 1px solid rgba(255, 26, 26, 0.1); border-radius: 10px;
             margin-bottom: 8px; transition: all 0.2s ease;
         }
-        .permission-item:hover { border-color: rgba(255, 0, 0, 0.3); background: rgba(255, 0, 0, 0.05); }
+        .permission-item:hover { border-color: rgba(255, 26, 26, 0.3); background: rgba(255, 26, 26, 0.05); }
 
         .toggle-switch {
             position: relative; width: 44px; height: 24px;
             background: #374151; border-radius: 20px; cursor: pointer;
             transition: background 0.3s ease;
         }
-        .toggle-switch.active { background: #e60000; }
+        .toggle-switch.active { background: #dc2626; }
         .toggle-knob {
             position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
             background: white; border-radius: 50%; transition: transform 0.3s ease;
@@ -362,20 +350,20 @@
         .toggle-switch.active .toggle-knob { transform: translateX(20px); }
 
         .role-card-item {
-            background: rgba(13, 5, 5, 0.6); border: 1px solid rgba(255, 0, 0, 0.15);
+            background: rgba(13, 5, 5, 0.6); border: 1px solid rgba(255, 26, 26, 0.15);
             border-radius: 12px; padding: 16px; transition: all 0.3s ease;
         }
-        .role-card-item:hover { border-color: rgba(255, 0, 0, 0.4); transform: translateY(-2px); }
+        .role-card-item:hover { border-color: rgba(255, 26, 26, 0.4); transform: translateY(-2px); }
 
         .btn-create-role {
-            background: linear-gradient(to right, #e60000, #990000);
-            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
+            background: linear-gradient(to right, #dc2626, #991b1b);
+            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
         }
-        .btn-create-role:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(230, 0, 0, 0.5); }
+        .btn-create-role:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5); }
 
         .color-picker-wrapper {
             position: relative; width: 40px; height: 40px; border-radius: 8px;
-            overflow: hidden; border: 2px solid rgba(255, 0, 0, 0.3); cursor: pointer;
+            overflow: hidden; border: 2px solid rgba(255, 26, 26, 0.3); cursor: pointer;
         }
         .color-picker-wrapper input[type="color"] {
             position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
@@ -386,8 +374,8 @@
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { 
             background: rgba(21, 10, 10, 0.95); 
-            border: 1px solid rgba(255, 0, 0, 0.3); 
-            border-left: 4px solid #e60000; 
+            border: 1px solid rgba(255, 26, 26, 0.3); 
+            border-left: 4px solid #dc2626; 
             border-radius: 12px; 
             padding: 16px 20px; 
             min-width: 320px; max-width: 450px; 
@@ -399,16 +387,16 @@
             pointer-events: auto;
         }
         .toast.success { border-left-color: #10b981; }
-        .toast.error { border-left-color: #ff4040; }
+        .toast.error { border-left-color: #ef4444; }
         .toast.warning { border-left-color: #f59e0b; }
         .toast-icon { font-size: 20px; flex-shrink: 0; }
         .toast.success .toast-icon { color: #10b981; }
-        .toast.error .toast-icon { color: #ff4040; }
+        .toast.error .toast-icon { color: #ef4444; }
         .toast.warning .toast-icon { color: #f59e0b; }
         .toast-content { flex: 1; }
         .toast-title { font-weight: 600; font-size: 14px; color: white; margin-bottom: 2px; }
         .toast-message { font-size: 13px; color: #9ca3af; }
-        .toast-timer { position: absolute; bottom: 0; left: 0; height: 3px; background: rgba(230, 0, 0, 0.5); border-radius: 0 0 0 12px; animation: timerShrink 5s linear forwards; }
+        .toast-timer { position: absolute; bottom: 0; left: 0; height: 3px; background: rgba(220, 38, 38, 0.5); border-radius: 0 0 0 12px; animation: timerShrink 5s linear forwards; }
         .toast.success .toast-timer { background: rgba(16, 185, 129, 0.5); }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100%); } }
@@ -426,17 +414,17 @@
         
         .confirm-modal-box {
             background: #0d0505;
-            border: 1px solid rgba(230, 0, 0, 0.4);
+            border: 1px solid rgba(220, 38, 38, 0.4);
             border-radius: 16px;
             padding: 32px;
             width: 90%; max-width: 480px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(230, 0, 0, 0.15);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(220, 38, 38, 0.15);
             animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: center;
         }
         
         .confirm-title {
-            color: #e60000;
+            color: #dc2626;
             font-size: 20px;
             font-weight: 800;
             text-transform: uppercase;
@@ -453,7 +441,7 @@
         }
         
         .confirm-body strong { color: white; font-weight: 600; }
-        .confirm-body .highlight { color: #ff5555; font-weight: 700; }
+        .confirm-body .highlight { color: #ff6b6b; font-weight: 700; }
         
         .confirm-actions {
             display: flex; gap: 12px; justify-content: center;
@@ -476,7 +464,7 @@
         }
         
         .btn-confirm-accept {
-            background: linear-gradient(135deg, #e60000 0%, #990000 100%);
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
             border: none;
             color: white;
             padding: 12px 24px;
@@ -485,11 +473,11 @@
             cursor: pointer;
             transition: all 0.2s;
             flex: 1;
-            box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
         }
         .btn-confirm-accept:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(230, 0, 0, 0.5);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
         }
     </style>
 </head>
@@ -551,12 +539,12 @@
                     <span>Licencias Usuario</span>
                 </a>
 
-                <a onclick="openLinkModal()" class="nav-item flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:text-white">
-                    <i class="fas fa-link w-5 text-center"></i>
-                    <span>Link de Discord</span>
-                </a>
+                <div class="text-xs text-gray-500 uppercase font-semibold mt-8 mb-4 px-3 tracking-wider">Herramientas Lua</div>
 
-                <div class="text-xs text-gray-500 uppercase font-semibold mt-8 mb-4 px-3 tracking-wider">Gestión de Usuarios</div>
+                <a onclick="showSection('encryptor', this)" class="nav-item flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:text-white">
+                    <i class="fas fa-lock w-5 text-center"></i>
+                    <span>Encriptador Lua</span>
+                </a>
 
                 <a onclick="showSection('migrate', this)" class="nav-item flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:text-white">
                     <i class="fas fa-exchange-alt w-5 text-center"></i>
@@ -613,20 +601,11 @@
             <div class="card rounded-xl p-6 mb-8">
                 <form id="product-form" onsubmit="handleProductSubmit(event)" class="space-y-6">
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-gray-300 text-sm font-semibold mb-2">ID del Producto *</label>
-                            <input type="text" id="prod-id" required 
-                                class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
-                                placeholder="Ej: inventario-premium">
-                            <p class="text-gray-500 text-xs mt-2">Este ID es el que usas en MainS.lua (PRODUCT_ID). Solo letras, números y guiones.</p>
-                        </div>
-                        <div>
-                            <label class="block text-gray-300 text-sm font-semibold mb-2">Nombre del Producto *</label>
-                            <input type="text" id="prod-name" required 
-                                class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
-                                placeholder="Ej: Script de Inventario Premium">
-                        </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Nombre del Producto *</label>
+                        <input type="text" id="prod-name" required 
+                            class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
+                            placeholder="Ej: Script de Inventario Premium">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -642,7 +621,8 @@
                                 class="input-field w-full px-4 py-3 rounded-lg text-sm text-white focus:outline-none">
                                 <option value="Scripts">Scripts</option>
                                 <option value="Modelajes">Modelajes</option>
-                                <option value="Mappings">Mapeos</option>
+                                <option value="Mappings">Mappings</option>
+                                <option value="Webs">Sitios Web</option>
                                 <option value="Bots">Bots Discord</option>
                                 <option value="Otros">Otros</option>
                             </select>
@@ -684,13 +664,15 @@
                     </div>
 
                     <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">
-                            <i class="fab fa-google-drive text-red-500 mr-2"></i>Enlace de Google Drive del Producto *
-                        </label>
-                        <input type="url" id="prod-file-link" required
-                            class="input-field w-full px-4 py-3 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none" 
-                            placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
-                        <p class="text-gray-500 text-xs mt-2">El cliente será llevado a este enlace de Google Drive cuando pulse Descargar.</p>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Archivo del Producto (Zip/Rar/Lua) *</label>
+                        <div class="border-2 border-dashed border-red-900/40 rounded-xl p-6 text-center hover:border-red-500/50 transition-colors bg-[#0d0505]/50">
+                            <input type="file" id="prod-file" accept=".zip,.rar,.7z,.lua,.txt" required onchange="updateFileName(this)" class="hidden">
+                            <label for="prod-file" class="cursor-pointer block">
+                                <i class="fas fa-file-archive text-4xl text-red-400 mb-3"></i>
+                                <p id="file-label-text" class="text-gray-300 font-semibold">Haz clic para subir el archivo descargable</p>
+                                <p class="text-gray-500 text-xs mt-1">El usuario podrá descargar este archivo tras comprarlo</p>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="pt-4 flex gap-4">
@@ -892,6 +874,45 @@
             </div>
         </section>
 
+        <!-- SECCIÓN 4: ENCRIPTADOR LUA -->
+        <section id="section-encryptor" class="section-content fade-in">
+            
+            <div class="card rounded-xl p-6 mb-6 border-l-4 border-l-red-600">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-white text-2xl shadow-lg shadow-red-900/50">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">PL <span class="text-gray-400 font-normal">COMPILADOR MTA</span></h2>
+                        <p class="text-sm text-gray-400">Compilación segura y ofuscación oficial para tus recursos</p>
+                    </div>
+                </div>
+                <div id="root-compiler"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-server text-red-500"></i> Características</h3>
+                    <ul class="space-y-3 text-gray-300 text-sm">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Compilación real via luac.mtasa.com</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Soporte para Carpetas completas o ZIP</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Selección flexible de archivos</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-500 mt-1"></i> Actualización automática de meta.xml</li>
+                    </ul>
+                </div>
+                <div class="card rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-circle-question text-red-500"></i> Cómo usar</h3>
+                    <ol class="space-y-2 text-gray-300 text-sm list-decimal list-inside">
+                        <li>Sube un .zip o selecciona una carpeta.</li>
+                        <li>El sistema detectará automáticamente los archivos .lua.</li>
+                        <li>Marca los archivos que deseas compilar/ofuscar.</li>
+                        <li>Haz clic en "COMPILAR Y DESCARGAR".</li>
+                        <li>Sube el ZIP resultante a tu servidor MTA.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
         <!-- SECCIÓN 5: PASAR A USUARIOS (ASIGNAR PRODUCTOS) -->
         <section id="section-migrate" class="section-content fade-in">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -994,8 +1015,8 @@
                                 <div>
                                     <label class="block text-gray-300 text-sm font-semibold mb-2">Color Identificativo</label>
                                     <div class="flex items-center gap-3 h-[46px]">
-                                        <div class="color-picker-wrapper" id="color-preview" style="background-color: #ff0000;">
-                                            <input type="color" id="role-color" value="#ff0000" onchange="updateColorPreview(this.value)">
+                                        <div class="color-picker-wrapper" id="color-preview" style="background-color: #ff1a1a;">
+                                            <input type="color" id="role-color" value="#ff1a1a" onchange="updateColorPreview(this.value)">
                                         </div>
                                         <span class="text-gray-400 text-xs font-mono" id="color-hex">#FF1A1A</span>
                                     </div>
@@ -1146,218 +1167,170 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 7: SERVER.LUA (MAINS.LUA) -->
+        <!-- SECCIÓN 7: SERVER.LUA -->
         <section id="section-serverlua" class="section-content fade-in">
     <div class="card rounded-xl overflow-hidden">
-        <div class="p-4 border-b border-red-900/30 bg-red-900/10 flex justify-between items-center gap-4 flex-wrap">
+        <div class="p-4 border-b border-red-900/30 bg-red-900/10 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <i class="fas fa-file-code text-red-500 text-xl"></i>
                 <div>
-                    <h3 class="text-white font-bold">Server.lua (MainS.lua)</h3>
-                    <p class="text-xs text-gray-400">Codigo de validación por IP (sin key de licencia)</p>
+                    <h3 class="text-white font-bold">Server.lua</h3>
+                    <p class="text-xs text-gray-400">Codigo de validación de licencia</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <div>
-                    <label class="block text-[10px] text-gray-500 uppercase font-semibold mb-1 tracking-wider">Producto a proteger</label>
-                    <select id="serverlua-product-select" onchange="applyServerLuaProduct(this.value)"
-                        class="input-field w-72 px-3 py-2 rounded-lg text-sm text-white focus:outline-none">
-                        <option value="">Cargando productos...</option>
-                    </select>
-                </div>
-                <button onclick="copyServerLua()" class="btn-primary px-4 py-2 rounded-lg text-white text-sm font-bold flex items-center gap-2 self-end">
-                    <i class="fas fa-copy"></i> Copiar Codigo
-                </button>
-            </div>
+            <button onclick="copyServerLua()" class="btn-primary px-4 py-2 rounded-lg text-white text-sm font-bold flex items-center gap-2">
+                <i class="fas fa-copy"></i> Copiar Codigo
+            </button>
         </div>
         <div class="p-0">
             <textarea id="server-lua-code" class="w-full h-[600px] bg-[#050507] text-white font-mono text-sm p-6 focus:outline-none resize-none" spellcheck="false">
 
--- ============================================
---   XF CODE - ALL RIGHTS RESERVED
---   VALIDACION POR IP + ADMIN (SIN KEY DE LICENCIA)
--- ============================================
-
--- ID/NOMBRE/recursos del producto a proteger.
--- Se reemplaza automaticamente al elegir producto en el panel.
--- Dejalo vacio ("") para validar solo por IP de cualquier producto.
-local PRODUCT_ID = "prod_0000000000000"
-
-local FIREBASE_PROJECT = "xfcode-e3805"
-local FIREBASE_API_KEY  = "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4"
-
-local CONFIG = {
-    check_interval = 30000
-}
-
 local function clean(s)
     if not s then return "" end
-    return tostring(s):gsub("%s+", "")
+    return tostring(s):gsub("%s+", ""):upper()
 end
 
-local validating = false
-local verifiedOnce = false
+local function tienePermisoACL()
+    local resourceName = getResourceName(getThisResource())
+    local resObj = "resource." .. resourceName
 
--- =========================
--- OBTENER IP PUBLICA
--- =========================
-local function getPublicIP(cb)
-    fetchRemote("https://api.ipify.org?format=json",
-        { connectionAttempts = 2, connectTimeout = 8000 },
-        function(data, info)
-            if not info or info.statusCode ~= 200 then
-                cb(false, "No se pudo obtener la IP publica")
-                return
-            end
-
-            local j = fromJSON(data)
-            local ip = j and j.ip or nil
-            if not ip or ip == "" then
-                cb(false, "IP publica invalida")
-                return
-            end
-
-            cb(true, tostring(ip))
-        end
-    )
-end
-
--- =========================
--- ESTADO DEL ACCESO
--- =========================
-local function isActive(f)
-    if f and f.active and f.active.booleanValue ~= nil then
-        return f.active.booleanValue
+    if not isObjectInACLGroup(resObj, aclGetGroup("Admin")) then
+        outputDebugString("[Papeleta]  El resource '"..resourceName.."' NO tiene permiso en ACL 'Admin'", 1)
+        return false
     end
-    local status = (f and f.status and f.status.stringValue) or ""
-    return status:upper() == "ACTIVE"
+    return true
 end
 
--- =========================
--- CONSULTAR LICENCIAS POR IP
--- =========================
-local function queryByIp(ipValue, cb)
-    local url = "https://firestore.googleapis.com/v1/projects/" .. FIREBASE_PROJECT
-        .. "/databases/(default)/documents:runQuery?key=" .. FIREBASE_API_KEY .. "&t=" .. getTickCount()
-
-    local body = '{"structuredQuery":{"from":[{"collectionId":"Licencias"}],' ..
-        '"where":{"fieldFilter":{"field":{"fieldPath":"ip"},' ..
-        '"op":"EQUAL","value":{"stringValue":"' .. ipValue .. '"}}}}}'
-
-    fetchRemote(url,
-        { method = "POST", headers = { ["Content-Type"] = "application/json" }, postData = body, connectionAttempts = 2, connectTimeout = 8000 },
-        function(data, info)
-            if not info or info.statusCode ~= 200 then
-                cb(false, true)
-                return
-            end
-
-            local j = fromJSON(data)
-            if not j or type(j) ~= "table" or #j == 0 then
-                cb(false, false)
-                return
-            end
-
-            local productLocal = clean(PRODUCT_ID)
-
-            for _, r in ipairs(j) do
-                if r and r.document and r.document.fields then
-                    local f = r.document.fields
-
-                    local pId  = clean(f.product_id and f.product_id.stringValue or "")
-                    local pName = clean(f.product_name and f.product_name.stringValue or "")
-                    local pRes = clean(f.resource and f.resource.stringValue or "")
-
-                    local productMatch = productLocal == "" or
-                        pId == productLocal or pName == productLocal or pRes == productLocal
-
-                    if productMatch and isActive(f) then
-                        cb(true, false)
-                        return
-                    end
-                end
-            end
-
-            cb(false, false)
-        end
-    )
+local function cargarScriptPrincipal()
+    if _G["ScriptYaCargado"] then return end
+    _G["ScriptYaCargado"] = true
+    outputDebugString("[Papeleta] Script principal cargado correctamente", 3)
+    -- Aquí inicia tu script real
+    -- iniciarSistema()
 end
 
--- =========================
--- VALIDACION
--- =========================
-function validateOnce()
-    if validating or verifiedOnce then return end
-    validating = true
+local function validarLicencia()
 
-    if not isObjectInACLGroup("resource." .. getResourceName(getThisResource()), aclGetGroup("Admin")) then
-        validating = false
-        outputDebugString("[XF-LOGIN] El resource no tiene permiso en ACL 'Admin'", 1)
+    if not configLicense or not configLicense["User"] or not configLicense["Key"] then
+        outputDebugString("[Papeleta] manito dime te lo va a robar", 1)
         stopResource(getThisResource())
         return
     end
 
-    if not hasObjectPermissionTo(getThisResource(), "function.fetchRemote", true) then
-        validating = false
-        outputDebugString("[XF-LOGIN] ACL sin permisos para fetchRemote", 1)
-        stopResource(getThisResource())
-        return
-    end
+    local userLocal = clean(configLicense["User"])
+    local keyLocal  = clean(configLicense["Key"])
+    local resourceName = clean(getResourceName(getThisResource()))
+    local portActual = tostring(getServerPort() or 22003)
 
-    getPublicIP(function(okIP, publicIP)
-        if not okIP then
-            validating = false
-            outputDebugString("[XF-LOGIN] " .. tostring(publicIP), 1)
+    fetchRemote("https://api.ipify.org?format=json", function(ipData, ipErr)
+        local ipActual = ""
+
+        if ipErr == 0 and ipData then
+            local ipTable = fromJSON(ipData)
+            if ipTable and ipTable.ip then
+                ipActual = clean(ipTable.ip)
+            end
+        end
+
+        if ipActual == "" or ipActual == "0.0.0.0" then
+            local configIP = getServerConfigSetting("serverip") or ""
+            if configIP ~= "" and configIP ~= "auto" then
+                ipActual = clean(configIP)
+            end
+        end
+
+        local ipPortCompleto = ipActual .. ":" .. portActual
+        validarConFirebase(ipPortCompleto, userLocal, keyLocal, resourceName)
+    end)
+end
+
+function validarConFirebase(ipPortCompleto, userLocal, keyLocal, resourceName)
+    local urlBase = "https://firestore.googleapis.com/v1/projects/papeletalicencia/databases/(default)/documents/Licencias"
+
+    fetchRemote(urlBase, function(data, err)
+        if err ~= 0 or not data then
+            outputDebugString("[Papeleta] LICENCIA DENEGADA", 1)
             stopResource(getThisResource())
             return
         end
 
-        local bare = clean(publicIP)
-        local variants = { bare }
+        local db = fromJSON(data)
+        local autorizado = false
 
-        local ipPort = clean(publicIP .. ":" .. tostring(getServerPort()))
-        if ipPort ~= bare then
-            table.insert(variants, ipPort)
-        end
+        if db and db.documents then
+            for _, doc in ipairs(db.documents) do
+                local f = doc.fields
+                if f then
+                    local fireUser = clean(
+                        (f.user_code and f.user_code.stringValue) or
+                        (f.user and f.user.stringValue) or ""
+                    )
+                    local fireKey = clean(f.key and f.key.stringValue or "")
 
-        local function tryVariant(i)
-            if i > #variants then
-                validating = false
-                outputDebugString("[XF-LOGIN] IP no registrada en el panel de clientes. Server: " .. tostring(publicIP), 1)
-                stopResource(getThisResource())
-                return
-            end
+                    local fireStatus = ""
+                    if f.status and f.status.stringValue then
+                        fireStatus = clean(f.status.stringValue)
+                    elseif f.active and f.active.booleanValue ~= nil then
+                        fireStatus = f.active.booleanValue and "ACTIVE" or "INACTIVE"
+                    end
 
-            queryByIp(variants[i], function(autorizado, errorFirestore)
-                if autorizado then
-                    validating = false
-                    verifiedOnce = true
-                    outputDebugString("[XF-LOGIN] IP verificada correctamente: " .. tostring(publicIP), 3)
+                    local fireIp     = clean(f.ip and f.ip.stringValue or "")
+                    local firePort   = clean(f.port and f.port.stringValue or "")
+                    local fireResource = clean(f.resource and f.resource.stringValue or "")
 
-                    setTimer(function()
-                        verifiedOnce = false
-                        validateOnce()
-                    end, CONFIG.check_interval, 0)
-                elseif errorFirestore then
-                    validating = false
-                    outputDebugString("[XF-LOGIN] Firestore no respondio", 1)
-                    stopResource(getThisResource())
-                else
-                    tryVariant(i + 1)
+                    if fireKey == keyLocal then
+                        if fireStatus ~= "ACTIVE" then
+                            break
+                        end
+
+                        if fireUser ~= "" and fireUser ~= userLocal then
+                            break
+                        end
+
+                        if fireIp ~= "" and firePort ~= "" then
+                            local fireIpPort = fireIp .. ":" .. firePort
+                            if fireIpPort ~= ipPortCompleto then
+                                break
+                            end
+                        end
+
+                        if fireResource ~= "" and fireResource ~= resourceName then
+                            break
+                        end
+
+                        autorizado = true
+                        break
+                    end
                 end
-            end)
+            end
         end
 
-        tryVariant(1)
+        if autorizado then
+            if not _G["ScriptYaCargado"] then
+                outputDebugString("[Papeleta] LICENCIA VERIFICADA CORRECTAMENTE", 3)
+                cargarScriptPrincipal()
+            end
+        else
+            outputDebugString("[Papeleta] LICENCIA DENEGADA", 1)
+            stopResource(getThisResource())
+        end
     end)
 end
 
--- =========================
--- INICIO
--- =========================
-setTimer(validateOnce, 2000, 1)
+addEventHandler("onResourceStart", resourceRoot, function()
+    if not tienePermisoACL() then
+        cancelEvent(true, "[Papeleta] Resource sin permiso en ACL 'Admin'")
+        setTimer(function() stopResource(getThisResource()) end, 50, 1)
+        return
+    end
 
-                </textarea>
+    outputDebugString("[Papeleta] INICIANDO VERIFICACION DE LICENCIA...", 3)
+    validarLicencia()
+    
+    setTimer(validarLicencia, 21600000, 0)
+end, true, "high")
+
+                    </textarea>
                 </div>
             </div>
         </section>
@@ -1367,8 +1340,8 @@ setTimer(validateOnce, 2000, 1)
     <!-- LOGIN MODAL -->
     <div id="login-modal" class="login-modal-overlay hidden">
         <div class="max-w-md w-full bg-[#150a0a] border border-red-600/30 rounded-2xl p-8 text-center">
-            <img src="files/XF_LOGO.png" alt="XF CODE" class="mx-auto w-20 h-20 rounded-xl mb-6 object-cover">
-            <h1 class="text-3xl font-black text-white mb-2">XF <span class="text-red-500">CODE</span></h1>
+            <div class="mx-auto w-20 h-20 rounded-xl mb-6 bg-gradient-to-br from-red-600 to-red-900 flex items-center justify-center text-3xl font-black text-white">P</div>
+            <h1 class="text-3xl font-black text-white mb-2">PAPELETA <span class="text-red-500">STORE</span></h1>
             <p class="text-gray-400 text-sm mb-8">Inicia sesión para acceder</p>
             <button onclick="redirectToDiscord()" class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-3">
                 <i class="fab fa-discord text-xl"></i> Iniciar Sesión
@@ -1376,122 +1349,23 @@ setTimer(validateOnce, 2000, 1)
         </div>
     </div>
 
-    <!-- LINK DE DISCORD MODAL -->
-    <div id="link-modal" class="login-modal-overlay hidden">
-        <div class="max-w-md w-full bg-[#150a0a] border border-red-600/30 rounded-2xl p-8">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-white"><i class="fas fa-link text-red-500 mr-2"></i>Link de Discord</h3>
-                <button onclick="closeLinkModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
-            </div>
-            <label class="block text-gray-400 text-sm mb-2">Link de invitación de Discord:</label>
-            <input type="text" id="discord-link-input" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="https://discord.gg/...">
-            <p class="text-gray-500 text-xs mt-2">Este enlace se usa en el panel de clientes al pulsar Discord.</p>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeLinkModal()" class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-800 font-medium">Cancelar</button>
-                <button onclick="saveDiscordLink()" class="flex-1 bg-red-600 hover:bg-red-700 px-4 py-3 rounded-lg text-white font-bold"><i class="fas fa-save mr-2"></i> Guardar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- EDITAR PRODUCTO MODAL -->
-    <div id="edit-product-modal" class="login-modal-overlay hidden">
-        <div class="w-full max-w-2xl bg-[#150a0a] border border-red-600/30 rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-white"><i class="fas fa-pen text-red-500 mr-2"></i>Editar Producto</h3>
-                <button onclick="closeEditProduct()" class="text-gray-400 hover:text-white text-2xl"><i class="fas fa-times"></i></button>
-            </div>
-
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2">Nombre del Producto *</label>
-                    <input type="text" id="edit-prod-name" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Precio (USD) *</label>
-                        <input type="number" id="edit-prod-price" step="0.01" min="0" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2">Categoría</label>
-                        <select id="edit-prod-category" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-500">
-                            <option value="Scripts">Scripts</option>
-                            <option value="Modelajes">Modelajes</option>
-                            <option value="Mappings">Mapeos</option>
-                            <option value="Bots">Bots Discord</option>
-                            <option value="Otros">Otros</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2">Descripción/Detalle *</label>
-                    <textarea id="edit-prod-description" rows="4" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 resize-none"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2"><i class="fab fa-youtube text-red-500 mr-1"></i>Link de YouTube (Opcional)</label>
-                    <input type="url" id="edit-prod-youtube" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="https://www.youtube.com/watch?v=...">
-                </div>
-
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2"><i class="fas fa-image text-red-500 mr-1"></i>Fotos del Producto</label>
-                    <div id="edit-images-preview" class="grid grid-cols-3 md:grid-cols-4 gap-3 mb-3"></div>
-                    <div class="border-2 border-dashed border-red-900/40 rounded-xl p-4 text-center hover:border-red-500/50 transition-colors bg-[#0d0505]/50 cursor-pointer" onclick="document.getElementById('edit-prod-images').click()">
-                        <input type="file" id="edit-prod-images" accept="image/*" multiple onchange="addEditImages(this)" class="hidden">
-                        <p class="text-gray-300 text-sm font-semibold"><i class="fas fa-plus-circle text-red-400 mr-1"></i> Agregar más imágenes</p>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2"><i class="fab fa-google-drive text-red-500 mr-1"></i>Enlace de Google Drive (Link de descarga) *</label>
-                    <input type="url" id="edit-prod-file-link" class="w-full bg-[#0d0505] border border-red-950/40 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
-                    <p class="text-gray-500 text-xs mt-1">El cliente será llevado a este enlace cuando pulse Descargar.</p>
-                </div>
-
-                <div class="pt-2 flex gap-4">
-                    <button onclick="saveEditProduct()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2"><i class="fas fa-save"></i> Guardar Cambios</button>
-                    <button onclick="closeEditProduct()" class="px-8 py-3.5 rounded-xl border border-red-900/40 text-red-400 hover:bg-red-900/20 font-bold">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- TOAST CONTAINER -->
     <div id="toast-container" class="toast-container"></div>
 
     <script>
-        const CLIENT_ID = '1535346943482531892';
+        const CLIENT_ID = '1213866547181780992';
         const REDIRECT_URI = window.location.href.split('#')[0];
         const ADMIN_DISCORD_IDS = ['890526767608127489'];
-        const ADMIN_DISCORD_USERNAMES = ['Papeleta'];
-
-        async function sendAdminLog(action, details) {
-            try {
-                const admin = currentUser || {};
-                await db.collection("Compra").add({
-                    log: true,
-                    action: String(action),
-                    details: String(details || ''),
-                    username: admin.username || 'Desconocido',
-                    user_id: admin.id || '',
-                    avatar: admin.avatar || null,
-                    date: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } catch (e) {
-                console.error('Error guardando log de admin:', e);
-            }
-        }
+        const ADMIN_DISCORD_USERNAMES = ['papeleta'];
 
         const firebaseConfig = {
-  apiKey: "AIzaSyALnKujA_xwNuOwKtKP5z0h-y7v7mCSTz4",
-  authDomain: "xfcode-e3805.firebaseapp.com",
-  projectId: "xfcode-e3805",
-  storageBucket: "xfcode-e3805.firebasestorage.app",
-  messagingSenderId: "305007654133",
-  appId: "1:305007654133:web:b1b8f433bf0f506c0c81bc",
-  measurementId: "G-3456M1F6PD"
-};
+            apiKey: "AIzaSyBWggE0KFiVZDxwxvmhuWXEKu6bNguV0mM",
+            authDomain: "papeletalicencia.firebaseapp.com",
+            projectId: "papeletalicencia",
+            storageBucket: "papeletalicencia.firebasestorage.app",
+            messagingSenderId: "677208314051",
+            appId: "1:677208314051:web:a27c04f31d402e83f29276"
+        };
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1570,79 +1444,13 @@ setTimer(validateOnce, 2000, 1)
             if (e.target === this) handleConfirmCancel();
         });
 
-        // ========== LINK DE DISCORD (configurado por el admin) ==========
-        const DEFAULT_DISCORD_LINK = 'https://discord.gg/qZarkeCSA';
-
-        async function openLinkModal() {
-            const input = document.getElementById('discord-link-input');
-            input.value = DEFAULT_DISCORD_LINK;
-            try {
-                const configDoc = await db.collection('Configuracion').doc('general').get();
-                if (configDoc.exists && configDoc.data().discord_link) {
-                    input.value = configDoc.data().discord_link;
-                }
-            } catch (e) { }
-            document.getElementById('link-modal').classList.remove('hidden');
-        }
-
-        function closeLinkModal() {
-            document.getElementById('link-modal').classList.add('hidden');
-        }
-
-        async function saveDiscordLink() {
-            const newLink = document.getElementById('discord-link-input').value.trim();
-            if (!newLink) { showToast('Por favor ingresa un link válido', 'warning'); return; }
-            if (!newLink.includes('discord.gg/') && !newLink.includes('discord.com/')) {
-                showToast('El link debe ser de Discord (discord.gg/...)', 'error');
-                return;
-            }
-            try {
-                await db.collection('Configuracion').doc('general').set({ discord_link: newLink }, { merge: true });
-                sendAdminLog('🔗 Actualizó el link de Discord', `Nuevo link: \`${newLink}\``);
-                showToast('Link de Discord actualizado correctamente', 'success');
-                closeLinkModal();
-            } catch (err) {
-                showToast('Error al guardar: ' + err.message, 'error');
-            }
-        }
-
-        // ========== BORRAR TODAS LAS RESEÑAS ==========
-        async function deleteAllReviews() {
-            showConfirmModal(
-                'BORRAR TODAS LAS RESEÑAS',
-                '¿Seguro? Se eliminarán <b>TODAS</b> las reseñas/comentarios de la base de datos. Esta acción no se puede deshacer.',
-                async () => {
-                    try {
-                        const snapshot = await db.collection("Resenas").get();
-                        if (snapshot.empty) {
-                            showToast('No hay reseñas para borrar', 'warning');
-                            return;
-                        }
-                        const refs = snapshot.docs.map(d => d.ref);
-                        let deleted = 0;
-                        while (refs.length > 0) {
-                            const chunk = refs.splice(0, 400);
-                            const batch = db.batch();
-                            chunk.forEach(r => batch.delete(r));
-                            await batch.commit();
-                            deleted += chunk.length;
-                        }
-                        showToast(`Se borraron ${deleted} reseñas correctamente`, 'success');
-                        sendAdminLog(`🗑️ Borró **${deleted}** reseñas`, '');
-                    } catch (error) {
-                        showToast('Error borrando reseñas: ' + error.message, 'error');
-                    }
-                }
-            );
-        }
-
         // ========== FUNCIÓN VOLVER ATRÁS ==========
         function goBack() {
             if (window.history.length > 1) {
                 window.history.back();
             } else {
                 // Si no hay historial, redirigir a la tienda o index
-                window.location.href = '/'; 
+                window.location.href = 'index.html'; 
             }
         }
 
@@ -1786,7 +1594,14 @@ setTimer(validateOnce, 2000, 1)
             updateImageCount();
         }
 
-        // ========== NOTIFICACIÓN DE PRODUCTO: la publica el bot XF CODE leyendo la colección "Productos" ==========
+        function updateFileName(input) {
+            const label = document.getElementById('file-label-text');
+            if (input.files && input.files[0]) {
+                label.innerText = input.files[0].name;
+                label.classList.add('text-white', 'font-bold');
+            }
+        }
+
         // ========== UTILIDADES ==========
         function resizeImage(file, maxWidth = 800, maxHeight = 600) {
             return new Promise((resolve) => {
@@ -1811,6 +1626,15 @@ setTimer(validateOnce, 2000, 1)
             });
         }
 
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         function escapeHTML(str) {
             return String(str).replace(/[&<>'"]/g, tag => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[tag] || tag));
         }
@@ -1819,49 +1643,39 @@ setTimer(validateOnce, 2000, 1)
         async function handleProductSubmit(e) {
             e.preventDefault();
             
-            const productId = document.getElementById('prod-id').value.trim();
             const name = document.getElementById('prod-name').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const category = document.getElementById('prod-category').value;
             const description = document.getElementById('prod-description').value;
             const youtubeUrl = document.getElementById('prod-youtube').value;
-            const downloadLink = document.getElementById('prod-file-link').value.trim();
+            const downloadFile = document.getElementById('prod-file').files[0];
             
-            if (!/^[a-zA-Z0-9_-]+$/.test(productId)) {
-                showToast('El ID solo puede contener letras, números, guiones (-) y guion bajo (_). Sin espacios.', 'error');
-                return;
-            }
             if (tempImages.length === 0) { showToast('Selecciona al menos una imagen', 'warning'); return; }
-            if (!downloadLink) { showToast('Pega el enlace de Google Drive', 'warning'); return; }
+            if (!downloadFile) { showToast('Selecciona el archivo de descarga', 'warning'); return; }
             
             try {
-                const existingDoc = await db.collection("Productos").doc(productId).get();
-                if (existingDoc.exists) {
-                    showToast('Ya existe un producto con ese ID: ' + productId, 'error');
-                    return;
-                }
-
                 const resizedImages = [];
                 for (const img of tempImages) {
                     resizedImages.push(await resizeImage(img.file));
                 }
                 
+                const fileBase64 = await fileToBase64(downloadFile);
+                
                 const newProduct = {
-    id: productId,
+    id: 'prod_' + Date.now(),
     name, price, category, description,
     original_price: price, // AGREGAR ESTA LÍNEA
     image_url: resizedImages[0],
     images: resizedImages,
     youtube_url: youtubeUrl || null,
     youtube_id: youtubeVideoId || null,
-    file_data: downloadLink,
-    file_name: 'Google Drive',
+    file_data: fileBase64,
+    file_name: downloadFile.name,
     created_at: firebase.firestore.FieldValue.serverTimestamp()
 };
                 
                 await db.collection("Productos").doc(newProduct.id).set(newProduct);
                 showToast('Producto guardado exitosamente', 'success');
-                sendAdminLog(`🆕 Creó el producto **${name}**`, `ID: \`${productId}\` • Precio: $${price.toFixed(2)} • Categoría: ${category}`);
                 resetForm();
                 loadProducts();
             } catch (error) {
@@ -1873,6 +1687,8 @@ setTimer(validateOnce, 2000, 1)
         function resetForm() {
             document.getElementById('product-form').reset();
             document.getElementById('multiple-images-preview').innerHTML = '';
+            document.getElementById('file-label-text').innerText = 'Haz clic para subir el archivo descargable';
+            document.getElementById('file-label-text').classList.remove('text-white', 'font-bold');
             document.getElementById('youtube-preview-container').classList.add('hidden');
             document.getElementById('youtube-iframe-container').innerHTML = '';
             tempImages = []; youtubeVideoId = null;
@@ -1918,12 +1734,6 @@ setTimer(validateOnce, 2000, 1)
                 <img src="${p.image_url}" class="w-16 h-16 rounded-lg object-cover">
                 <div class="flex-grow">
                     <p class="text-white font-semibold">${escapeHTML(p.name)}</p>
-                    <div class="flex items-center gap-2 mt-0.5">
-                        <code class="text-[10px] text-gray-500 font-mono bg-black/30 px-1.5 py-0.5 rounded">${escapeHTML(p.id)}</code>
-                        <button type="button" onclick="copyProductId('${p.id}')" class="text-gray-500 hover:text-red-400 text-[11px]" title="Copiar ID del producto">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
                     <div class="flex items-center gap-3 mt-1">
                         ${priceHtml}
                         ${discountHtml}
@@ -1936,14 +1746,9 @@ setTimer(validateOnce, 2000, 1)
                         </button>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="openEditProduct('${p.id}')" class="text-blue-400 hover:text-blue-300 w-10 h-10 rounded-lg hover:bg-blue-950/30" title="Editar producto">
-                        <i class="fas fa-pen"></i>
-                    </button>
-                    <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:text-red-300 w-10 h-10 rounded-lg hover:bg-red-950/30" title="Eliminar producto">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+                <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:text-red-300 w-10 h-10 rounded-lg hover:bg-red-950/30">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
             `;
         }).join('');
@@ -1951,14 +1756,6 @@ setTimer(validateOnce, 2000, 1)
         container.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error al cargar</p>';
     }
 }
-
-        function copyProductId(id) {
-            navigator.clipboard.writeText(id).then(() => {
-                showToast('ID copiado: ' + id, 'success');
-            }).catch(() => {
-                showToast('No se pudo copiar el ID', 'error');
-            });
-        }
 
         async function updateProductPrice(id) {
     const inputElement = document.getElementById(`price-input-${id}`);
@@ -1985,7 +1782,6 @@ setTimer(validateOnce, 2000, 1)
         
         await db.collection("Productos").doc(id).update(updateData);
         showToast('Precio actualizado exitosamente', 'success');
-        sendAdminLog(`💲 Cambió el precio de **${product.name}**`, `De $${Number(product.price).toFixed(2)} a $${Number(newPrice).toFixed(2)}`);
         loadProducts();
     } catch (error) {
         console.error(error);
@@ -1997,102 +1793,8 @@ setTimer(validateOnce, 2000, 1)
             try {
                 await db.collection("Productos").doc(id).delete();
                 showToast('Producto eliminado', 'success');
-                sendAdminLog(`🗑️ Eliminó el producto **${(allProducts.find(p => p.id === id) || {}).name || id}**`, `ID: \`${id}\``);
                 loadProducts();
             } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        }
-
-        // ========== EDITAR PRODUCTO ==========
-        let editProductId = null;
-        let editImages = [];
-
-        function openEditProduct(id) {
-            const p = allProducts.find(pr => pr.id === id);
-            if (!p) return;
-            editProductId = id;
-            document.getElementById('edit-prod-name').value = p.name || '';
-            document.getElementById('edit-prod-price').value = (p.price !== undefined && p.price !== null) ? p.price : '';
-            document.getElementById('edit-prod-category').value = p.category || 'Scripts';
-            document.getElementById('edit-prod-description').value = p.description || '';
-            document.getElementById('edit-prod-youtube').value = p.youtube_url || '';
-            document.getElementById('edit-prod-file-link').value = p.file_data || '';
-            editImages = (p.images && p.images.length) ? p.images.slice() : (p.image_url ? [p.image_url] : []);
-            renderEditImages();
-            document.getElementById('edit-product-modal').classList.remove('hidden');
-        }
-
-        function closeEditProduct() {
-            document.getElementById('edit-product-modal').classList.add('hidden');
-            editProductId = null;
-            editImages = [];
-        }
-
-        function renderEditImages() {
-            const container = document.getElementById('edit-images-preview');
-            if (editImages.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-xs col-span-full text-center py-3">Sin fotos. Agrega al menos una.</p>';
-                return;
-            }
-            container.innerHTML = editImages.map((img, idx) => `
-                <div class="relative rounded-lg overflow-hidden border border-red-900/40 bg-black">
-                    <img src="${img}" class="w-full h-20 object-cover">
-                    <button type="button" onclick="removeEditImage(${idx})" class="absolute top-1 right-1 w-6 h-6 bg-red-600 hover:bg-red-500 text-white rounded-full text-xs flex items-center justify-center shadow-lg" title="Borrar foto">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        async function addEditImages(input) {
-            const files = Array.from(input.files || []);
-            input.value = '';
-            for (const file of files) {
-                const dataUrl = await resizeImage(file);
-                editImages.push(dataUrl);
-            }
-            renderEditImages();
-        }
-
-        function removeEditImage(index) {
-            editImages.splice(index, 1);
-            renderEditImages();
-        }
-
-        async function saveEditProduct() {
-            const name = document.getElementById('edit-prod-name').value.trim();
-            const price = parseFloat(document.getElementById('edit-prod-price').value);
-            const category = document.getElementById('edit-prod-category').value;
-            const description = document.getElementById('edit-prod-description').value.trim();
-            const youtubeUrl = document.getElementById('edit-prod-youtube').value.trim();
-            const downloadLink = document.getElementById('edit-prod-file-link').value.trim();
-
-            if (!name) { showToast('El nombre es obligatorio', 'warning'); return; }
-            if (isNaN(price) || price < 0) { showToast('Precio inválido', 'error'); return; }
-            if (editImages.length === 0) { showToast('El producto debe tener al menos una foto', 'warning'); return; }
-            if (!downloadLink) { showToast('Pega el enlace de Google Drive', 'warning'); return; }
-
-            try {
-                const product = allProducts.find(p => p.id === editProductId);
-                const updateData = {
-                    name, price, category, description,
-                    youtube_url: youtubeUrl || null,
-                    youtube_id: youtubeUrl ? extractYouTubeId(youtubeUrl) : null,
-                    file_data: downloadLink,
-                    images: editImages,
-                    image_url: editImages[0]
-                };
-                if (product && !product.original_price && product.price > 0) {
-                    updateData.original_price = product.price;
-                }
-                await db.collection("Productos").doc(editProductId).update(updateData);
-                showToast('Producto actualizado exitosamente', 'success');
-                sendAdminLog(`✏️ Editó el producto **${name}**`, `ID: \`${editProductId}\` • Precio: $${Number(price).toFixed(2)}`);
-                closeEditProduct();
-                loadProducts();
-            } catch (error) {
-                console.error(error);
                 showToast('Error: ' + error.message, 'error');
             }
         }
@@ -2214,11 +1916,11 @@ setTimer(validateOnce, 2000, 1)
                     </div>
                 </div>
 
-                <!-- Gestión de IP -->
+                <!-- Gestión de Licencia -->
                 <div class="flex-1">
                     <div class="flex justify-between items-center mb-3">
                         <h4 class="text-gray-400 text-sm font-semibold flex items-center gap-2">
-                            <i class="fas fa-server text-red-400"></i> IP del Servidor
+                            <i class="fas fa-key text-red-400"></i> Licencia Única
                         </h4>
                         <!-- TOGGLE SWITCH ACTIVAR/DESACTIVAR -->
                         <div class="flex items-center gap-2">
@@ -2234,27 +1936,35 @@ setTimer(validateOnce, 2000, 1)
 
                     ${userLicense ? `
                     <div class="space-y-3">
-                        <!-- EDITOR DE IP -->
+                        <!-- EDITOR DE CLAVE -->
                         <div class="flex gap-2">
-                            <input type="text" id="edit-ip-${cliente.discord_id}" value="${escapeHTML(userLicense.ip || '')}" 
+                            <input type="text" id="edit-key-${cliente.discord_id}" value="${escapeHTML(userLicense.key)}" 
                                 class="license-key-unique flex-1 text-left focus:border-red-500 focus:bg-black/80 transition-all outline-none cursor-text"
-                                placeholder="IP del server (ej: 37.148.216.26:22003)">
-                            <button onclick="updateLicenseIp('${cliente.discord_id}')" 
+                                placeholder="Clave de licencia...">
+                            <button onclick="updateLicenseKey('${cliente.discord_id}')" 
                                 class="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-lg transition-all text-sm font-bold flex items-center gap-2 whitespace-nowrap">
                                 <i class="fas fa-save"></i> Guardar
                             </button>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="copyToClipboard('${escapeHTML(userLicense.ip || '')}')"
+                            <button onclick="copyToClipboard('${escapeHTML(userLicense.key)}')"
                                 class="flex-1 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-600/20 px-4 py-2 rounded-lg transition-all text-xs font-semibold">
                                 <i class="fas fa-copy mr-2"></i>Copiar
+                            </button>
+                            <button onclick="regenerateLicenseKey('${cliente.discord_id}')"
+                                class="flex-1 bg-yellow-600/10 hover:bg-yellow-600/20 text-yellow-400 border border-yellow-600/20 px-4 py-2 rounded-lg transition-all text-xs font-semibold">
+                                <i class="fas fa-sync-alt mr-2"></i>Regenerar
                             </button>
                         </div>
                     </div>
                     ` : `
                     <div class="text-center py-4 bg-[#0d0505] border border-red-950/30 rounded-lg">
-                        <i class="fas fa-globe text-yellow-500 text-2xl mb-2"></i>
-                        <p class="text-gray-400 text-sm">Sin IP registrada (el cliente la configura desde el Area de Cliente)</p>
+                        <i class="fas fa-exclamation-circle text-yellow-500 text-2xl mb-2"></i>
+                        <p class="text-gray-400 text-sm">Sin licencia generada</p>
+                        <button onclick="generateLicenseForUser('${cliente.discord_id}', '${escapeHTML(cliente.username)}')" 
+                            class="mt-2 text-xs bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded transition-all">
+                            Generar Licencia Ahora
+                        </button>
                     </div>
                     `}
                 </div>
@@ -2282,10 +1992,10 @@ setTimer(validateOnce, 2000, 1)
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Copiado al portapapeles', 'success');
+                showToast('Licencia copiada al portapapeles', 'success');
             }).catch(err => {
                 console.error('Error al copiar:', err);
-                showToast('Error al copiar', 'error');
+                showToast('Error al copiar la licencia', 'error');
             });
         }
 
@@ -2306,7 +2016,6 @@ async function toggleLicenseStatus(discordId, newState) {
                 updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
             showToast(`Licencia ${newState ? 'ACTIVADA' : 'DESACTIVADA'} correctamente`, newState ? 'success' : 'warning');
-            sendAdminLog(`🔑 ${newState ? 'Activó' : 'Desactivó'} la licencia de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\``);
             await loadLicenciasData(); // Recargar para reflejar cambios visuales
         } else {
             showToast('No se encontró documento de licencia para actualizar', 'error');
@@ -2317,13 +2026,13 @@ async function toggleLicenseStatus(discordId, newState) {
     }
 }
 
-async function updateLicenseIp(discordId) {
-    const input = document.getElementById(`edit-ip-${discordId}`);
+async function updateLicenseKey(discordId) {
+    const input = document.getElementById(`edit-key-${discordId}`);
     if (!input) return;
-
-    const newIp = input.value.trim();
-    if (!newIp) {
-        showToast('La IP no puede estar vacía', 'warning');
+    
+    const newKey = input.value.trim();
+    if (!newKey) {
+        showToast('La clave no puede estar vacía', 'warning');
         return;
     }
 
@@ -2331,18 +2040,100 @@ async function updateLicenseIp(discordId) {
         const licenseRef = allLicencias.find(l => l.discord_id === discordId);
         if (licenseRef) {
             await db.collection("Licencias").doc(licenseRef.id).update({
-                ip: newIp,
+                key: newKey,
                 updated_at: firebase.firestore.FieldValue.serverTimestamp()
             });
-            showToast('IP del servidor actualizada', 'success');
-            sendAdminLog(`✏️ Actualizó la IP del servidor de **${licenseRef.username || discordId}**`, `ID: \`${discordId}\` • IP: \`${newIp}\``);
+            showToast('Clave de licencia actualizada', 'success');
             await loadLicenciasData();
         } else {
             showToast('Licencia no encontrada en base de datos', 'error');
         }
     } catch (error) {
-        console.error("Error updating IP:", error);
+        console.error("Error updating key:", error);
         showToast('Error al guardar: ' + error.message, 'error');
+    }
+}
+
+async function regenerateLicenseKey(discordId) {
+    showConfirmModal(
+        'REGENERAR LICENCIA',
+        '¿Estás seguro? La clave anterior dejará de funcionar inmediatamente.',
+        async () => {
+            try {
+                const newKey = generateUniqueKey();
+                const licenseRef = allLicencias.find(l => l.discord_id === discordId);
+                
+                if (licenseRef) {
+                    await db.collection("Licencias").doc(licenseRef.id).update({
+                        key: newKey,
+                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showToast('Nueva clave generada exitosamente', 'success');
+                    await loadLicenciasData();
+                }
+            } catch (error) {
+                showToast('Error al regenerar: ' + error.message, 'error');
+            }
+        }
+    );
+}
+
+async function generateLicenseForUser(discordId, username) {
+    try {
+        const newKey = generateUniqueKey();
+        await db.collection("Licencias").add({
+            discord_id: discordId,
+            username: username,
+            key: newKey,
+            active: true,
+            status: "ACTIVE",
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('Licencia generada correctamente', 'success');
+        await loadLicenciasData();
+    } catch (error) {
+        showToast('Error al generar licencia: ' + error.message, 'error');
+    }
+}
+async function regenerateLicenseKey(discordId) {
+    showConfirmModal(
+        'REGENERAR LICENCIA',
+        '¿Estás seguro? La clave anterior dejará de funcionar inmediatamente.',
+        async () => {
+            try {
+                const newKey = generateUniqueKey();
+                const licenseRef = allLicencias.find(l => l.discord_id === discordId);
+                
+                if (licenseRef) {
+                    await db.collection("Licencias").doc(licenseRef.id).update({
+                        key: newKey,
+                        updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showToast('Nueva clave generada exitosamente', 'success');
+                    await loadLicenciasData();
+                }
+            } catch (error) {
+                showToast('Error al regenerar: ' + error.message, 'error');
+            }
+        }
+    );
+}
+
+async function generateLicenseForUser(discordId, username) {
+    try {
+        const newKey = generateUniqueKey();
+        await db.collection("Licencias").add({
+            discord_id: discordId,
+            username: username,
+            key: newKey,
+            active: true,
+            status: "ACTIVE",
+            created_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('Licencia generada correctamente', 'success');
+        await loadLicenciasData();
+    } catch (error) {
+        showToast('Error al generar licencia: ' + error.message, 'error');
     }
 }
 
@@ -2619,7 +2410,6 @@ async function updateLicenseIp(discordId) {
                 renderUsers();
 
                 showToast(`Rol de ${user.username} actualizado a "${newRole}"`, 'success');
-                sendAdminLog(`👑 Asignó rol **${newRole}** a **${user.username}**`, `ID: \`${discordId}\``);
 
             } catch (error) {
                 console.error("Error setting role:", error);
@@ -2840,11 +2630,13 @@ async function updateLicenseIp(discordId) {
                 `¿Estás seguro de asignar el producto <strong>"${productName}"</strong> al usuario <strong class="highlight">${userName}</strong> de forma <span class="highlight">GRATIS</span>?`,
                 async () => {
                     try {
+                        const licenseKey = generateUniqueKey();
                         await db.collection("Licencias").add({
                             discord_id: migrateSelectedUser.discord_id,
                             username: migrateSelectedUser.username,
                             product_id: migrateSelectedProduct.id,
                             product_name: migrateSelectedProduct.name,
+                            key: licenseKey,
                             created_at: firebase.firestore.FieldValue.serverTimestamp(),
                             status: 'active',
                             assigned_by: 'admin_manual',
@@ -2867,7 +2659,6 @@ async function updateLicenseIp(discordId) {
                         });
 
                         showToast(`Producto asignado a ${userName}`, 'success');
-                        sendAdminLog(`🎁 Asignó producto **${productName}** a **${userName}**`, `ID usuario: \`${migrateSelectedUser.discord_id}\` • GRATIS`);
 
                         migrateSelectedUser = null;
                         migrateSelectedProduct = null;
@@ -2909,6 +2700,15 @@ async function updateLicenseIp(discordId) {
                     </span>
                 </div>
             `).join('');
+        }
+
+        function generateUniqueKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let key = '';
+            for (let i = 0; i < 20; i++) {
+                key += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return key;
         }
 
         // ========== FUNCIONES PARA CREAR ROLES ==========
@@ -2971,10 +2771,9 @@ async function updateLicenseIp(discordId) {
                 localStorage.setItem('papeleta_custom_roles', JSON.stringify(existingRoles));
 
                 showToast(`Rol "${name}" creado exitosamente`, 'success');
-                sendAdminLog(`🆕 Creó el rol **${name}**`, `Color: ${color}`);
 
                 document.getElementById('create-role-form').reset();
-                updateColorPreview('#ff0000');
+                updateColorPreview('#ff1a1a');
                 initPermissions();
 
                 renderRoles();
@@ -3063,12 +2862,10 @@ async function updateLicenseIp(discordId) {
                 return;
             }
 
-            const role = existingRoles.find(r => r.id === roleId);
             existingRoles = existingRoles.filter(r => r.id !== roleId);
             localStorage.setItem('papeleta_custom_roles', JSON.stringify(existingRoles));
             renderRoles();
             showToast('Rol eliminado correctamente', 'success');
-            sendAdminLog(`🗑️ Eliminó el rol **${role ? role.name : roleId}**`, '');
         }
 
         function formatPermName(key) {
@@ -3095,40 +2892,6 @@ async function updateLicenseIp(discordId) {
             });
         }
 
-        // ========== SERVER.LUA: SELECCIONAR PRODUCTO ==========
-        function applyServerLuaProduct(productId) {
-            if (!productId) return;
-            const textarea = document.getElementById('server-lua-code');
-            if (!textarea) return;
-            const newContent = textarea.value.replace(/(local PRODUCT_ID\s*=\s*")[^"]*(")/, `$1${productId}$2`);
-            textarea.value = newContent;
-            showToast('PRODUCT_ID actualizado a ' + productId, 'success');
-        }
-
-        async function loadServerLuaProducts() {
-            const select = document.getElementById('serverlua-product-select');
-            if (!select) return;
-            try {
-                const snapshot = await db.collection("Productos").get();
-                const products = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    products.push({ id: data.id || doc.id, name: data.name || data.id || doc.id });
-                });
-                if (products.length === 0) {
-                    select.innerHTML = '<option value="">No hay productos aún</option>';
-                    return;
-                }
-                select.innerHTML = products.map(p =>
-                    `<option value="${p.id}">${escapeHTML(p.name)} — ${escapeHTML(p.id)}</option>`
-                ).join('');
-                applyServerLuaProduct(products[0].id);
-            } catch (error) {
-                console.error("Error cargando productos:", error);
-                select.innerHTML = '<option value="">Error cargando productos</option>';
-            }
-        }
-
         // ========== NAVEGACIÓN ENTRE SECCIONES ==========
         function showSection(sectionName, element) {
             document.querySelectorAll('.section-content').forEach(section => {
@@ -3146,14 +2909,13 @@ async function updateLicenseIp(discordId) {
                 'upload': 'Subir <span class="gradient-text">Producto</span>',
                 'users': 'Usuarios',
                 'licenses': 'Licencias Usuario',
+                'encryptor': 'Encriptador Lua',
                 'migrate': 'Pasar a Usuarios',
                 'roles': 'Gestión de Roles',
                 'serverlua': 'Server.lua'
             };
             
             document.getElementById('page-title').innerHTML = titles[sectionName];
-            
-            if (sectionName === 'serverlua') loadServerLuaProducts();
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -3165,7 +2927,7 @@ async function updateLicenseIp(discordId) {
         });
     </script>
 
-    <!-- SCRIPT ADICIONAL -->
+    <!-- SCRIPT DEL COMPILADOR/ENCRIPTADOR -->
     <script>
         window.openPapeletaModal = function(title, message){
           const modal = document.getElementById('papeletaModal');
@@ -3185,6 +2947,421 @@ async function updateLicenseIp(discordId) {
           }
         }, true);
 
+        const MTA_API_URL = "https://proxy-api.trickle-app.host/?url=https://luac.mtasa.com/";
+
+        async function compileLuaFile(content, obfuscateLevel = 3) {
+          const formData = new FormData();
+          const blob = new Blob([content], { type: "text/plain" });
+          formData.append("luasource", blob, "script.lua");
+          formData.append("compile", "1");
+          formData.append("debug", "0");
+          formData.append("obfuscate", obfuscateLevel.toString());
+
+          const response = await fetch(MTA_API_URL, { method: "POST", body: formData });
+          if (!response.ok) throw new Error("Error al compilar archivo");
+
+          const result = await response.arrayBuffer();
+          const text = new TextDecoder().decode(result);
+          if (text.startsWith("ERROR")) throw new Error(text);
+          return new Uint8Array(result);
+        }
+
+        const e = React.createElement;
+
+        function classifyFile(fileName) {
+          const name = fileName.toLowerCase();
+          if (name.includes('client') || name.includes('c_')) return 'client';
+          if (name.includes('server') || name.includes('s_')) return 'server';
+          if (name.includes('config') || name.includes('settings')) return 'config';
+          if (name.includes('shared') || name.includes('util') || name.includes('helper')) return 'shared';
+          return 'other';
+        }
+
+        function getFileTagClass(fileName) {
+          const type = classifyFile(fileName);
+          if (type === 'client') return 'tag-client';
+          if (type === 'server') return 'tag-server';
+          if (type === 'config') return 'tag-config';
+          if (type === 'shared') return 'tag-shared';
+          return '';
+        }
+
+        function ResourceSummary({ resourceName, files, selectedCount, sourceType }) {
+          const totalFiles = files.length;
+          
+          return e("div", { className: "resource-summary" },
+            e("div", { className: "resource-summary-header" },
+              e("div", { className: "resource-summary-info" },
+                e("div", { className: "resource-summary-icon" },
+                  e("i", { className: sourceType === "folder" ? "fa-solid fa-folder-tree" : "fa-solid fa-file-zipper" })
+                ),
+                e("div", { className: "resource-summary-text" },
+                  e("span", { className: "resource-summary-label" }, "Recurso detectado"),
+                  e("span", { className: "resource-summary-name" }, resourceName),
+                  e("span", { className: "resource-summary-type" },
+                    e("i", { className: "fa-solid fa-circle-info" }),
+                    sourceType === "folder" ? "CARGADO DESDE CARPETA" : "CARGADO DESDE ZIP"
+                  )
+                )
+              ),
+              e("div", { className: "resource-summary-stats" },
+                e("div", { className: "stat-chip" },
+                  e("i", { className: "fa-solid fa-file-code" }),
+                  e("span", { className: "stat-chip-label" }, "Scripts"),
+                  e("span", { className: "stat-num" }, totalFiles)
+                ),
+                e("div", { className: "stat-chip" },
+                  e("i", { className: "fa-solid fa-circle-check" }),
+                  e("span", { className: "stat-chip-label" }, "A compilar"),
+                  e("span", { className: "stat-num" }, selectedCount)
+                )
+              )
+            ),
+            
+            e("div", { className: "detected-files-section" },
+              e("div", { className: "detected-files-title" },
+                e("i", { className: "fa-solid fa-list" }),
+                "Archivos .lua detectados"
+              ),
+              e("div", { className: "detected-files-grid" },
+                files.map((file, idx) => 
+                  e("div", { 
+                    key: idx, 
+                    className: `file-chip ${getFileTagClass(file.name)}`
+                  },
+                    e("i", { className: "fa-solid fa-file-code" }),
+                    e("span", { className: "file-chip-name", title: file.path }, file.name)
+                  )
+                )
+              )
+            )
+          );
+        }
+
+        function FileUploader({ onFilesLoaded }) {
+          const [isDragging, setIsDragging] = React.useState(false);
+          const zipInputRef = React.useRef(null);
+          const folderInputRef = React.useRef(null);
+
+          const processZip = async (file) => {
+            const zip = await JSZip.loadAsync(file);
+            const fileList = [];
+            zip.forEach((relativePath, zipEntry) => {
+              if (!zipEntry.dir && relativePath.endsWith(".lua")) {
+                const fileName = relativePath.split("/").pop();
+                fileList.push({ path: relativePath, name: fileName, selected: true });
+              }
+            });
+            const originalName = file.name.replace(".zip", "");
+            onFilesLoaded(fileList, zip, originalName, "zip");
+          };
+
+          const processFolder = async (fileListRaw) => {
+            if (!fileListRaw || fileListRaw.length === 0) return;
+            
+            const firstPath = fileListRaw[0].webkitRelativePath || "";
+            const folderName = firstPath.split("/")[0] || "carpeta_seleccionada";
+            
+            const virtualZip = new JSZip();
+            const luaFiles = [];
+            
+            for (const file of fileListRaw) {
+              const relativePath = file.webkitRelativePath;
+              virtualZip.file(relativePath, file);
+              
+              if (file.name.toLowerCase().endsWith(".lua")) {
+                luaFiles.push({
+                  path: relativePath,
+                  name: file.name,
+                  selected: true
+                });
+              }
+            }
+            
+            if (luaFiles.length === 0) {
+              alert("⚠️ No se encontraron archivos .lua en la carpeta seleccionada.");
+              return;
+            }
+            
+            onFilesLoaded(luaFiles, virtualZip, folderName, "folder");
+          };
+
+          const handleDrop = (ev) => {
+            ev.preventDefault();
+            setIsDragging(false);
+            const file = ev.dataTransfer.files[0];
+            if (file && file.name.endsWith(".zip")) {
+              processZip(file);
+            } else {
+              alert("Para arrastrar, usa un archivo .zip. Para carpetas, usa el botón 'Seleccionar Carpeta'.");
+            }
+          };
+
+          const handleZipSelect = (ev) => {
+            const file = ev.target.files[0];
+            if (file) processZip(file);
+            ev.target.value = "";
+          };
+
+          const handleFolderSelect = (ev) => {
+            const files = ev.target.files;
+            if (files && files.length > 0) processFolder(files);
+            ev.target.value = "";
+          };
+
+          return e("div", { className: "card slide-up", id: "compiler-section" },
+            e("div", {
+              className: `upload-zone ${isDragging ? "dragover" : ""}`,
+              onDragOver: (ev) => { ev.preventDefault(); setIsDragging(true); },
+              onDragLeave: () => setIsDragging(false),
+              onDrop: handleDrop,
+              onClick: () => zipInputRef.current?.click()
+            },
+              e("i", { className: "fa-solid fa-cloud-arrow-up" }),
+              e("h3", null, "Arrastra tu archivo ZIP aquí"),
+              e("p", null, "o haz clic para seleccionar un .zip")
+            ),
+            
+            e("div", { className: "mode-selector" },
+              e("button", {
+                className: "mode-btn",
+                onClick: () => zipInputRef.current?.click()
+              },
+                e("i", { className: "fa-solid fa-file-zipper" }),
+                e("div", null,
+                  e("div", null, "Subir ZIP"),
+                  e("small", null, "Archivo comprimido")
+                )
+              ),
+              e("button", {
+                className: "mode-btn",
+                onClick: () => folderInputRef.current?.click()
+              },
+                e("i", { className: "fa-solid fa-folder-open" }),
+                e("div", null,
+                  e("div", null, "Seleccionar Carpeta"),
+                  e("small", null, "Carpeta completa")
+                )
+              )
+            ),
+            
+            e("input", {
+              ref: zipInputRef, type: "file", accept: ".zip",
+              onChange: handleZipSelect, style: { display: "none" }
+            }),
+            e("input", {
+              ref: folderInputRef, type: "file",
+              webkitdirectory: "true",
+              directory: "true",
+              multiple: true,
+              onChange: handleFolderSelect, style: { display: "none" }
+            })
+          );
+        }
+
+        function FileItem({ file, onToggle }) {
+          return e("div", { className: "file-row" },
+            e("input", { type: "checkbox", checked: file.selected, onChange: onToggle }),
+            e("i", { className: "fa-solid fa-file-code fi" }),
+            e("div", { style: { flex: 1, minWidth: 0 } },
+              e("div", { className: "fn" }, file.name),
+              e("div", { className: "fp" }, file.path)
+            )
+          );
+        }
+
+        function FileList({ files, onToggle, onSelectAll, onDeselectAll, zipFile, zipFileName, isCompiling, setIsCompiling, sourceType }) {
+          const [progress, setProgress] = React.useState({ current: 0, total: 0, file: "", status: "" });
+          const [errors, setErrors] = React.useState([]);
+          const selectedCount = files.filter(f => f.selected).length;
+
+          const handleCompile = async () => {
+            setIsCompiling(true);
+            setErrors([]);
+            setProgress({ current: 0, total: selectedCount, file: "", status: "Iniciando..." });
+
+            try {
+              const onProgress = (current, total, fileName, success, error) => {
+                setProgress({ current, total, file: fileName, status: success ? "Compilado" : "Error" });
+                if (!success && error) setErrors(prev => [...prev, { file: fileName, error }]);
+              };
+
+              const compiledZip = await compileScripts(zipFile, files, onProgress);
+              const blob = await compiledZip.generateAsync({ type: "blob" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `${zipFileName}_compiled.zip`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            } catch (err) {
+              console.error("Compilation error:", err);
+              alert("Error durante la compilación: " + err.message);
+            }
+            setIsCompiling(false);
+          };
+
+          return e("div", { className: "card slide-up" },
+
+            e(ResourceSummary, {
+              resourceName: zipFileName,
+              files: files,
+              selectedCount: selectedCount,
+              sourceType: sourceType
+            }),
+
+            e("div", { className: "section-header" },
+              e("h2", null, e("i", { className: "fa-solid fa-box-archive" }), " Archivos a procesar"),
+              e("div", { style: { display: "flex", gap: "8px" } },
+                e("button", { onClick: onSelectAll, className: "btn-secondary" },
+                  e("i", { className: "fa-solid fa-check-double" }), " Marcar todos"),
+                e("button", { onClick: onDeselectAll, className: "btn-secondary" },
+                  e("i", { className: "fa-solid fa-xmark" }), " Desmarcar")
+              )
+            ),
+
+            e("div", { className: "file-list" },
+              files.length === 0
+                ? e("div", { className: "empty-state" },
+                    e("i", { className: "fa-regular fa-folder-open" }),
+                    e("p", { style: { margin: 0 } }, "No se encontraron archivos .lua")
+                  )
+                : files.map((file, index) =>
+                    e(FileItem, { key: file.path, file, onToggle: () => onToggle(index) })
+                  )
+            ),
+
+            isCompiling && e("div", { className: "status-box" },
+              e("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "14px" } },
+                e("span", { style: { color: "var(--enc-accent)" } },
+                  e("i", { className: "fa-solid fa-spinner fa-spin" }), " Compilando: ", e("strong", null, progress.file)),
+                e("span", { style: { color: "var(--enc-muted)" } }, progress.current, " / ", progress.total)
+              ),
+              e("div", { className: "progress-container" },
+                e("div", {
+                  className: "progress-bar",
+                  style: { width: progress.total ? `${(progress.current / progress.total) * 100}%` : "0%" }
+                })
+              )
+            ),
+
+            errors.length > 0 && e("div", { className: "status-box error" },
+              e("strong", null, e("i", { className: "fa-solid fa-triangle-exclamation" }), " Errores de compilación:"),
+              errors.map((err, i) => e("p", { key: i }, e("strong", null, err.file, ": "), err.error))
+            ),
+
+            e("div", {
+              style: {
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                paddingTop: "16px", marginTop: "16px",
+                borderTop: "1px solid rgba(255,255,255,0.05)",
+                flexWrap: "wrap", gap: "10px"
+              }
+            },
+              e("span", { style: { color: "var(--enc-muted)", fontSize: "14px" } },
+                e("i", { className: "fa-solid fa-circle-check", style: { color: "var(--enc-accent)" } }),
+                " ", selectedCount, " de ", files.length, " archivos seleccionados"),
+              e("button", {
+                onClick: handleCompile,
+                disabled: selectedCount === 0 || isCompiling,
+                className: "btn-compile"
+              },
+                isCompiling
+                  ? e(React.Fragment, null, e("i", { className: "fa-solid fa-spinner fa-spin" }), " Compilando...")
+                  : e(React.Fragment, null, e("i", { className: "fa-solid fa-shield-halved" }), " COMPILAR Y DESCARGAR")
+              )
+            )
+          );
+        }
+
+        async function compileScripts(originalZip, files, onProgress) {
+          const newZip = new JSZip();
+          let compiled = 0;
+          const toCompile = files.filter(f => f.selected).length;
+
+          for (const file of files) {
+            const content = await originalZip.file(file.path).async("string");
+            if (file.selected) {
+              try {
+                const compiledContent = await compileLuaFile(content);
+                newZip.file(file.path, compiledContent);
+                compiled++;
+                if (onProgress) onProgress(compiled, toCompile, file.name, true);
+              } catch (err) {
+                newZip.file(file.path, content);
+                if (onProgress) onProgress(compiled, toCompile, file.name, false, err.message);
+              }
+            } else {
+              newZip.file(file.path, content);
+            }
+          }
+
+          const allFiles = [];
+          originalZip.forEach((path, entry) => {
+            if (!entry.dir && !path.endsWith(".lua")) allFiles.push({ path, entry });
+          });
+
+          for (const { path, entry } of allFiles) {
+            if (path.endsWith("meta.xml")) {
+              let metaContent = await entry.async("string");
+              newZip.file(path, metaContent);
+            } else {
+              const content = await entry.async("uint8array");
+              newZip.file(path, content);
+            }
+          }
+          return newZip;
+        }
+
+        function App() {
+          const [files, setFiles] = React.useState([]);
+          const [isCompiling, setIsCompiling] = React.useState(false);
+          const [zipFile, setZipFile] = React.useState(null);
+          const [zipFileName, setZipFileName] = React.useState("");
+          const [sourceType, setSourceType] = React.useState("");
+
+          const handleFilesLoaded = (loadedFiles, originalZip, fileName, type) => {
+            setFiles(loadedFiles);
+            setZipFile(originalZip);
+            setZipFileName(fileName);
+            setSourceType(type);
+          };
+
+          const toggleFile = (index) => {
+            setFiles(prev => prev.map((f, i) => i === index ? { ...f, selected: !f.selected } : f));
+          };
+
+          const selectAll = () => setFiles(prev => prev.map(f => ({ ...f, selected: true })));
+          const deselectAll = () => setFiles(prev => prev.map(f => ({ ...f, selected: false })));
+
+          return e("main", null,
+            e(FileUploader, { onFilesLoaded: handleFilesLoaded }),
+            files.length > 0 && e(FileList, {
+              files, onToggle: toggleFile,
+              onSelectAll: selectAll, onDeselectAll: deselectAll,
+              zipFile, zipFileName, isCompiling, setIsCompiling, sourceType
+            })
+          );
+        }
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.target.id === 'section-encryptor' && mutation.target.classList.contains('active')) {
+                    if (!window.compilerRendered) {
+                        const root = ReactDOM.createRoot(document.getElementById("root-compiler"));
+                        root.render(e(App));
+                        window.compilerRendered = true;
+                    }
+                }
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const section = document.getElementById('section-encryptor');
+            if (section) observer.observe(section, { attributes: true, attributeFilter: ['class'] });
+        });
 
         // --- MANEJO DEL CREADOR DE CÓDIGOS ---
 document.getElementById('btn-create-discount').addEventListener('click', function() {
