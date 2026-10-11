@@ -1,7 +1,0 @@
-{
-  "cleanUrls": true,
-  "redirects": [
-    { "source": "/index", "destination": "/", "statusCode": 301 },
-    { "source": "/index.html", "destination": "/", "statusCode": 301 }
-  ]
-}
